@@ -1,4 +1,8 @@
 
+
+using ExamScheduler.Server.Source.DataBase;
+using Microsoft.EntityFrameworkCore;
+
 namespace ExamScheduler.Server
 {
     public class Program
@@ -8,6 +12,8 @@ namespace ExamScheduler.Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
