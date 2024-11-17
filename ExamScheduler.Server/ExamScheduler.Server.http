@@ -4,3 +4,8 @@ GET {{ExamScheduler.Server_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{ExamScheduler.Server_HostAddress}}/exams/
+Accept: application/json
+
+###

@@ -5,9 +5,9 @@ namespace ExamScheduler.Server.Source.DataBase
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<Exam> Exams { get; set; }
-        public DbSet<Room> Rooms { get; set; }
-        public DbSet<Professor> Professors { get; set; }
+        public DbSet<ScheduleRequest> ScheduleRequest { get; set; }
+        public DbSet<Classroom> Classroom { get; set; }
+        public DbSet<Professor> Professor { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

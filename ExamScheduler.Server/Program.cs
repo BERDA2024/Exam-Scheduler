@@ -1,5 +1,3 @@
-
-
 using ExamScheduler.Server.Source.DataBase;
 using Microsoft.EntityFrameworkCore;
 
