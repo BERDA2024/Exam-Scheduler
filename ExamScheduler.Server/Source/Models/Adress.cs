@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ExamScheduler.Server.Source.Entities
+namespace ExamScheduler.Server.Source.Models
 {
     public class Address
     {

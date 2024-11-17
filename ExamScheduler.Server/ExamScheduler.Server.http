@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET {{ExamScheduler.Server_HostAddress}}/exams/
+GET {{ExamScheduler.Server_HostAddress}}/api/Addresses/
 Accept: application/json
 
 ###

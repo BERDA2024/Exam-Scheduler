@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ExamScheduler.Server.Source.Entities
+namespace ExamScheduler.Server.Source.Models
 {
     public class Role
     {

@@ -1,4 +1,4 @@
-﻿using ExamScheduler.Server.Source.Entities;
+﻿using ExamScheduler.Server.Source.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExamScheduler.Server.Source.DataBase
@@ -17,5 +17,6 @@ namespace ExamScheduler.Server.Source.DataBase
         {
             base.OnModelCreating(modelBuilder);
         }
+        public DbSet<ExamScheduler.Server.Source.Models.Address> Address { get; set; } = default!;
     }
 }
