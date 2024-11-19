@@ -1,8 +1,12 @@
 ﻿import React from "react";
 import "./Login.css";
 import sample_img from "./assets/sample_img.jpeg"; // Importă imaginea folosind calea relativă
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
+    //const navigate = useNavigate();
+
     return (
         <div className="container">
 
@@ -34,7 +38,8 @@ const Login = () => {
                     <button
                         type="button"
                         className="signup-btn"
-                        onClick={() => alert("Sign Up clicked!")}
+                         onClick={() => alert("Sign Up clicked!")}
+                        //onClick={() => navigate("/signup")}
                     >
                         Sign Up
                     </button>
