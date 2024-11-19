@@ -11,6 +11,6 @@ namespace ExamScheduler.Server.Source.Models
         [StringLength(100)]
         public string Name { get; set; }
 
-        public virtual ICollection<Address> Addresses { get; set; }
+       // public virtual ICollection<Address> Addresses { get; set; }
     }
 }
