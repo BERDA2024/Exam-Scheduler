@@ -1,7 +1,10 @@
-﻿namespace ExamScheduler.Server.Source.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ExamScheduler.Server.Source.Entities
 {
     public class Exam
     {
+        [Key]
         public int Id { get; set; }
         public string Subject { get; set; }
         public DateTime ScheduledDate { get; set; }
