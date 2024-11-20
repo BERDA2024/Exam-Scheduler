@@ -27,21 +27,20 @@ namespace ExamScheduler.Server
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowReactApp", policy =>
+                options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("https://localhost:3000")  // Asigură-te că acest URL este corect pentru front-end-ul tău
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
+                    policy.WithOrigins("http://localhost:50733")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
                 });
             });
 
-
             var app = builder.Build();
+
+            app.UseCors("AllowFrontend");
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
-            app.UseCors("AllowReactApp");  // Permite cererile CORS de la React
             app.UseRouting();
 
             // Configurare pipeline de cereri HTTP
