@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241123131456_InitialCreate")]
+    [Migration("20241123140201_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -223,9 +223,6 @@ namespace ExamScheduler.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClassroomID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProfessorID")
                         .HasColumnType("int");
 
                     b.Property<int>("RequestStateID")

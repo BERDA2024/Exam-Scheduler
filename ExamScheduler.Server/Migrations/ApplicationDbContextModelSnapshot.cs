@@ -222,9 +222,6 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int>("ClassroomID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProfessorID")
-                        .HasColumnType("int");
-
                     b.Property<int>("RequestStateID")
                         .HasColumnType("int");
 
