@@ -1,19 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExamScheduler.Server.Source.Models
+namespace ExamScheduler.Server.Source.Domain
 {
     public class Availability
     {
         [Key]
-        public int AvailabilityID { get; set; }
+        public int Id { get; set; }
 
+        [Required]
         [ForeignKey("Professor")]
         public int ProfessorID { get; set; }
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-
-        public virtual Professor Professor { get; set; }
     }
 }

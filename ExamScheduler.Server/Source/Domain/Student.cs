@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExamScheduler.Server.Source.Models
+namespace ExamScheduler.Server.Source.Domain
 {
     public class Student
     {
         [Key]
-        public int StudentID { get; set; }
+        public int Id { get; set; }
+
+        [ForeignKey("User")]
+        public required string UserId { get; set; }
 
         [ForeignKey("Group")]
         public int GroupID { get; set; }
-
-        public virtual Group Group { get; set; }
-        public virtual ICollection<ScheduleRequest> ScheduleRequests { get; set; }
     }
 }

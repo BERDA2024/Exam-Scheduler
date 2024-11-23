@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExamScheduler.Server.Source.Models
+namespace ExamScheduler.Server.Source.Domain
 {
     public class ScheduleRequest
     {
         [Key]
-        public int RequestID { get; set; }
+        public int Id { get; set; }
 
+        [Required]
         [ForeignKey("Professor")]
         public int ProfessorID { get; set; }
 
         [ForeignKey("Student")]
         public int StudentID { get; set; }
 
+        [Required]
         [ForeignKey("Subject")]
         public int SubjectID { get; set; }
 
@@ -24,11 +26,5 @@ namespace ExamScheduler.Server.Source.Models
         public int ClassroomID { get; set; }
 
         public DateTime StartDate { get; set; }
-
-        public virtual Professor Professor { get; set; }
-        public virtual Student Student { get; set; }
-        public virtual Subject Subject { get; set; }
-        public virtual RequestState RequestState { get; set; }
-        public virtual Classroom Classroom { get; set; }
     }
 }
