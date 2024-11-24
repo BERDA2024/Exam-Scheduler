@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';  // Updated import
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RegisterPage from './RegisterPage';
 import LoginPage from './LoginPage';
 import DashboardPage from './DashboardPage';
@@ -7,11 +7,11 @@ import DashboardPage from './DashboardPage';
 const App = () => {
     return (
         <Router>
-            <Routes> {/* Replaced Switch with Routes */}
-                <Route path="/register" element={<RegisterPage />} />  {/* Updated syntax for Route */}
+            <Routes>
+                <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/" element={<LoginPage />} />  {/* No need for 'exact' */}
+                <Route path="/" element={<LoginPage />} />
             </Routes>
         </Router>
     );

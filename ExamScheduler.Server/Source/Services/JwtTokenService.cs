@@ -18,36 +18,33 @@ namespace ExamScheduler.Server.Source.Services
             _configuration = configuration;
         }
 
-        public string GenerateJwtToken(User user)
+        public string GenerateToken(User user)
         {
-            // Retrieve configuration values from appsettings.json
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
             var secretKey = _configuration["Jwt:SecretKey"];
+            var handler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secretKey);
+            var credentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature);
 
-            // Create claims based on user info
-            var claims = new[]
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id)
-        };
+                Subject = GenerateClaims(user),
+                Expires = DateTime.UtcNow.AddMinutes(15),
+                SigningCredentials = credentials,
+            };
 
-            // Create the security key using the secret key from configuration
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = handler.CreateToken(tokenDescriptor);
+            return handler.WriteToken(token);
+        }
 
-            // Generate the JWT token
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds
-            );
+        private static ClaimsIdentity GenerateClaims(User user)
+        {
+            var claims = new ClaimsIdentity();
+            claims.AddClaim(new Claim(ClaimTypes.Email, user.Email));
+            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
 
-            // Return the serialized JWT token as a string
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return claims;
         }
     }
 }

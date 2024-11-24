@@ -54,6 +54,11 @@ const LoginPage = () => {
         }
     };
 
+    // Navigate to Register Page
+    const goToRegister = () => {
+        navigate('/register');
+    };
+
     return (
         <div className="auth-form">
             <h2>Login</h2>
@@ -77,6 +82,7 @@ const LoginPage = () => {
                 />
                 <button type="submit">Login</button>
             </form>
+            <button onClick={goToRegister}>Don't have an account? Register</button>  {/* Register Button */}
         </div>
     );
 };

@@ -61,19 +61,22 @@ namespace ExamScheduler.Server
             });
 
             // JWT Authentication setup
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                            ValidAudience = builder.Configuration["Jwt:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])) // Ensure this key is 256 bits
-                        };
-                    });
+            builder.Services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+           .AddJwtBearer(options =>
+           {
+               options.RequireHttpsMetadata = false;
+               options.SaveToken = true;
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = false,
+                   ValidateAudience = false,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])) // Ensure this key is 256 bits
+               };
+           });
 
             builder.Services.AddSingleton<JwtTokenService>(); // Register the JwtTokenService
             builder.Services.AddControllers();

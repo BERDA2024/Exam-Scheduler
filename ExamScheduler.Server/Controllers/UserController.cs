@@ -74,7 +74,7 @@ namespace ExamScheduler.Server.Controllers
 
             if (result.Succeeded)
             {
-                var token = _jwtTokenService.GenerateJwtToken(user);
+                var token = _jwtTokenService.GenerateToken(user);
 
                 return Ok(new { token });
             }
