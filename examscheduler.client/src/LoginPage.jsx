@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import sample_img from "./assets/sample_img.jpeg";
+import "./LoginPage.css";
+
+
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
@@ -60,29 +64,59 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="auth-form">
-            <h2>Login</h2>
-            {error && <p className="error">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit">Login</button>
-            </form>
-            <button onClick={goToRegister}>Don't have an account? Register</button>  {/* Register Button */}
+        <div className="container">
+
+            {/* Secțiunea stângă */}
+            <div className="left-section">
+
+                <form>
+
+                    <div>
+
+                        <h1>Welcome to ExamScheduler!</h1>
+
+                    </div>
+                    <div>
+                        <input type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required />
+                        <input type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required />
+
+                    </div>
+
+                    <button
+                        type="button"
+                        className="login-btn"
+                        onClick={() => alert("Login clicked!")}
+                    >
+                        Login
+                    </button>
+                    <button
+                        type="button"
+                        className="signup-btn"
+                        onClick={goToRegister}>Don't have an account? Register
+                    </button>
+
+                </form>
+            </div>
+
+            {/* Secțiunea dreaptă */}
+            <div
+                className="right-section"
+                style={{
+                    backgroundImage: `url(${sample_img})`, // Folosește imaginea ca fundal
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+            ></div>
         </div>
     );
 };

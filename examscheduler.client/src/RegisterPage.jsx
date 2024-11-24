@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import sample_img from "./assets/sample_img.jpeg";
+import "./RegisterPage.css"
 
 const RegisterPage = () => {
     const [formData, setFormData] = useState({
@@ -59,53 +61,71 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="auth-form">
-            <h2>Register</h2>
-            {error && <p className="error">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="firstName"
-                    placeholder="First Name"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last Name"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm Password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit">Register</button>
-            </form>
-            <button onClick={goToLogin}>Already have an account? Login</button>  {/* Login Button */}
+        <div className="register-container">
+            {/* Left Section */}
+            <div className="left-section">
+              
+                
+                <form onSubmit={handleSubmit}>
+                    {error && <p className="error">{error}</p>}
+                    <h2>Register</h2>
+                   
+                    <input
+                        type="text"
+                        name="firstName"
+                        placeholder="First Name"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="lastName"
+                        placeholder="Last Name"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        placeholder="Confirm Password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                        />
+                    
+                    
+                    <button type="submit">Register</button>
+                    <button onClick={goToLogin}>Already have an account? Login</button>
+                </form>
+            </div>
+
+            {/* Right Section */}
+            <div
+                className="right-section"
+                style={{
+                    backgroundImage: `url(${sample_img})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+            ></div>
         </div>
     );
 };
