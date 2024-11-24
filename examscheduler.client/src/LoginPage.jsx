@@ -30,27 +30,27 @@ const LoginPage = () => {
                 }),
             });
             const text = await response.text();  // Get raw response text
-            console.log(text);  // Log raw response for inspection
+            //console.log(text);  // Log raw response for inspection
 
             let result;
             try {
                 result = JSON.parse(text);  // Attempt to parse it as JSON
             } catch (e) {
-                console.error("Failed to parse response as JSON:", e);
+                //console.error("Failed to parse response as JSON:", e);
                 setError("Invalid server response.");
                 return;
             }
 
             if (response.ok && result.token) {
                 localStorage.setItem('authToken', result.token);  // Store the token
-                console.log('Token stored in localStorage:', result.token);
+                //console.log('Token stored in localStorage:', result.token);
                 navigate('/dashboard');  // Redirect to dashboard
             } else {
                 setError(result.message || 'Invalid credentials');
             }
         } catch (error) {
             setError('An error occurred. Please try again.');
-            console.log(error);
+            //console.log(error);
         }
     };
 
