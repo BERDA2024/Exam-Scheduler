@@ -1,4 +1,4 @@
-namespace ExamScheduler.Server
+namespace ExamScheduler.Server.Source
 {
     public class WeatherForecast
     {
