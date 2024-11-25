@@ -1,0 +1,23 @@
+﻿.sidebar {
+    width: 200px;
+    background-color: #ffdd94;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-button {
+    padding: 10px 15px;
+    margin: 5px 0;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    height: 10%;
+}
+
+.sidebar-button.active {
+    background-color: #ffe6b3;
+    font-weight: bold;
+}

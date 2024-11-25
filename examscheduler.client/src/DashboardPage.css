@@ -1,0 +1,47 @@
+﻿/* Global Styles */
+
+.dashboard-container {
+    width: 100%; /* Asigură lățimea completă */
+    height: 100%; /* Asigură înălțimea completă */
+    margin: 0 auto; /* Centrează containerul */
+}
+
+/* Body Styles */
+.dashboard-body {
+    display: flex;
+    flex: 1;
+}
+
+
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    background-color: #e7eef6;
+}
+
+.block {
+    background: black;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.block h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.block-item {
+    padding: 5px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+.block-item:last-child {
+    border-bottom: none;
+}

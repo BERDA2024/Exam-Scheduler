@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import sample_img from "./assets/sample_img.jpeg";
 import "./LoginPage.css";
 
-
-
 const LoginPage = () => {
     const [formData, setFormData] = useState({
         email: '',
