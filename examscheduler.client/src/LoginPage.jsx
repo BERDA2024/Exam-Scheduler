@@ -69,7 +69,7 @@ const LoginPage = () => {
             {/* Secțiunea stângă */}
             <div className="left-section">
 
-                <form>
+                <form onSubmit={handleSubmit}>
 
                     <div>
 
@@ -93,9 +93,8 @@ const LoginPage = () => {
                     </div>
 
                     <button
-                        type="button"
+                        type="submit"
                         className="login-btn"
-                        onClick={() => alert("Login clicked!")}
                     >
                         Login
                     </button>
