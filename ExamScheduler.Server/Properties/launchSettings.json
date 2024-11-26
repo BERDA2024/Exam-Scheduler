@@ -9,7 +9,7 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5016"
+      "applicationUrl": "http://localhost:5274"
     },
     "https": {
       "commandName": "Project",
@@ -20,7 +20,7 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7115;http://localhost:5016"
+      "applicationUrl": "https://localhost:7118;http://localhost:5274"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -29,14 +29,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
-      }
-    },
-    "Frontend": {
-      "commandName": "Executable",
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:50733",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   },
