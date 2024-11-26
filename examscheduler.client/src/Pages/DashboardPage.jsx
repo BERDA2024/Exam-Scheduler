@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
-import './DashboardPage.css';
-import Layout from "./Layout/Layout";
+import '../Styles/DashboardPage.css';
+import Layout from "../Layout/Layout";
 
 const DashboardPage = () => {
     return (
@@ -17,7 +17,6 @@ const DashboardPage = () => {
                                 <span>12/10/24 15:00 | Organizare examen | Turcu Cristina Elena</span>
                             </div>
                             <div className="block-item">
-                                <span>12/10/24 14:46 | Examen Ingineria Programelor</span>
                             </div>
                         </div>
 

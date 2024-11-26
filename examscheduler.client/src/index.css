@@ -122,3 +122,13 @@ button {
     padding: 20px;
     text-align: center;
 }
+
+@media (max-width: 768px) {
+    main .sidebar {
+        width: 30%; /* Expand sidebar width */
+    }
+
+    header nav {
+        flex-direction: column; /* Stack navigation links vertically */
+    }
+}

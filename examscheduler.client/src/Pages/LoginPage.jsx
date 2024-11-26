@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import sample_img from "./assets/sample_img.jpeg";
-import "./LoginPage.css";
+import sample_img from "../assets/sample_img.jpeg";
+import "../Styles/LoginPage.css";
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({

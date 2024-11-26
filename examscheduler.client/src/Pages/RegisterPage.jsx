@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import sample_img from "./assets/sample_img.jpeg";
-import "./RegisterPage.css"
+import sample_img from "../assets/sample_img.jpeg";
+import "../Styles/RegisterPage.css"
 
 const RegisterPage = () => {
     const [formData, setFormData] = useState({

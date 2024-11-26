@@ -30,7 +30,6 @@ namespace ExamScheduler.Server.Controllers
 
             if (userId == null)
             {
-                Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUser ID not found in claims.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
                 return Unauthorized();
             }
 
@@ -38,7 +37,6 @@ namespace ExamScheduler.Server.Controllers
 
             if (user == null)
             {
-                Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUser ID not found in claims.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
                 return Unauthorized();
             }
 

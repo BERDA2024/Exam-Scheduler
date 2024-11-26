@@ -1,6 +1,6 @@
 ﻿/* Header layout */
 .header {
-    height: 5%;
+    height: 10%;
     display: flex;
     justify-content: space-between;
     align-items: center;
