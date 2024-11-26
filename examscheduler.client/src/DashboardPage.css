@@ -1,9 +1,8 @@
 ﻿/* Global Styles */
 
 .dashboard-container {
-    width: 100%; /* Asigură lățimea completă */
-    height: 100%; /* Asigură înălțimea completă */
-    margin: 0 auto; /* Centrează containerul */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Body Styles */
@@ -34,12 +33,14 @@
 .block h3 {
     margin-top: 0;
     margin-bottom: 10px;
+    height: 10%;
 }
 
 .block-item {
     padding: 5px 0;
     font-size: 14px;
     border-bottom: 1px solid #ddd;
+    height: 10%;
 }
 
 .block-item:last-child {
