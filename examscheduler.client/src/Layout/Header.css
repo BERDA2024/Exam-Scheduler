@@ -12,6 +12,7 @@
 
 /* Left Section: Site Name */
 .header-left .site-name {
+    align-items: center;
     font-size: 20px;
     font-weight: bold;
     color: #333;
