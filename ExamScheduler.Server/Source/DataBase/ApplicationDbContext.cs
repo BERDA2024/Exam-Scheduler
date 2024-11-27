@@ -1,6 +1,7 @@
 ﻿using ExamScheduler.Server.Source.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ExamScheduler.Server.Source.DataBase
 {
@@ -26,6 +27,14 @@ namespace ExamScheduler.Server.Source.DataBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, Name = "Admin", Description = ""},
+                new Role { Id = 2, Name = "Secretary", Description = "" },
+                new Role { Id = 3, Name = "Professor", Description = "" },
+                new Role { Id = 4, Name = "Student", Description = "" },
+                new Role { Id = 5, Name = "StudentGroupLeader", Description = "" }
+            );
         }
     }
 }

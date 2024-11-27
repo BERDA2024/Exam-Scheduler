@@ -9,21 +9,14 @@ namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager) : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly JwtTokenService _jwtTokenService;
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly SignInManager<User> _signInManager = signInManager;
+        private readonly JwtTokenService _jwtTokenService = jwtTokenService;
 
-        public UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager)
-        {
-            _jwtTokenService = jwtTokenService;
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
-
-        [Authorize] // Ensures that only authenticated users can access this endpoint
         [HttpGet("profile")]
+        [Authorize] // Ensures that only authenticated users can access this endpoint
         public async Task<IActionResult> GetUserProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
@@ -47,9 +40,19 @@ namespace ExamScheduler.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email };
+            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email, RoleID = 1 };
             var result = await _userManager.CreateAsync(user, model.Password);  // Hashes password automatically
+            try
+            {
+                var newUser = await _userManager.FindByEmailAsync(model.Email);
 
+                if(newUser != null)
+                    await _userManager.AddToRoleAsync(newUser, "Admin");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex });
+            }
             if (result.Succeeded)
             {
                 return Ok(new { message = "User registered successfully!" });
@@ -62,7 +65,6 @@ namespace ExamScheduler.Server.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
-
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 return Unauthorized(new { message = "Invalid login attempt." });
@@ -82,8 +84,8 @@ namespace ExamScheduler.Server.Controllers
 
 
         // POST: api/User/logout
-        [Authorize]  // Ensure that the user is authenticated
         [HttpPost("logout")]
+        [Authorize]  // Ensure that the user is authenticated
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();  // Sign out the user

@@ -32,7 +32,6 @@ const LoginPage = () => {
                 }),
             });
             const text = await response.text();  // Get raw response text
-            //console.log(text);  // Log raw response for inspection
 
             let result;
             try {
@@ -52,7 +51,7 @@ const LoginPage = () => {
             }
         } catch (error) {
             setError('An error occurred. Please try again.');
-            //console.log(error);
+            console.log(error);
         }
     };
 

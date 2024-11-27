@@ -44,13 +44,14 @@ const RegisterPage = () => {
 
             const result = await response.json();
 
+            alert(result.message);
             if (response.ok) {
-                alert(result.message);
                 navigate('/login'); // Redirect to login page after successful registration
             } else {
                 setError(result.message || 'Registration failed');
             }
         } catch (error) {
+            console.log(error);
             setError('An error occurred. Please try again.');
         }
     };

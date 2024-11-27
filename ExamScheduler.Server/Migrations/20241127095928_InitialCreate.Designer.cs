@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241123140201_InitialCreate")]
+    [Migration("20241127095928_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -212,6 +212,38 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "",
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "",
+                            Name = "Secretary"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "",
+                            Name = "Professor"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "",
+                            Name = "Student"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "",
+                            Name = "StudentGroupLeader"
+                        });
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>

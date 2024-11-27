@@ -12,8 +12,8 @@
 }
 
 * {
-    width: 100%;
-    height: 100%; /**/
+    /*width: 100%;
+    height: 100%; */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -21,8 +21,10 @@
 
 html,
 body {
-    width: 100%;
-    height: 100%;
+    /*width: 100%;
+    height: 100%;*/
+    min-width: 320px;
+    min-height: 100vh;
     margin: 0;
     padding: 0;
     overflow: hidden; /* Elimină derularea */
@@ -37,14 +39,6 @@ a {
 
 a:hover {
     color: #535bf2;
-}
-
-body {
-    margin: 0;
-    /*display: flex;
-    place-items: center;*/
-    min-width: 320px;
-    min-height: 100vh;
 }
 
 h1 {
@@ -64,14 +58,14 @@ button {
     transition: border-color 0.25s;
 }
 
-    button:hover {
-        border-color: #646cff;
-    }
+button:hover {
+    border-color: #646cff;
+}
 
-    button:focus,
-    button:focus-visible {
-        outline: 4px auto -webkit-focus-ring-color;
-    }
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
 
 @media (prefers-color-scheme: light) {
     :root {
@@ -116,11 +110,6 @@ button {
 .auth-form .error {
     color: red;
     margin-bottom: 10px;
-}
-
-.dashboard {
-    padding: 20px;
-    text-align: center;
 }
 
 @media (max-width: 768px) {
