@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUserRole } from '../Utils/RoleUtils';
-import './Sidebar.css';
 import DashboardPage from '../Pages/DashboardPage';
-
-
+import './Sidebar.css';
 
 const Sidebar = ({ setActiveContent }) => {
     const [userRole, setUserRole] = useState(null);
