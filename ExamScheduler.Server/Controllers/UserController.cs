@@ -40,22 +40,24 @@ namespace ExamScheduler.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email, RoleID = 1 };
+            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email};
             var result = await _userManager.CreateAsync(user, model.Password);  // Hashes password automatically
-            try
-            {
-                var newUser = await _userManager.FindByEmailAsync(model.Email);
-
-                if(newUser != null)
-                    await _userManager.AddToRoleAsync(newUser, "Admin");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex });
-            }
+            
             if (result.Succeeded)
             {
-                return Ok(new { message = "User registered successfully!" });
+                try
+                {
+                    var newUser = await _userManager.FindByEmailAsync(model.Email);
+
+                    if (newUser != null)
+                        await _userManager.AddToRoleAsync(newUser, "Admin");
+
+                    return Ok(new { message = "User registered successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { message = ex });
+                }
             }
 
             return BadRequest(result.Errors);

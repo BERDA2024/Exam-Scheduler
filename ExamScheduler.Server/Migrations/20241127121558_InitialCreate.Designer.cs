@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241127095928_InitialCreate")]
+    [Migration("20241127121558_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -191,61 +191,6 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("RequestState");
                 });
 
-            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "",
-                            Name = "Secretary"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "",
-                            Name = "Professor"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "",
-                            Name = "Student"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "",
-                            Name = "StudentGroupLeader"
-                        });
-                });
-
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -392,9 +337,6 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("RoleID")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

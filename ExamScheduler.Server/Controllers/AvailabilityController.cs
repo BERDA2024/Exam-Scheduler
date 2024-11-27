@@ -39,7 +39,7 @@ namespace ExamScheduler.Server.Controllers
             return Ok(availability);
         }
 
-        [Authorize(Roles = "Professor")]
+        [Authorize(Roles = "Admin,Professor")]
         [HttpPost]
         public async Task<IActionResult> CreateAvailability([FromBody] AvailabilityModel request)
         {
