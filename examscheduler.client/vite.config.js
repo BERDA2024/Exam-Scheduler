@@ -52,6 +52,9 @@ export default defineConfig({
                 secure: false
             }
         },
+        optimizeDeps: {
+            include: ['jwt-decode'], // Ensure Vite processes this dependency
+        },
         port: 50733,
         https: {
             key: fs.readFileSync(keyFilePath),
