@@ -15,7 +15,8 @@ function Header() {
     const contents = user === undefined
         ? <span><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></span>
         : <span>
-            <span>Welcome, {user.fullName}</span>
+            <span>{user.fullName}</span>
+            <br></br>
             <span>Email: {user.email}</span>
         </span>;
 

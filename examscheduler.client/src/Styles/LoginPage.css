@@ -1,10 +1,7 @@
 ﻿/* Container principal */
 .container {
-    display: grid; /* Activează grid-ul */
-    grid-template-columns: repeat(5, 1fr); /* Creează 5 coloane egale */
-    width: 100%; /* Asigură lățimea completă */
-    height: 100%; /* Asigură înălțimea completă */
-    margin: 0 auto; /* Centrează containerul */
+    display: flex; /* Activează grid-ul */
+    height: 100vh;
 }
 
 /* Secțiunea login */
@@ -16,6 +13,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 50%;
 }
 
     /* Conținut login */
@@ -107,10 +105,5 @@
 
 /* Secțiunea imagine */
 .right-section {
-    grid-column: span 3; /* Ocupă 3 coloane */
-    height: 100%; /* Înălțimea completă a containerului */
-    background-image: url('./assets/sample_img.webp'); /* Imaginea fundal */
-    background-size: cover; /* Face ca imaginea să acopere complet secțiunea */
-    background-position: center; /* Centrează imaginea */
-    background-repeat: no-repeat; /* Evită repetarea imaginii */
+    width: -webkit-fill-available;
 }

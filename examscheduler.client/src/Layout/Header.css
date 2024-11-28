@@ -1,6 +1,6 @@
 ﻿/* Header layout */
 .header {
-    height: 10%;
+    height: 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -22,8 +22,8 @@
 .header-middle {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
-    align-content : center;
+    justify-content: flex-end;
+    align-content: center;
 }
 
 .search-bar {

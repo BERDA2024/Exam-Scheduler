@@ -1,10 +1,7 @@
 ﻿/* Container principal */
 .register-container {
-    display: grid; /* Activează grid-ul */
-    grid-template-columns: repeat(5, 1fr); /* Creează 5 coloane egale */
-    width: 100%; /* Asigură lățimea completă */
-    height: 100%; /* Asigură înălțimea completă */
-    margin: 0 auto; /* Centrează containerul */
+    display: flex; /* Activează grid-ul */
+    height: 100vh;
 }
 
 
