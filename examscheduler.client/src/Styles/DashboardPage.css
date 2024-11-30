@@ -10,18 +10,17 @@
 .dashboard-body {
     display: flex;
     flex: 1;
+    height: 100%;
+    width: 100%;
 }
 
 
 
 /* Main Content Styles */
 .main-content {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 20px;
     background-color: #e7eef6;
+    height: 100%;
+    width: 100%;
 }
 
 .block {

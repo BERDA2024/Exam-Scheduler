@@ -41,17 +41,26 @@ const RegisterPage = () => {
                     password: formData.password,
                 }),
             });
+            const text = await response.text();  // Get raw response text
 
-            const result = await response.json();
+            let result;
+            try {
+                result = JSON.parse(text);  // Attempt to parse it as JSON
+            } catch (e) {
+                setError("Invalid server response.");
+                console.error(e);
+                return;
+            }
 
             alert(result.message);
             if (response.ok) {
                 navigate('/login'); // Redirect to login page after successful registration
             } else {
                 setError(result.message || 'Registration failed');
+                console.error(result.message);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setError('An error occurred. Please try again.');
         }
     };

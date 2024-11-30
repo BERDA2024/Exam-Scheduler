@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUserRole } from '../Utils/RoleUtils';
 import DashboardPage from '../Pages/DashboardPage';
+import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import './Sidebar.css';
 
 const Sidebar = ({ setActiveContent }) => {
@@ -27,6 +28,10 @@ const Sidebar = ({ setActiveContent }) => {
         ],
     };
 
+    const commonButtons = [
+        { label: "Settings", action: <ProfileSettingsPage /> }
+    ];
+
     useEffect(() => {
         const role = getUserRole();
         setUserRole(role);
@@ -42,6 +47,19 @@ const Sidebar = ({ setActiveContent }) => {
     return (
         <nav className="sidebar">
             {buttons.map((button, index) => (
+                <button
+                    className={`sidebar-button ${activeButton === button.label ? 'active' : ''}`}
+                    key={index}
+                    onClick={() => {
+                        setActiveContent(button.action);
+                        setActiveButton(button.label); // Set the clicked button as active
+                    }}
+                >
+                    {button.label}
+                </button>
+            ))}
+
+            {commonButtons.map((button, index) => (
                 <button
                     className={`sidebar-button ${activeButton === button.label ? 'active' : ''}`}
                     key={index}

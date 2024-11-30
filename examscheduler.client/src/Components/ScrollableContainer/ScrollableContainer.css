@@ -1,0 +1,29 @@
+/* Scrollable container */
+.scrollable-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    /* max-height: 80vh; */
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    width: 100%;
+}
+
+    /* Smooth scrolling */
+    .scrollable-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .scrollable-container::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 8px;
+    }
+
+    .scrollable-container::-webkit-scrollbar-track {
+        background-color: #f0f0f0;
+    }

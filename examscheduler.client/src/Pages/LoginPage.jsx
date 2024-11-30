@@ -37,21 +37,21 @@ const LoginPage = () => {
             try {
                 result = JSON.parse(text);  // Attempt to parse it as JSON
             } catch (e) {
-                //console.error("Failed to parse response as JSON:", e);
                 setError("Invalid server response.");
+                console.error(e);
                 return;
             }
 
             if (response.ok && result.token) {
                 localStorage.setItem('authToken', result.token);  // Store the token
-                //console.log('Token stored in localStorage:', result.token);
                 navigate('/dashboard');  // Redirect to dashboard
             } else {
                 setError(result.message || 'Invalid credentials');
+                console.error(result.message);
             }
         } catch (error) {
             setError('An error occurred. Please try again.');
-            console.log(error);
+            console.error(error);
         }
     };
 

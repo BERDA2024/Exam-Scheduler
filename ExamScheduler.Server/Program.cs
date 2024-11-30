@@ -1,11 +1,14 @@
 using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Domain.Enums;
 using ExamScheduler.Server.Source.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Immutable;
 using System.Security.Claims;
 using System.Text;
 
@@ -92,6 +95,7 @@ namespace ExamScheduler.Server
             // Swagger setup for API documentation
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSingleton<EmailService>();
 
             var app = builder.Build();
 
@@ -145,14 +149,32 @@ namespace ExamScheduler.Server
         {
             using var scope = serviceProvider.CreateScope();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
-            string[] roleNames = { "Admin", "Secretary", "Professor", "Student", "StudentGroupLeader" };
-
-            foreach (var roleName in roleNames)
+            foreach (RoleType value in Enum.GetValues<RoleType>())
             {
-                if (!await roleManager.RoleExistsAsync(roleName))
+                if (!await roleManager.RoleExistsAsync(value.ToString()))
                 {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                    await roleManager.CreateAsync(new IdentityRole(value.ToString()));
+                }
+            }
+            // Create default admin
+            var adminEmail = "admin@admin.com";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
+            {
+                adminUser = new User
+                {
+                    FirstName = "Administrator",
+                    LastName = "System",
+                    Email = adminEmail,
+                    UserName = adminEmail
+                };
+                var result = await userManager.CreateAsync(adminUser, "Berda123!");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(adminUser, RoleType.Admin.ToString());
                 }
             }
         }

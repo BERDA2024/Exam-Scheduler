@@ -4,16 +4,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ExamScheduler.Server.Source.Services;
+using ExamScheduler.Server.Source.Models;
 
 namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager) : ControllerBase
+    public class UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, EmailService emailService) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly JwtTokenService _jwtTokenService = jwtTokenService;
+        private readonly EmailService _emailService = emailService;
 
         [HttpGet("profile")]
         [Authorize] // Ensures that only authenticated users can access this endpoint
@@ -47,10 +49,9 @@ namespace ExamScheduler.Server.Controllers
             {
                 try
                 {
-                    var newUser = await _userManager.FindByEmailAsync(model.Email);
-
-                    if (newUser != null)
-                        await _userManager.AddToRoleAsync(newUser, "Admin");
+                    //var subject = "Welcome to Our App!";
+                    //var body = $"<p>Hi {user.UserName},</p><p>Thank you for signing up!</p>";
+                    //await _emailService.SendEmailAsync(user.Email, subject, body);
 
                     return Ok(new { message = "User registered successfully!" });
                 }
@@ -60,13 +61,41 @@ namespace ExamScheduler.Server.Controllers
                 }
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(new { message = result.Errors });
+        }
+        // Method to change the user's password
+        [Authorize]
+        [HttpPost]
+        [Route("change-password")]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordModel model)
+        {
+            // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return BadRequest(new { message = "User not found." });
+            }
+
+            // Change the user's password
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "Password changed successfully." });
+            }
+            else
+            {
+                // Return the error messages if password change fails
+                return BadRequest(new { message = result.Errors });
+            }
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
+
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 return Unauthorized(new { message = "Invalid login attempt." });
