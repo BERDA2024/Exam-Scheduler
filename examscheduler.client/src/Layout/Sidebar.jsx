@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getUserRole } from '../Utils/RoleUtils';
 import DashboardPage from '../Pages/DashboardPage';
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
+import Calendar from '../Components/Calendar/Calendar';
 import './Sidebar.css';
 
 const Sidebar = ({ setActiveContent }) => {
@@ -11,7 +12,7 @@ const Sidebar = ({ setActiveContent }) => {
     const roleButtons = {
         Admin: [
             { label: "Admin Dashboard", action: <DashboardPage /> },
-            { label: "Calendar", action: "Calendar" },
+            { label: "Calendar", action: <Calendar/> },
         ],
         Secretary: [
             { label: "Manage Students", action: "loadManageStudents" },
