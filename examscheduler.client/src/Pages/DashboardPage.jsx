@@ -12,7 +12,7 @@ const DashboardPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Availability">
+                        <StylizedBlock title="Availability" canToggle={false}>
                             {/* Availability block */}
                             <div className="block-item">
                                 <AvailabilityForm />

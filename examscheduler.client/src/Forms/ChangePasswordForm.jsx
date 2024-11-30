@@ -11,6 +11,9 @@ const ChangePasswordForm = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        setSuccessMessage('');
+        setErrorMessage('');
         setDetailsModel((detailsModel) => ({
             ...detailsModel,
             [name]: value
@@ -60,7 +63,10 @@ const ChangePasswordForm = () => {
                 if (response.ok) {
                     setSuccessMessage(result.message); // This will be the success message returned from the API
                     console.log('Password changed successfully.');
-                    setDetailsModel({ CurrentPassword: '', NewPassword: '', ConfirmPassword: '' });
+                    detailsModel.ConfirmPassword = '';
+                    detailsModel.NewPassword = '';
+                    detailsModel.CurrentPassword = '';
+                    setDetailsModel(detailsModel);
                 } else {
                     setErrorMessage(result.message);
                     console.error('Failed to change');
@@ -76,16 +82,11 @@ const ChangePasswordForm = () => {
         } else {
             alert("User not authenticated");
         }
+        setDetailsModel(detailsModel);
     };
 
     return (
         <form className="change-password-form" onSubmit={handleSubmit}>
-            {/* Display success message */}
-            {successMessage && <div className="alert alert-success">{successMessage}</div>}
-
-            {/* Display error message */}
-            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-
             <div className="change-password-form div">
                 <label htmlFor="currentPassword">Current Password:</label>
                 <input
@@ -122,7 +123,14 @@ const ChangePasswordForm = () => {
                 />
             </div>
 
+            {/* Display success message */}
+            {successMessage && <div className="message message-success">{successMessage}</div>}
+
+            {/* Display error message */}
+            {errorMessage && <div className="message message-error">{errorMessage}</div>}
+
             <button type="submit">Change Password</button>
+
         </form>
     );
 };

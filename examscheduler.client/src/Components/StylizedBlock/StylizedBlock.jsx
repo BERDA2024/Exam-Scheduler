@@ -1,8 +1,15 @@
-﻿import React, { useState } from "react";
+﻿import React, { useState, useRef, useEffect } from "react";
 import "./StylizedBlock.css";
 
 const StylizedBlock = ({ title, children, canToggle = true, initiallyOpen = true }) => {
     const [isOpen, setIsOpen] = useState(initiallyOpen);
+    const [isRendered, setIsRendered] = useState(false); // Tracks when the component is rendered
+    const contentRef = useRef(null); // Ref to measure the content height
+
+    useEffect(() => {
+        // Trigger a re-render once the DOM is fully loaded to apply correct animation
+        setTimeout(() => setIsRendered(true), 0);
+    }, []);
 
     const toggleContent = () => {
         if (canToggle) {
@@ -24,7 +31,15 @@ const StylizedBlock = ({ title, children, canToggle = true, initiallyOpen = true
                     </button>
                 )}
             </div>
-            {isOpen && <div className="stylized-block-content">{children}</div>}
+            <div
+                className={`stylized-block-content-wrapper ${isOpen ? "open" : "closed"}`}
+                style={{
+                    maxHeight: isRendered && isOpen ? `${contentRef.current?.scrollHeight}px` : "0px",
+                }}
+                ref={contentRef}
+            >
+                <div className="stylized-block-content">{children}</div>
+            </div>
         </div>
     );
 };

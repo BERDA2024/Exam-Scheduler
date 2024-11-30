@@ -32,11 +32,17 @@
     margin: 0;
 }
 
+/* Wrapper for content with transition */
+.stylized-block-content-wrapper {
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+
 /* Content area */
 .stylized-block-content {
     font-size: 1rem;
     color: #555;
-    transition: max-height 0.3s ease;
+    padding-top: 10px;
 }
 
 /* Toggle button */
@@ -49,7 +55,6 @@
     cursor: pointer;
     transition: color 0.2s ease;
     padding: 0px 10px 0px 10px;
-    /* min-width: 10px;*/
 }
 
     .toggle-button:hover {
