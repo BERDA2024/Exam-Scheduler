@@ -14,18 +14,44 @@
         box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
     }
 
+/* Header container */
+.stylized-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}
+
 /* Title styling */
 .stylized-block-title {
-    margin-bottom: 15px;
     font-size: 1.2rem;
     font-weight: 600;
     color: #333;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+    margin: 0;
 }
 
 /* Content area */
 .stylized-block-content {
     font-size: 1rem;
     color: #555;
+    transition: max-height 0.3s ease;
 }
+
+/* Toggle button */
+.toggle-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0px 10px 0px 10px;
+    /* min-width: 10px;*/
+}
+
+    .toggle-button:hover {
+        color: #007bff;
+    }
