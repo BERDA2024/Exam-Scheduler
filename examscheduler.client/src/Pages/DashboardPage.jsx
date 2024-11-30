@@ -1,9 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
-import '../Styles/DashboardPage.css';
-import Layout from "../Layout/Layout";
 import AvailabilityForm from '../Forms/AvailabilityForm';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
+import '../Styles/DashboardPage.css';
 
 const DashboardPage = () => {
     return (

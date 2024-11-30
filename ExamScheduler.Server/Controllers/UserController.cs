@@ -87,7 +87,7 @@ namespace ExamScheduler.Server.Controllers
             else
             {
                 // Return the error messages if password change fails
-                return BadRequest(new { message = result.Errors });
+                return BadRequest(new { message = "Invalid passwords." });
             }
         }
 
