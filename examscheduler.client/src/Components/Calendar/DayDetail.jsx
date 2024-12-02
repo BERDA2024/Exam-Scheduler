@@ -18,7 +18,7 @@ const DayDetail = ({ selectedDay, events, onAddEventClick }) => {
                             <p>No events for this day.</p>
                         )}
                     </div>
-                    <button onClick={onAddEventClick}>Add Event</button>
+                    <button className="add-event-button" onClick={onAddEventClick}>Add Eventk</button>
                 </>
             ) : (
                 <p>Select a day to see details.</p>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import DayDetail from './DayDetail';
 import AddEventPopup from './AddEventPopup';
 import './Calendar.css';
 
@@ -69,7 +68,7 @@ const Calendar = () => {
                                 <p>No events for this day.</p>
                             )}
                         </div>
-                        <button onClick={handleOpenPopup}>Add Event</button>
+                        <button className="add-event-button" onClick={handleOpenPopup}>Add Event</button>
                     </>
                 ) : (
                     <p>Select a day to see details.</p>

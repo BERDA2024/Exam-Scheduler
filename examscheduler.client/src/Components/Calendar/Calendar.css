@@ -13,6 +13,7 @@
 }
 
 .calendar-day {
+    color: black;
     background-color: #f1f1f1;
     padding: 10px;
     text-align: center;
@@ -47,15 +48,15 @@
     border-radius: 4px;
 }
 
-button {
+add-event-button {
     background-color: #007bff;
-    color: white;
+    color: black;
     padding: 8px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-    button:hover {
+    add-event-button:hover {
         background-color: #0056b3;
     }
