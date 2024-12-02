@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ExamScheduler.Server.Source.Services;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Domain.Enums;
 
 namespace ExamScheduler.Server.Controllers
 {
@@ -52,7 +53,10 @@ namespace ExamScheduler.Server.Controllers
                     //var subject = "Welcome to Our App!";
                     //var body = $"<p>Hi {user.UserName},</p><p>Thank you for signing up!</p>";
                     //await _emailService.SendEmailAsync(user.Email, subject, body);
+                    var addedUser = await _userManager.FindByEmailAsync(user.Email);
 
+                    if (addedUser != null)
+                        await userManager.AddToRoleAsync(addedUser, RoleType.Student.ToString());
                     return Ok(new { message = "User registered successfully!" });
                 }
                 catch (Exception ex)
@@ -63,6 +67,7 @@ namespace ExamScheduler.Server.Controllers
 
             return BadRequest(new { message = result.Errors });
         }
+
         // Method to change the user's password
         [Authorize]
         [HttpPost]
