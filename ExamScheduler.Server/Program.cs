@@ -1,12 +1,15 @@
 using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Domain.Enums;
 using ExamScheduler.Server.Source.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
-using System.IO;
+using System;
+using System.Collections.Immutable;
+using System.Security.Claims;
 using System.Text;
 
 namespace ExamScheduler.Server
@@ -36,14 +39,9 @@ namespace ExamScheduler.Server
                 options.Lockout.AllowedForNewUsers = true;
                 options.SignIn.RequireConfirmedAccount = false;
 
-                // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-
                 // User settings.
                 options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -74,38 +72,40 @@ namespace ExamScheduler.Server
                {
                    ValidateIssuer = false,
                    ValidateAudience = false,
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])) // Ensure this key is 256 bits
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])), // Ensure this key is 256 bits
+                   RoleClaimType = ClaimTypes.Role // Important to include roles
                };
            });
 
-            builder.Services.AddSingleton<JwtTokenService>(); // Register the JwtTokenService
+            builder.Services.AddScoped<JwtTokenService>(); // Register the JwtTokenService
             builder.Services.AddControllers();
 
             // Add CORS services and configure the policy
             builder.Services.AddCors(options =>
             {
-
-                options.AddDefaultPolicy(
-                    policy =>
-                    {
-                        policy.WithOrigins("https://localhost:50733")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            //.AllowAnyOrigin();
-                            .AllowCredentials();
-                    });
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("https://localhost:50733")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
             });
 
             // Swagger setup for API documentation
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSingleton<EmailService>();
 
             var app = builder.Build();
+
+            // Role seeding logic
+            SeedRoles(app.Services).Wait();
 
             // Use CORS middleware globally (for all routes)
             app.UseCors();
 
-            // Serve static files (for example, if you're serving an Angular or React app)
+            // Serve static files
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
@@ -115,13 +115,11 @@ namespace ExamScheduler.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
-                // Proxy to Vite dev server when in development mode
                 app.UseWhen(context => context.Request.Path.StartsWithSegments("/"), appBuilder =>
                 {
                     appBuilder.Run(async context =>
                     {
-                        // Forward all requests to the Vite dev server
-                        var viteDevServerUrl = "http://localhost:5173"; // Change if Vite is running on a different port
+                        var viteDevServerUrl = "http://localhost:5173";
                         var url = viteDevServerUrl + context.Request.Path + context.Request.QueryString;
                         context.Response.Redirect(url);
                         await Task.CompletedTask;
@@ -130,7 +128,6 @@ namespace ExamScheduler.Server
             }
             else
             {
-                // In production, serve static files from the 'dist' folder after building React app with Vite
                 app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "ClientApp", "dist")),
@@ -138,18 +135,48 @@ namespace ExamScheduler.Server
                 });
             }
 
-            // Use HTTPS Redirection and authentication/authorization middleware
             app.UseHttpsRedirection();
-            app.UseAuthentication();  // Add Authentication Middleware
-            app.UseAuthorization();   // Add Authorization Middleware
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            // Map controllers for your API
             app.MapControllers();
-
-            // Fallback to index.html for Single Page Applications (SPA)
             app.MapFallbackToFile("/index.html");
 
             app.Run();
+        }
+
+        private static async Task SeedRoles(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+            foreach (RoleType value in Enum.GetValues<RoleType>())
+            {
+                if (!await roleManager.RoleExistsAsync(value.ToString()))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(value.ToString()));
+                }
+            }
+            // Create default admin
+            var adminEmail = "admin@admin.com";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
+            {
+                adminUser = new User
+                {
+                    FirstName = "Administrator",
+                    LastName = "System",
+                    Email = adminEmail,
+                    UserName = adminEmail
+                };
+                var result = await userManager.CreateAsync(adminUser, "Berda123!");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(adminUser, RoleType.Admin.ToString());
+                }
+            }
         }
     }
 }

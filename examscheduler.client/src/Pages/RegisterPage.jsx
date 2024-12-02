@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import sample_img from "./assets/sample_img.jpeg";
-import "./RegisterPage.css"
+import sample_img from "../assets/sample_img.jpeg";
+import "../Styles/RegisterPage.css"
 
 const RegisterPage = () => {
     const [formData, setFormData] = useState({
@@ -41,16 +41,26 @@ const RegisterPage = () => {
                     password: formData.password,
                 }),
             });
+            const text = await response.text();  // Get raw response text
 
-            const result = await response.json();
+            let result;
+            try {
+                result = JSON.parse(text);  // Attempt to parse it as JSON
+            } catch (e) {
+                setError("Invalid server response.");
+                console.error(e);
+                return;
+            }
 
+            alert(result.message);
             if (response.ok) {
-                alert(result.message);
                 navigate('/login'); // Redirect to login page after successful registration
             } else {
                 setError(result.message || 'Registration failed');
+                console.error(result.message);
             }
         } catch (error) {
+            console.error(error);
             setError('An error occurred. Please try again.');
         }
     };

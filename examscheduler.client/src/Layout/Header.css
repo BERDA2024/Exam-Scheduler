@@ -1,0 +1,96 @@
+﻿/* Header layout */
+.header {
+    height: 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #668db8;
+    border-bottom: 1px solid #ddd;
+    color: black;
+}
+
+/* Left Section: Site Name */
+.header-left .site-name {
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Middle Section: Search Bar */
+.header-middle {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-content: center;
+}
+
+.search-bar {
+    width: 100%;
+    height: 80%;
+    max-width: 400px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    align-content: center;
+}
+
+/* Right Section: Icons */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+    height:100%;
+}
+
+/* Tooltip */
+.profile-icon-container {
+    position: relative;
+}
+
+.profile-tooltip {
+    position: absolute;
+    top: 100%; /* Position the tooltip below the button */
+    right: 0;
+    background-color: #668db8;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px; /* Adds inner spacing */
+    display: flex;
+    flex-direction: column; /* Stacks the buttons vertically */
+    gap: 10px; /* Spacing between buttons */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-height: 210px; /* Set a minimum height to prevent overflow */
+    overflow: hidden; /* Ensure the content doesn't overflow */
+}
+
+.profile-tooltip button {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.profile-tooltip button:hover {
+    background-color: #f1f1f1;
+}
+
+/* Utility: Responsive */
+@media (max-width: 768px) {
+    .header-middle .search-bar {
+        width: 100%;
+    }
+}

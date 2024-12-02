@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241123140201_InitialCreate")]
+    [Migration("20241127121558_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -191,29 +191,6 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("RequestState");
                 });
 
-            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
-                });
-
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -360,9 +337,6 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("RoleID")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

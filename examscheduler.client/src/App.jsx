@@ -1,8 +1,9 @@
 ﻿import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import RegisterPage from './RegisterPage';
-import LoginPage from './LoginPage';
-import DashboardPage from './DashboardPage';
+import RegisterPage from './Pages/RegisterPage';
+import LoginPage from './Pages/LoginPage';
+import DashboardPage from './Pages/DashboardPage';
+import Layout from './Layout/Layout';
 
 const App = () => {
     return (
@@ -10,7 +11,7 @@ const App = () => {
             <Routes>
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard" element={<Layout />} />
                 <Route path="/" element={<LoginPage />} />
             </Routes>
         </Router>

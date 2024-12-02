@@ -1,4 +1,4 @@
-﻿namespace ExamScheduler.Server.Source.Domain
+﻿namespace ExamScheduler.Server.Source.Models
 {
     public class LoginModel
     {

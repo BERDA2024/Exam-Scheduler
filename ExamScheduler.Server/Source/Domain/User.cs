@@ -14,8 +14,5 @@ namespace ExamScheduler.Server.Source.Domain
         [Required]
         [StringLength(50)]
         public required string FirstName { get; set; }
-
-        [ForeignKey("Role")]
-        public int RoleID { get; set; }
     }
 }

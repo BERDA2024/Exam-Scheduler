@@ -1,6 +1,7 @@
 ﻿using ExamScheduler.Server.Source.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ExamScheduler.Server.Source.DataBase
 {
@@ -13,7 +14,6 @@ namespace ExamScheduler.Server.Source.DataBase
         public DbSet<Group> Group { get; set; } = default!;
         public DbSet<Professor> Professor { get; set; } = default!;
         public DbSet<RequestState> RequestState { get; set; } = default!;
-        public DbSet<Role> Role { get; set; } = default!;
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; } = default!;
         public DbSet<Secretary> Secretary { get; set; } = default!;
         public DbSet<Student> Student { get; set; } = default!;
