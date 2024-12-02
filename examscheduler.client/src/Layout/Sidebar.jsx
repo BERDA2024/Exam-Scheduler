@@ -12,7 +12,7 @@ const Sidebar = ({ setActiveContent }) => {
     const roleButtons = {
         Admin: [
             { label: "Admin Dashboard", action: <DashboardPage /> },
-            { label: "Calendar", action: <CalendarPage/> },
+            { label: "Calendar", action: <CalendarPage /> },
         ],
         Secretary: [
             { label: "Manage Students", action: "loadManageStudents" },

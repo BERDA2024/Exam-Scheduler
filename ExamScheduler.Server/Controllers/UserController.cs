@@ -42,9 +42,9 @@ namespace ExamScheduler.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email};
+            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);  // Hashes password automatically
-            
+
             if (result.Succeeded)
             {
                 try

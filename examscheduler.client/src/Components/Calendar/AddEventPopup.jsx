@@ -15,7 +15,7 @@ const AddEventPopup = ({ onClose }) => {
             <div className="popup-content">
                 <h3>Add Event</h3>
                 <input
-                    className= "popup-input"
+                    className="popup-input"
                     type="text"
                     placeholder="Event Name"
                     value={eventName}
