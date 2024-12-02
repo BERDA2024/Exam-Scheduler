@@ -12,73 +12,155 @@ namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AdminController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context) : ControllerBase
+    public class AdminController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context, RoleManager<IdentityRole> roleManager) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly JwtTokenService _jwtTokenService = jwtTokenService;
         private readonly ApplicationDbContext _context = context;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
-        [HttpGet("user")]
-        [Authorize] // Ensures that only authenticated users can access this endpoint
+
+        // GET: api/Admin
+        [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
-
-            if (userId == null)
+            try
             {
-                return Unauthorized();
+                var users = _userManager.Users.ToList();
+
+                var userModels = users.Select(user =>
+                {
+                    var roles = _userManager.GetRolesAsync(user).Result;
+                    return new UserModel
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Role = roles.FirstOrDefault() // Assumes a single role per user
+                    };
+                }).ToList();
+
+                //var results = await Task.WhenAll(userModels); // Resolve all tasks
+                return Ok(userModels);
+            }
+            catch(Exception error)
+            {
+                return BadRequest(new { message = error.ToString() });
+            }
+        }
+
+        // POST: api/Admin
+        [Authorize(Roles ="Admin")]
+        [HttpPost]
+        public async Task<IActionResult> AddUser([FromBody] UserModel model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.Email))
+            {
+                return BadRequest(new { message = "Invalid user data." });
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = new User
+            {
+                Email = model.Email,
+                UserName = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
 
+            var result = await _userManager.CreateAsync(user, "Berda123!"); // Replace with actual logic
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { message = result.Errors.ToString() });
+            }
+
+            if (!string.IsNullOrEmpty(model.Role) && model.Role != "Admin")
+            {
+                await _userManager.AddToRoleAsync(user, model.Role);
+            }
+
+            return Ok(new { message = "User added successfully." });
+        }
+        // PUT: api/Admin/edit
+        [Authorize(Roles = "Admin")]
+        [HttpPut("edit")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserModel model)
+        {
+            if (string.IsNullOrEmpty(model.FirstName) || string.IsNullOrEmpty(model.LastName))
+            {
+                return BadRequest(new { message = "First Name and Last Name are required." });
+            }
+
+            // Find the user by Id
+            var user = await _userManager.FindByIdAsync(model.Id);
             if (user == null)
             {
-                return Unauthorized();
+                return NotFound(new { message = "User not found." });
             }
 
-            return Ok(new { FullName = user.FirstName + " " + user.LastName, user.Email });
-        }
+            user.UserName = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
 
-        // POST: api/User/register
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
-        {
-            if (!ModelState.IsValid)
+            if (!string.IsNullOrEmpty(model.Role) && model.Role != "Admin")
             {
-                return BadRequest(ModelState);
-            }
-            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email};
-            var result = await _userManager.CreateAsync(user, model.Password);  // Hashes password automatically
-            
-            if (result.Succeeded)
-            {
-                try
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+                if (await _roleManager.RoleExistsAsync(model.Role))
                 {
-                    var newUser = await _userManager.FindByEmailAsync(model.Email);
-
-                    if (newUser != null && !string.IsNullOrEmpty(model.Role))
-                        await _userManager.AddToRoleAsync(newUser, model.Role);
-
-                    return Ok(new { message = "User registered successfully!" });
+                    await _userManager.AddToRoleAsync(user, model.Role);
                 }
-                catch (Exception ex)
+                else
                 {
-                    return BadRequest(new { message = ex });
+                    return BadRequest(new { message = "Role does not exist." });
                 }
             }
 
-            return BadRequest(result.Errors);
+            // Save the changes
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                return BadRequest(new { message = "Failed to update user data." });
+            }
+
+            return Ok(new { message = "User data updated successfully." });
         }
 
-        // POST: api/User/logout
-        [HttpPost("logout")]
-        [Authorize]  // Ensure that the user is authenticated
-        public async Task<IActionResult> Logout()
+        // DELETE: api/Admin/{id}
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
         {
-            await _signInManager.SignOutAsync();  // Sign out the user
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
 
-            return Ok(new { message = "User logged out successfully!" });
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return BadRequest("Cannot delete admin users.");
+                }
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return Ok(new { message = "User deleted successfully." });
+                }
+
+                return BadRequest(new { message = result.Errors.ToString() });
+            }
+            catch(Exception error)
+            {
+                return BadRequest(new { message = error.ToString() });
+            }
         }
+
     }
 }

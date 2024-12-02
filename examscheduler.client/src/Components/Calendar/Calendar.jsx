@@ -74,7 +74,6 @@ const Calendar = () => {
                     <p>Select a day to see details.</p>
                 )}
             </div>
-
             {isPopupOpen && <AddEventPopup onClose={handleClosePopup} />}
         </div>
     );

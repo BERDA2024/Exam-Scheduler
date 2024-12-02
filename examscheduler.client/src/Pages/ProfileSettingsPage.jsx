@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { getAuthHeader } from '../Utils/AuthUtils';
+import React from 'react';
 import ChangePasswordForm from '../Forms/ChangePasswordForm';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';

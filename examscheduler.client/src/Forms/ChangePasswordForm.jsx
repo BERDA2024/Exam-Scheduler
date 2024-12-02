@@ -66,11 +66,11 @@ const ChangePasswordForm = () => {
                     detailsModel.ConfirmPassword = '';
                     detailsModel.NewPassword = '';
                     detailsModel.CurrentPassword = '';
-                    setDetailsModel(detailsModel);
                 } else {
                     setErrorMessage(result.message);
                     console.error('Failed to change');
                 }
+                setDetailsModel(detailsModel);
             } catch (error) {
                 // Handle API error (e.g., incorrect current password)
                 if (error.response && error.response.data) {

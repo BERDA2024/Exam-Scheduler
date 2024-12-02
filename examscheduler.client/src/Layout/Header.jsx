@@ -69,7 +69,7 @@ function Header() {
 
             if (response.ok) {
                 console.log('Logout successful');
-                localStorage.removeItem('authToken');  // Clear the token from local storage
+                localStorage.clear()
                 navigate('/login');  // Redirect to login page after logging out
             } else {
                 console.error('Failed to log out');
