@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ExamScheduler.Server.Source.DataBase
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User>(options)
     {
         public DbSet<Availability> Availability { get; set; } = default!;
         public DbSet<Classroom> Classroom { get; set; } = default!;
@@ -20,10 +20,6 @@ namespace ExamScheduler.Server.Source.DataBase
         public DbSet<Secretary> Secretary { get; set; } = default!;
         public DbSet<Student> Student { get; set; } = default!;
         public DbSet<Subject> Subject { get; set; } = default!;
-
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

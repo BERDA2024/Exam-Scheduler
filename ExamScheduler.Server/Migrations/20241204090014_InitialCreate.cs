@@ -1,4 +1,5 @@
 ﻿using System;
+using ExamScheduler.Server.Source.Services;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -387,6 +388,8 @@ namespace ExamScheduler.Server.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            DatabaseSeeder.Seed(migrationBuilder);
         }
 
         /// <inheritdoc />
