@@ -53,7 +53,7 @@ namespace ExamScheduler.Server
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-                options.LoginPath = "/Identity/Account/Login";
+                options.LoginPath = "/login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
@@ -100,7 +100,7 @@ namespace ExamScheduler.Server
             var app = builder.Build();
 
             // Role seeding logic
-            SeedRoles(app.Services).Wait();
+            SeedUsers(app.Services).Wait();
 
             // Use CORS middleware globally (for all routes)
             app.UseCors();
@@ -145,9 +145,10 @@ namespace ExamScheduler.Server
             app.Run();
         }
 
-        private static async Task SeedRoles(IServiceProvider serviceProvider)
+        private static async Task SeedUsers(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
@@ -158,25 +159,8 @@ namespace ExamScheduler.Server
                     await roleManager.CreateAsync(new IdentityRole(value.ToString()));
                 }
             }
-            // Create default admin
-            var adminEmail = "admin@admin.com";
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-            if (adminUser == null)
-            {
-                adminUser = new User
-                {
-                    FirstName = "Administrator",
-                    LastName = "System",
-                    Email = adminEmail,
-                    UserName = adminEmail
-                };
-                var result = await userManager.CreateAsync(adminUser, "Berda123!");
 
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(adminUser, RoleType.Admin.ToString());
-                }
-            }
+            await DatabaseSeeder.SeedUsersAsync(userManager, context);
         }
     }
 }

@@ -1,0 +1,911 @@
+[
+  {
+    "id": "100",
+    "lastName": "Chirap",
+    "firstName": "Aurel",
+    "emailAddress": "aurel@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1004",
+    "lastName": "Pascut",
+    "firstName": "Aurelia",
+    "emailAddress": "aurelia@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "101",
+    "lastName": "Balan",
+    "firstName": "Doru Gabriel",
+    "emailAddress": "dorub@usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1031",
+    "lastName": "Iuga",
+    "firstName": "Nicolai",
+    "emailAddress": "nicolaiiuga@gmail.com",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1050",
+    "lastName": "Bilius",
+    "firstName": "Laura-Bianca",
+    "emailAddress": "laura.bilius@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1072",
+    "lastName": "Grosu",
+    "firstName": "Oana Vasilica",
+    "emailAddress": "vasilica.grosu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1082",
+    "lastName": "Fechet",
+    "firstName": "Radu",
+    "emailAddress": "radu.fechet@usm.ro",
+    "phoneNumber": "0734341144",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "11",
+    "lastName": "Popa",
+    "firstName": "Valentin",
+    "emailAddress": "valentin@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1121",
+    "lastName": "Avătămăniței",
+    "firstName": "Sebastian",
+    "emailAddress": "sebastian.avatamanitei@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1123",
+    "lastName": "Șiean",
+    "firstName": "Alexandru",
+    "emailAddress": "alexandru.siean@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "114",
+    "lastName": "Ungurean",
+    "firstName": "Ioan",
+    "emailAddress": "ioanu@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "117",
+    "lastName": "Grădinaru",
+    "firstName": "Dorin",
+    "emailAddress": "gradinaru@fim.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "12",
+    "lastName": "Graur",
+    "firstName": "Adrian",
+    "emailAddress": "adriang@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "13",
+    "lastName": "Potorac",
+    "firstName": "Alin Dan",
+    "emailAddress": "alinp@eed.usv.ro",
+    "phoneNumber": "0741221402",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "135",
+    "lastName": "Chiuchisan",
+    "firstName": "Iuliana",
+    "emailAddress": "iulia@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "136",
+    "lastName": "Ciufudean",
+    "firstName": "Calin",
+    "emailAddress": "calin@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "138",
+    "lastName": "Găitan",
+    "firstName": "Cristina Nicoleta",
+    "emailAddress": "cristinag@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "14",
+    "lastName": "Turcu",
+    "firstName": "Corneliu Octavian",
+    "emailAddress": "cturcu@eed.usv.ro",
+    "phoneNumber": "0741221404",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1530",
+    "lastName": "Zadobrischi",
+    "firstName": "Eduard",
+    "emailAddress": "eduard.zadobrischi@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1531",
+    "lastName": "Cosovanu",
+    "firstName": "Lucian",
+    "emailAddress": "lucian.cosovanu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1535",
+    "lastName": "Movileanu ",
+    "firstName": "Doru",
+    "emailAddress": "doru.movileanu@usm.ro",
+    "phoneNumber": "0744201060",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1542",
+    "lastName": "Ciobanu",
+    "firstName": "Viorela Gabriela",
+    "emailAddress": "gabriela.ciobanu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1546",
+    "lastName": "Pamparău",
+    "firstName": "Cristian",
+    "emailAddress": "pamparaucristian0@gmail.com",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1561",
+    "lastName": "Vicoveanu",
+    "firstName": "Dragoș Ionuț",
+    "emailAddress": "dragos.vicoveanu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1576",
+    "lastName": "Chistol",
+    "firstName": "Mihaela",
+    "emailAddress": "mihaela.chistol@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1580",
+    "lastName": "Chiuchișan",
+    "firstName": "Iulian",
+    "emailAddress": "iulian.chiuchisan@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1581",
+    "lastName": "Gradinaru",
+    "firstName": "Bogdănel",
+    "emailAddress": "bogdan.gradinaru@usm.ro",
+    "phoneNumber": "0748782532",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1582",
+    "lastName": "Pavel",
+    "firstName": "Ionuț-Dorin",
+    "emailAddress": "ipavel@usm.ro",
+    "phoneNumber": "0722405599",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1583",
+    "lastName": "Georgescu",
+    "firstName": "Daniel",
+    "emailAddress": "daniel.georgescu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "1593",
+    "lastName": "Beguni",
+    "firstName": "Catalin",
+    "emailAddress": "catalin.beguni@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "16",
+    "lastName": "Coca",
+    "firstName": "Eugen",
+    "emailAddress": "ecoca@eed.usv.ro",
+    "phoneNumber": "0745594640",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1602",
+    "lastName": "Tighiceanu",
+    "firstName": "Claudia",
+    "emailAddress": "claudia.tighiceanu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1610",
+    "lastName": "Gordin",
+    "firstName": "Ionel",
+    "emailAddress": "ionel@usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1615",
+    "lastName": "Șomitcă",
+    "firstName": "Ioana-Alexandra",
+    "emailAddress": "ioana.somitca@gmail.com",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1626",
+    "lastName": "Catană",
+    "firstName": "Adrian-Vasile",
+    "emailAddress": "adrian.catana@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1633",
+    "lastName": "Zagan",
+    "firstName": "Elisabeta",
+    "emailAddress": "elisabeta.zagan@usm.ro",
+    "phoneNumber": "0758481322",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1634",
+    "lastName": "Mykhailovych ",
+    "firstName": "Vasyl",
+    "emailAddress": "vasyl.mykhailovych@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1646",
+    "lastName": "Bejenar",
+    "firstName": "Ciprian",
+    "emailAddress": "ciprian.bejenar@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1661",
+    "lastName": "Dodiu",
+    "firstName": "Eugen",
+    "emailAddress": "eugen.dodiu@usm.ro",
+    "phoneNumber": "0737774955",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1665",
+    "lastName": "Andrei",
+    "firstName": "Alexandru Tudor",
+    "emailAddress": "tudor.andrei@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1696",
+    "lastName": "Mutescu ",
+    "firstName": "Partemie Marian",
+    "emailAddress": "marian.mutescu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1698",
+    "lastName": "Maftei",
+    "firstName": "Alexandru",
+    "emailAddress": "alexandru.maftei@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1699",
+    "lastName": "Șoldănescu",
+    "firstName": "Iuliana",
+    "emailAddress": "iuliana.soldanescu@student.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "17",
+    "lastName": "Dimian",
+    "firstName": "Mihai",
+    "emailAddress": "dimian@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1703",
+    "lastName": "Codrean",
+    "firstName": "Andrei",
+    "emailAddress": "andrei.codrean@assist.ro",
+    "phoneNumber": "0752183255",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1704",
+    "lastName": "Nistor",
+    "firstName": "Alexandru",
+    "emailAddress": "alexandru.nistor@assist.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1730",
+    "lastName": "Iacoban",
+    "firstName": "Simona-Raluca",
+    "emailAddress": "simona_colibaba@yahoo.com",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "1736",
+    "lastName": "Pitu",
+    "firstName": "Floarea",
+    "emailAddress": "floarea.pitu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "1782",
+    "lastName": "Terenti",
+    "firstName": "Mihail",
+    "emailAddress": "mihail.terenti@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "18",
+    "lastName": "Filote",
+    "firstName": "Constantin",
+    "emailAddress": "filote@eed.usv.ro",
+    "phoneNumber": "0745991827",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "182",
+    "lastName": "Hopulele ",
+    "firstName": "Eugen",
+    "emailAddress": "eugenh@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "1844",
+    "lastName": "Soroceanu ",
+    "firstName": "Ion",
+    "emailAddress": "ion.soroceanu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "19",
+    "lastName": "Mahalu",
+    "firstName": "George",
+    "emailAddress": "george.mahalu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "20",
+    "lastName": "Satco",
+    "firstName": "Bianca",
+    "emailAddress": "bisatco@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "202",
+    "lastName": "Buzduga ",
+    "firstName": "Corneliu",
+    "emailAddress": "cbuzduga@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "205",
+    "lastName": "Atanasoae",
+    "firstName": "Pavel",
+    "emailAddress": "atanasoae@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "23",
+    "lastName": "Cozgarea",
+    "firstName": "Ana Maria",
+    "emailAddress": "amcozgarea@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "26",
+    "lastName": "Balan",
+    "firstName": "Alexandra Ligia",
+    "emailAddress": "alexandra@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "27",
+    "lastName": "Pohoata",
+    "firstName": "Sorin",
+    "emailAddress": "sorinp@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "28",
+    "lastName": "Pentiuc",
+    "firstName": "Radu Dumitru",
+    "emailAddress": "radup@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "30",
+    "lastName": "Bobric",
+    "firstName": "Crenguţa Elena",
+    "emailAddress": "crengutab@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "31",
+    "lastName": "Irimia",
+    "firstName": "Daniela",
+    "emailAddress": "daniela@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "33",
+    "lastName": "Milici",
+    "firstName": "Mariana Rodica",
+    "emailAddress": "mami@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "34",
+    "lastName": "Milici",
+    "firstName": "Dan Laurențiu",
+    "emailAddress": "dam@eed.usv.ro",
+    "phoneNumber": "0741221406",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "35",
+    "lastName": "Popa",
+    "firstName": "Cezar Dumitru",
+    "emailAddress": "cezardumitrup@gmail.com",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "36",
+    "lastName": "Raţă",
+    "firstName": "Gabriela",
+    "emailAddress": "gabrielar@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "37",
+    "lastName": "Raţă",
+    "firstName": "Mihai",
+    "emailAddress": "mihair@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "39",
+    "lastName": "Barbă",
+    "firstName": "Neculai",
+    "emailAddress": "barba@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "41",
+    "lastName": "Ungureanu",
+    "firstName": "Constantin",
+    "emailAddress": "costel@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "410",
+    "lastName": "Rotaru",
+    "firstName": "Aurelian",
+    "emailAddress": "rotaru@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "414",
+    "lastName": "Geman",
+    "firstName": "Oana",
+    "emailAddress": "oana.geman@usm.ro",
+    "phoneNumber": "0754212277",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "42",
+    "lastName": "Lupu",
+    "firstName": "Elena-Daniela",
+    "emailAddress": "elena.lupu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "43",
+    "lastName": "Afanasov",
+    "firstName": "Ciprian",
+    "emailAddress": "aciprian@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "543",
+    "lastName": "Petrariu",
+    "firstName": "Adrian-Ioan",
+    "emailAddress": "apetrariu@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "546",
+    "lastName": "Nitan",
+    "firstName": "Ilie",
+    "emailAddress": "ilie.nitan@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "551",
+    "lastName": "Gherman",
+    "firstName": "Ovidiu",
+    "emailAddress": "ovidiug@eed.usv.ro",
+    "phoneNumber": "0771143021",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "552",
+    "lastName": "Vlad",
+    "firstName": "Valentin",
+    "emailAddress": "vladv@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "602",
+    "lastName": "Prelipceanu",
+    "firstName": "Marius",
+    "emailAddress": "marius.prelipceanu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "610",
+    "lastName": "Prodan",
+    "firstName": "Cristina",
+    "emailAddress": "cristinap@eed.usv.ro",
+    "phoneNumber": "0744622362",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Electrotehnică"
+  },
+  {
+    "id": "628",
+    "lastName": "Lavric",
+    "firstName": "Alexandru",
+    "emailAddress": "lavric@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "63",
+    "lastName": "Turcu",
+    "firstName": "Cristina Elena",
+    "emailAddress": "cristina@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "64",
+    "lastName": "Găitan",
+    "firstName": "Vasile Gheorghiţă",
+    "emailAddress": "gaitan@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "660",
+    "lastName": "Sofian Boca",
+    "firstName": "Floarea Nicoleta",
+    "emailAddress": "nicolesof@yahoo.com",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "67",
+    "lastName": "Pentiuc",
+    "firstName": "Ştefan Gheorghe",
+    "emailAddress": "pentiuc@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "68",
+    "lastName": "Bărîlă",
+    "firstName": "Adina Luminiţa",
+    "emailAddress": "adina@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "70",
+    "lastName": "Danubianu",
+    "firstName": "Mirela",
+    "emailAddress": "mdanub@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "723",
+    "lastName": "Schipor",
+    "firstName": "Ovidiu-Andrei",
+    "emailAddress": "oschipor@gmail.com",
+    "phoneNumber": "0744757911",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "73",
+    "lastName": "Prodan",
+    "firstName": "Remus",
+    "emailAddress": "remus.prodan@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "75",
+    "lastName": "Tanase",
+    "firstName": "Cristian Andy",
+    "emailAddress": "andy.tanase@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "752",
+    "lastName": "Ciobanu",
+    "firstName": "Elena-Eugenia",
+    "emailAddress": "neli.ciobanu@eed.usv.ro",
+    "phoneNumber": "0744642481",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "783",
+    "lastName": "Diaconu",
+    "firstName": "Andrei",
+    "emailAddress": "andrei.diaconu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "79",
+    "lastName": "Vatavu",
+    "firstName": "Radu",
+    "emailAddress": "vatavu@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "808",
+    "lastName": "Rusu",
+    "firstName": "Ionela",
+    "emailAddress": "ionela.rusu@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "809",
+    "lastName": "Zagan",
+    "firstName": "Ionel",
+    "emailAddress": "zagan@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "82",
+    "lastName": "Gîză-Belciug",
+    "firstName": "Felicia",
+    "emailAddress": "felicia@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "866",
+    "lastName": "Smolenic",
+    "firstName": "Elisabeta",
+    "emailAddress": "elisabetat@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "877",
+    "lastName": "Tcaciuc",
+    "firstName": "Simona-Anda",
+    "emailAddress": "tcaciuc.anda@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "918",
+    "lastName": "Curelaru",
+    "firstName": "Elena",
+    "emailAddress": "elena@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "946",
+    "lastName": "Toderean",
+    "firstName": "Roxana",
+    "emailAddress": "roxana.toderean@usm.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  },
+  {
+    "id": "952",
+    "lastName": "Gheran",
+    "firstName": "Bogdan",
+    "emailAddress": "bogdan.gheran@usm.ro",
+    "phoneNumber": "0741023252",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare"
+  },
+  {
+    "id": "973",
+    "lastName": "Căilean",
+    "firstName": "Alin-Mihai",
+    "emailAddress": "alinc@eed.usv.ro",
+    "phoneNumber": "",
+    "facultyName": "Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor",
+    "departmentName": "Calculatoare, Electronică şi Automatică"
+  }
+]
