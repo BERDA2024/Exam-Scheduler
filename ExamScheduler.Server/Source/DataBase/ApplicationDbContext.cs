@@ -1,4 +1,5 @@
 ﻿using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Domain.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -12,6 +13,7 @@ namespace ExamScheduler.Server.Source.DataBase
         public DbSet<Department> Department { get; set; } = default!;
         public DbSet<Faculty> Faculty { get; set; } = default!;
         public DbSet<Group> Group { get; set; } = default!;
+        public DbSet<GroupSubject> GroupSubject { get; set; } = default!;
         public DbSet<Professor> Professor { get; set; } = default!;
         public DbSet<RequestState> RequestState { get; set; } = default!;
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; } = default!;
@@ -26,6 +28,13 @@ namespace ExamScheduler.Server.Source.DataBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            foreach( var state  in Enum.GetValues<RequestStates>())
+            {
+                modelBuilder.Entity<RequestState>().HasData(
+                    new RequestState { Id = (int)state, State = state.ToString() }
+                );
+            }
         }
     }
 }

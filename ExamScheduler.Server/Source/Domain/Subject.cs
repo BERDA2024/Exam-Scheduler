@@ -9,6 +9,14 @@ namespace ExamScheduler.Server.Source.Domain
         public int Id { get; set; }
 
         [Required]
+        [StringLength(100)]
+        public required string LongName { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public required string ShortName { get; set; }
+
+        [Required]
         [ForeignKey("Professor")]
         public required int ProfessorID { get; set; }
 

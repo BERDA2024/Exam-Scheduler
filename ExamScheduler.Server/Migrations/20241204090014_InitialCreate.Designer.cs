@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241127121558_InitialCreate")]
+    [Migration("20241204090014_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -86,7 +86,7 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LongName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -153,6 +153,25 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("Group");
                 });
 
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.GroupSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupSubject");
+                });
+
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Professor", b =>
                 {
                     b.Property<int>("Id")
@@ -189,6 +208,23 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RequestState");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            State = "Pending"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            State = "Accepted"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            State = "Declined"
+                        });
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>
@@ -278,8 +314,18 @@ namespace ExamScheduler.Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("LongName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int>("ProfessorID")
                         .HasColumnType("int");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
