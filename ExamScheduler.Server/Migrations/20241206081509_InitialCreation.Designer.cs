@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241204090014_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241206081509_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,11 +142,6 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<int>("StudyYear")
                         .HasColumnType("int");
-
-                    b.Property<string>("SubgroupIndex")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
 
                     b.HasKey("Id");
 
@@ -283,7 +278,7 @@ namespace ExamScheduler.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("GroupID")
+                    b.Property<int?>("SubgroupID")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")

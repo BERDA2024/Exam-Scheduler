@@ -8,6 +8,7 @@ namespace ExamScheduler.Server.Source.Domain
         [Key]
         public int Id { get; set; }
 
+        [Required]
         [ForeignKey("Department")]
         public required int DepartmentId { get; set; }
 
@@ -16,9 +17,6 @@ namespace ExamScheduler.Server.Source.Domain
         public required string GroupName { get; set; }
 
         [Required]
-        [StringLength(1)]
-        public required string SubgroupIndex { get; set; }
-
         public required int StudyYear { get; set; }
     }
 }

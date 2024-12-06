@@ -140,11 +140,6 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int>("StudyYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubgroupIndex")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Group");
@@ -280,7 +275,7 @@ namespace ExamScheduler.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("GroupID")
+                    b.Property<int?>("SubgroupID")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")

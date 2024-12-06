@@ -8,6 +8,7 @@ namespace ExamScheduler.Server.Source.Domain
         [Key]
         public int Id { get; set; }
 
+        [Required]
         [ForeignKey("User")]
         public required string UserId { get; set; }
 

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ExamScheduler.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -122,7 +122,6 @@ namespace ExamScheduler.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     GroupName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    SubgroupIndex = table.Column<string>(type: "nvarchar(1)", maxLength: 1, nullable: false),
                     StudyYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -209,7 +208,7 @@ namespace ExamScheduler.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false)
+                    SubgroupID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

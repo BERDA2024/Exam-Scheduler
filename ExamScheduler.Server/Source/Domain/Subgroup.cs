@@ -3,17 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExamScheduler.Server.Source.Domain
 {
-    public class GroupSubject
+    public class Subgroup
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("Subject")]
-        public int SubjectID { get; set; }
+        [ForeignKey("Group")]
+        public required int GroupId { get; set; }
 
         [Required]
-        [ForeignKey("Group")]
-        public int GroupID { get; set; }
+        [StringLength(1)]
+        public required string SubgroupIndex { get; set; }
     }
 }

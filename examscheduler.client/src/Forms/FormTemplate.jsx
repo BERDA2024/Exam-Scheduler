@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
 import { getURL } from '../Utils/URLUtils';
-import "./FormStyles.css";
+import "./FormStyles.css"; // importati stilizarile de form generice
 
-const UserForm = ({ user, onClose, onRefresh }) => {
-    const [userDetails, setUserDetails] = useState(user ? user : { id: '', email: '', lastName: '', firstName: '', role: '' });
+// formul primeste un parametru model, practic puteti face ca sa transmiteti un obiect model ca sa editati cu form-ul sau daca nu timiteti un obiect, formul devine unul de adaugare
+const FormTemplate = ({ model, onClose, onRefresh }) => {
+    const [modelDetails, setModelDetails] = useState(model ? model : { modelParameter1: '', modelParameter2: '' }); // modificati parametrii modelului dupa cum vreti voi.
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const authHeader = getAuthHeader();
-    const address = getURL();
+    const PostURL = getURL() + 'api/Controller/action'; // aici modificati string-ul cu api de post
+    const PutURL = getURL() + 'api/Controller/action'; // aici modificati string-ul cu api de put
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setSuccessMessage('');
         setErrorMessage('');
-
-        setUserDetails((userDetails) => ({
-            ...userDetails,
+        setModelDetails((modelDetails) => ({
+            ...modelDetails,
             [name]: value
         }));
     };
@@ -28,16 +29,16 @@ const UserForm = ({ user, onClose, onRefresh }) => {
         setErrorMessage('');
         setSuccessMessage('');
 
+        // verifica daca userul este autentificat. daca nu e nevoide pt api, puteti scoate if-ul asta. lafel scoateti si din headers "...authHeader".
         if (authHeader) {
-            const response = await fetch(address + `api/Admin/` + (user ? `edit` : ``), {
+            // fetch in functie de ce e, edit sau adaugare.
+            const response = await fetch((user ? PutURL : PostURL), {
                 method: (user ? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    Id: userDetails.id,
-                    Email: userDetails.email,
-                    FirstName: userDetails.firstName,
-                    LastName: userDetails.lastName,
-                    Role: userDetails.role
+                    ModelParameter1: modelDetails.modelParameter1, // aici ModelParameter trebuie sa fie exact ca in clasa .cs model
+                    ModelParameter2: modelDetails.modelParameter2 // aici ModelParameter trebuie sa fie exact ca in clasa .cs model
+                    // alti parametrii daca mai sunt
                 }),
             });
 
@@ -58,7 +59,6 @@ const UserForm = ({ user, onClose, onRefresh }) => {
             }
             else {
                 setErrorMessage(result.message);
-                console.error('Failed to change');
             }
         }
     };
@@ -67,51 +67,27 @@ const UserForm = ({ user, onClose, onRefresh }) => {
         <div className="form-container">
             <div className="form">
                 <form onSubmit={handleSubmit}>
+                    {/* aici afiseaza parametrul asta doar daca userul este null. asa puteti ascunde/afisa parametrii cand vreti voi de ex asta e parametru pt form de adaugare*/}
                     {!user && (
-                        <div className= "form-input-div">
-                            <label>Email:</label>
+                        <div className="form-input-div">
+                            <label>Parameter1:</label>
                             <input
-                                type="email"
-                                name="email"
-                                value={userDetails.email}
+                                type="text"
+                                name="modelParameter1"{/* asta trebuie sa fie exact lafel ca in parametrul din model, altfel nu editeaza valoarea*/}
+                                value={modelDetails.modelParameter1}
                                 onChange={handleChange}
                             />
                         </div>
                     )}
-
+                    {/* Se afiseaza parametrul asta chiar daca este form de editare sau adaugare*/}
                     <div className="form-input-div">
-                        <label>First Name:</label>
+                        <label>Parameter2:</label>
                         <input
                             type="text"
-                            name="firstName"
-                            value={userDetails.firstName}
+                            name="modelParameter2"
+                            value={modelDetails.modelParameter2}
                             onChange={handleChange}
                         />
-                    </div>
-
-                    <div className="form-input-div">
-                        <label>Last Name:</label>
-                        <input
-                            type="text"
-                            name="lastName"
-                            value={userDetails.lastName}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="form-input-div">
-                        <label>Role:</label>
-                        <select
-                            name="role"
-                            value={userDetails.role}
-                            onChange={handleChange} required>
-                            <option value=''>None</option>
-                            <option value="Secretary">Secretary</option>
-                            <option value="Professor">Professor</option>
-                            <option value="DepartmentHead">Department Head</option>
-                            <option value="Student">Student</option>
-                            <option value="StudentGroupLeader">Student Group Leader</option>
-                        </select>
                     </div>
 
                     {/* Display success message */}
@@ -121,7 +97,7 @@ const UserForm = ({ user, onClose, onRefresh }) => {
                     {errorMessage && <div className="message message-error">{errorMessage}</div>}
 
                     <div className="form-buttons">
-                        <button type="submit">{user ? "Update" : "Add"} User</button>
+                        <button type="submit">{user ? "Update" : "Add"} Model</button>
                         <button type="button" onClick={onClose}>
                             Cancel
                         </button>
@@ -132,4 +108,4 @@ const UserForm = ({ user, onClose, onRefresh }) => {
     );
 };
 
-export default UserForm;
+export default FormTemplate;
