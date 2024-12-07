@@ -1,5 +1,6 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExamScheduler.Server.Source.Services
@@ -13,72 +14,103 @@ namespace ExamScheduler.Server.Source.Services
             _context = context;
         }
 
-        public async Task<List<ScheduleRequest>> GetAllScheduleRequestsAsync()
+        // GET: To retrieve all schedule requests
+        public async Task<IEnumerable<ScheduleRequestModel>> GetAllScheduleRequestsAsync()
         {
-            return await _context.ScheduleRequest
-                .Include(r => r.StudentID)
-                .Include(r => r.SubjectID)
-                .Include(r => r.ClassroomID)
-                .Include(r => r.RequestStateID)
+            var scheduleRequests = await _context.ScheduleRequest
+                .Select(sr => new ScheduleRequestModel
+                {
+                    Id = sr.Id,
+                    SubjectID = sr.SubjectID,
+                    StudentID = sr.StudentID,
+                    RequestStateID = sr.RequestStateID,
+                    ClassroomID = sr.ClassroomID,
+                    StartDate = sr.StartDate
+                })
                 .ToListAsync();
+
+            return scheduleRequests;
         }
 
-        public async Task<ScheduleRequest?> GetScheduleRequestByIdAsync(int id)
+        // GET: To retrieve a schedule request by ID
+        public async Task<ScheduleRequestModel> GetScheduleRequestByIdAsync(int id)
         {
-            return await _context.ScheduleRequest
-                .Include(r => r.StudentID)
-                .Include(r => r.SubjectID)
-                .Include(r => r.ClassroomID)
-                .Include(r => r.RequestStateID)
-                .FirstOrDefaultAsync(r => r.Id == id);
-        }
+            var scheduleRequest = await _context.ScheduleRequest.FindAsync(id);
 
-        public async Task<ScheduleRequest> CreateScheduleRequestAsync(ScheduleRequest request)
-        {
-            _context.ScheduleRequest.Add(request);
-            await _context.SaveChangesAsync();
-            return request;
-        }
-
-        public async Task<ScheduleRequest?> UpdateScheduleRequestAsync(int id, ScheduleRequest updatedRequest)
-        {
-            if (id != updatedRequest.Id)
+            if (scheduleRequest == null)
             {
-                return null; // ID mismatch
+                return null;
             }
 
-            var existingRequest = await _context.ScheduleRequest.FindAsync(id);
-            if (existingRequest == null)
+            var model = new ScheduleRequestModel
             {
-                return null; // Not found
-            }
+                Id = scheduleRequest.Id,
+                SubjectID = scheduleRequest.SubjectID,
+                StudentID = scheduleRequest.StudentID,
+                RequestStateID = scheduleRequest.RequestStateID,
+                ClassroomID = scheduleRequest.ClassroomID,
+                StartDate = scheduleRequest.StartDate
+            };
 
-            // Actualizează câmpurile necesare
-            existingRequest.StudentID = updatedRequest.StudentID;
-            existingRequest.SubjectID = updatedRequest.SubjectID;
-            existingRequest.ClassroomID = updatedRequest.ClassroomID;
-            existingRequest.RequestStateID = updatedRequest.RequestStateID;
-
-            await _context.SaveChangesAsync();
-            return existingRequest;
+            return model;
         }
 
-        public async Task<bool> DeleteScheduleRequestAsync(int id)
+        // POST: To create a new schedule request
+        public async Task<ScheduleRequestModel> CreateScheduleRequestAsync(ScheduleRequestModel model)
         {
-            var request = await _context.ScheduleRequest.FindAsync(id);
-            if (request == null)
+            var scheduleRequest = new ScheduleRequest
+            {
+                SubjectID = model.SubjectID,
+                StudentID = model.StudentID,
+                RequestStateID = model.RequestStateID,
+                ClassroomID = model.ClassroomID,
+                StartDate = model.StartDate
+            };
+
+            _context.ScheduleRequest.Add(scheduleRequest);
+            await _context.SaveChangesAsync();
+
+            model.Id = scheduleRequest.Id;
+
+            return model;
+        }
+
+        // PUT: To update an existing schedule request
+        public async Task<bool> UpdateScheduleRequestAsync(int id, ScheduleRequestModel model)
+        {
+            var scheduleRequest = await _context.ScheduleRequest.FindAsync(id);
+
+            if (scheduleRequest == null)
             {
                 return false;
             }
 
-            _context.ScheduleRequest.Remove(request);
+            scheduleRequest.SubjectID = model.SubjectID;
+            scheduleRequest.StudentID = model.StudentID;
+            scheduleRequest.RequestStateID = model.RequestStateID;
+            scheduleRequest.ClassroomID = model.ClassroomID;
+            scheduleRequest.StartDate = model.StartDate;
+
+            _context.ScheduleRequest.Update(scheduleRequest);
             await _context.SaveChangesAsync();
+
             return true;
         }
 
-        public bool ScheduleRequestExists(int id)
+        // DELETE: To delete a schedule request
+        public async Task<bool> DeleteScheduleRequestAsync(int id)
         {
-            return _context.ScheduleRequest.Any(e => e.Id == id);
+            var scheduleRequest = await _context.ScheduleRequest.FindAsync(id);
+
+            if (scheduleRequest == null)
+            {
+                return false;
+            }
+
+            _context.ScheduleRequest.Remove(scheduleRequest);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

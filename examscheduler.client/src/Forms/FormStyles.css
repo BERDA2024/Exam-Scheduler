@@ -1,0 +1,99 @@
+/* The container that holds the form */
+.form-container {
+    position: relative; /* Position relative to the parent container */
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto; /* Centers the container horizontally */
+}
+
+.form-input-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+}
+/* The form itself */
+.form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+    /* Basic form layout */
+    .form form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Styling for each input field */
+    .form label {
+        font-size: 1rem;
+        font-weight: bold;
+        width: 30%;
+    }
+
+    .form input, .form select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        width: 70%;
+    }
+
+    .form .form-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+        .form .form-buttons button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .form .form-buttons button[type="button"] {
+                background-color: #6c757d;
+            }
+
+            /* Button hover effects */
+            .form .form-buttons button:hover {
+                background-color: #0056b3;
+            }
+
+            .form .form-buttons button[type="button"]:hover {
+                background-color: #5a6268;
+            }
+
+
+/* Base styles for messages */
+.message {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    display: inline-block;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    margin: 0px;
+}
+
+/* Success message */
+.message-success {
+    color: #28a745; /* Green */
+}
+
+/* Error message */
+.message-error {
+    color: #dc3545; /* Red */
+}

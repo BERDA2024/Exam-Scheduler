@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
@@ -11,6 +11,26 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+    /*width: 100%;
+    height: 100%; */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    /*width: 100%;
+    height: 100%;*/
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Elimină derularea */
+    /*display: flex;*/
+}
+
 a {
     font-weight: 500;
     color: #646cff;
@@ -19,14 +39,6 @@ a {
 
 a:hover {
     color: #535bf2;
-}
-
-body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
 }
 
 h1 {
@@ -46,14 +58,13 @@ button {
     transition: border-color 0.25s;
 }
 
-    button:hover {
-        border-color: #646cff;
-    }
+button:hover {
+    border-color: #646cff;
+}
 
-    button:focus,
-    button:focus-visible {
-        outline: 4px auto -webkit-focus-ring-color;
-    }
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
 
 @media (prefers-color-scheme: light) {
     :root {
@@ -100,7 +111,12 @@ button {
     margin-bottom: 10px;
 }
 
-.dashboard {
-    padding: 20px;
-    text-align: center;
+@media (max-width: 768px) {
+    main .sidebar {
+        width: 30%; /* Expand sidebar width */
+    }
+
+    header nav {
+        flex-direction: column; /* Stack navigation links vertically */
+    }
 }

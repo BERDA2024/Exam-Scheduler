@@ -1,26 +1,25 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AvailabilityController : ControllerBase
+    public class AvailabilityController(ApplicationDbContext context, UserManager<User> userManager) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public AvailabilityController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly ApplicationDbContext _context = context;
 
         [HttpGet]
         public async Task<IActionResult> GetAllAvailabilities()
         {
             var availabilities = await _context.Availability
-                .Include(a => a.ProfessorID)
                 .ToListAsync();
 
             return Ok(availabilities);
@@ -30,7 +29,6 @@ namespace ExamScheduler.Server.Controllers
         public async Task<IActionResult> GetAvailabilityById(int id)
         {
             var availability = await _context.Availability
-                .Include(a => a.ProfessorID)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (availability == null)
@@ -41,22 +39,45 @@ namespace ExamScheduler.Server.Controllers
             return Ok(availability);
         }
 
+        [Authorize(Roles = "Admin,Professor")]
         [HttpPost]
-        public async Task<IActionResult> CreateAvailability([FromBody] Availability availability)
+        public async Task<IActionResult> CreateAvailability([FromBody] AvailabilityModel request)
         {
-            _context.Availability.Add(availability);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAvailabilityById), new { id = availability.Id }, availability);
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+                if (userId == null || request == null)
+                {
+                    return Unauthorized(new { message = "Not connected or bad request." });
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return Unauthorized(new { message = "User is not found" });
+                }
+
+                //var professor = await _context.Professor.FirstOrDefaultAsync(a => a.UserId == userId);
+
+                //if (professor == null) return Unauthorized(new { message = "Professor not found." });
+
+                var availability = new Availability() { ProfessorID = 0, StartDate = request.StartDate, EndDate = request.EndDate };
+                _context.Availability.Add(availability);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetAvailabilityById), new { id = availability.Id }, availability);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("SomeError: " + ex.Message);
+            }
         }
 
+        [Authorize(Roles = "Admin,Professor")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAvailability(int id, [FromBody] Availability availability)
+        public async Task<IActionResult> UpdateAvailability(int id, [FromBody] AvailabilityModel availability)
         {
-            if (id != availability.Id)
-            {
-                return BadRequest(new { message = "ID mismatch" });
-            }
-
             _context.Entry(availability).State = EntityState.Modified;
 
             try
@@ -75,6 +96,7 @@ namespace ExamScheduler.Server.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Professor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAvailability(int id)
         {

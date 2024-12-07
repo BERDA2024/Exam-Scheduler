@@ -1,9 +1,10 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExamScheduler.Server.Controllers
+namespace ExamScheduler.Server.Source.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -16,82 +17,109 @@ namespace ExamScheduler.Server.Controllers
             _context = context;
         }
 
+        // GET: api/Student
         [HttpGet]
-        public async Task<IActionResult> GetAllStudents()
+        public async Task<ActionResult<IEnumerable<StudentModel>>> GetStudents()
         {
             var students = await _context.Student
-                .Include(s => s.GroupID)
+                .Select(s => new StudentModel
+                {
+                    Id = s.Id,
+                    UserId = s.UserId,
+                    SubgroupID = s.SubgroupID
+                })
                 .ToListAsync();
 
             return Ok(students);
         }
 
+        // GET: api/Student/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetStudentById(int id)
+        public async Task<ActionResult<StudentModel>> GetStudent(int id)
         {
-            var student = await _context.Student
-                .Include(s => s.GroupID)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var student = await _context.Student.FindAsync(id);
 
             if (student == null)
             {
-                return NotFound(new { message = "Student not found" });
+                return NotFound();
             }
 
-            return Ok(student);
+            var studentModel = new StudentModel
+            {
+                Id = student.Id,
+                UserId = student.UserId,
+                SubgroupID = student.SubgroupID
+            };
+
+            return Ok(studentModel);
         }
 
+        // POST: api/Student
         [HttpPost]
-        public async Task<IActionResult> CreateStudent([FromBody] Student student)
+        public async Task<ActionResult<StudentModel>> CreateStudent(StudentModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var student = new Student
+            {
+                UserId = model.UserId,
+                SubgroupID = model.SubgroupID
+            };
+
             _context.Student.Add(student);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+
+            model.Id = student.Id;
+
+            return CreatedAtAction(nameof(GetStudent), new { id = student.Id }, model);
         }
 
+        // PUT: api/Student/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(int id, [FromBody] Student student)
+        public async Task<IActionResult> UpdateStudent(int id, StudentModel model)
         {
-            if (id != student.Id)
+            if (id != model.Id)
             {
-                return BadRequest(new { message = "ID mismatch" });
+                return BadRequest("ID mismatch.");
             }
 
-            _context.Entry(student).State = EntityState.Modified;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            try
+            var student = await _context.Student.FindAsync(id);
+            if (student == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentExists(id))
-                {
-                    return NotFound(new { message = "Student not found" });
-                }
-                throw;
-            }
+
+            student.UserId = model.UserId;
+            student.SubgroupID = model.SubgroupID;
+
+            _context.Student.Update(student);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
+        // DELETE: api/Student/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
             var student = await _context.Student.FindAsync(id);
             if (student == null)
             {
-                return NotFound(new { message = "Student not found" });
+                return NotFound();
             }
 
             _context.Student.Remove(student);
             await _context.SaveChangesAsync();
-            return NoContent();
-        }
 
-        private bool StudentExists(int id)
-        {
-            return _context.Student.Any(e => e.Id == id);
+            return NoContent();
         }
     }
 }

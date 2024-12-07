@@ -1,0 +1,109 @@
+﻿/* Container principal */
+.container {
+    display: flex; /* Activează grid-ul */
+    height: 100vh;
+}
+
+/* Secțiunea login */
+.left-section {
+    grid-column: span 2; /* Ocupă 2 coloane */
+    height: 100%; /* Extinde secțiunea pe întreaga înălțime */
+    background-color: #abcdef; /* Fundal deschis */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+
+    /* Conținut login */
+.left-section h1 {
+    font-size: 2.5rem;
+    color: #3b5998;
+    margin-top: auto;
+    text-align: center;
+    display: center;
+    color: white;
+    font-family: 'Times New Roman', serif;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.left-section form {
+    margin-top: 20px;
+    height: 80%;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.left-section input {
+    width: 100%; /* Lățimea input-urilor */
+    max-height: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* Colțuri rotunjite */
+    font-size: 1rem;
+    text-align: center; /* Aliniază textul în mijloc */
+    margin: 10px;
+    background-color: white;
+    color: #333;
+    text-align: left;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.left-section .login-btn {
+    background-color: #508dc5;
+    max-height: 100px;
+    max-width: 60%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 2.5px;
+    font-size: 1.7rem;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 15px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.left-section .signup-btn {
+    max-height: 100px;
+    max-width: 60%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 2.5px;
+    font-size: 1.7rem;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 15px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.left-section .login-btn {
+    font-family: 'Times New Roman', serif;
+    background-color: #3b5998;
+    color: white;
+    font-weight: bold;
+}
+
+.left-section .login-btn:hover {
+    background-color: #608BC1;
+}
+
+.left-section .signup-btn {
+    font-family: 'Times New Roman', serif;
+    background-color: #e69500;
+    color: white;
+    font-weight: bold;
+}
+
+.left-section .signup-btn:hover {
+    background-color: #FF9D3D;
+}
+
+/* Secțiunea imagine */
+.right-section {
+    width: -webkit-fill-available;
+}

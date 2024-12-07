@@ -1,9 +1,10 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExamScheduler.Server.Controllers
+namespace ExamScheduler.Server.Source.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -16,99 +17,113 @@ namespace ExamScheduler.Server.Controllers
             _context = context;
         }
 
-        // GET: api/group
+        // GET: api/Group
         [HttpGet]
-        public async Task<IActionResult> GetAllGroups()
+        public async Task<ActionResult<IEnumerable<GroupModel>>> GetGroups()
         {
-            var groups = await _context.Group.ToListAsync();
+            var groups = await _context.Group
+                .Select(g => new GroupModel
+                {
+                    Id = g.Id,
+                    DepartmentId = g.DepartmentId,
+                    GroupName = g.GroupName,
+                    StudyYear = g.StudyYear
+                })
+                .ToListAsync();
+
             return Ok(groups);
         }
 
-        // GET: api/group/{id}
+        // GET: api/Group/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetGroupById(int id)
+        public async Task<ActionResult<GroupModel>> GetGroup(int id)
         {
             var group = await _context.Group.FindAsync(id);
 
             if (group == null)
             {
-                return NotFound(new { message = "Group not found" });
+                return NotFound();
             }
 
-            return Ok(group);
+            var groupModel = new GroupModel
+            {
+                Id = group.Id,
+                DepartmentId = group.DepartmentId,
+                GroupName = group.GroupName,
+                StudyYear = group.StudyYear
+            };
+
+            return Ok(groupModel);
         }
 
-        // POST: api/group
+        // POST: api/Group
         [HttpPost]
-        public async Task<IActionResult> CreateGroup([FromBody] Group group)
+        public async Task<ActionResult<GroupModel>> CreateGroup(GroupModel model)
         {
-            if (group == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid group data" });
+                return BadRequest(ModelState);
             }
+
+            var group = new Group
+            {
+                DepartmentId = model.DepartmentId,
+                GroupName = model.GroupName,
+                StudyYear = model.StudyYear
+            };
 
             _context.Group.Add(group);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetGroupById), new { id = group.Id }, group);
+            model.Id = group.Id;
+
+            return CreatedAtAction(nameof(GetGroup), new { id = group.Id }, model);
         }
 
-        // PUT: api/group/{id}
+        // PUT: api/Group/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateGroup(int id, [FromBody] Group updatedGroup)
+        public async Task<IActionResult> UpdateGroup(int id, GroupModel model)
         {
-            if (id != updatedGroup.Id)
+            if (id != model.Id)
             {
-                return BadRequest(new { message = "ID mismatch" });
+                return BadRequest("ID mismatch.");
             }
 
-            var existingGroup = await _context.Group.FindAsync(id);
-
-            if (existingGroup == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound(new { message = "Group not found" });
+                return BadRequest(ModelState);
             }
 
-            // Update group properties
-            existingGroup.GroupName = updatedGroup.GroupName;
-            existingGroup.StudyYear = updatedGroup.StudyYear;
+            var group = await _context.Group.FindAsync(id);
+            if (group == null)
+            {
+                return NotFound();
+            }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GroupExists(id))
-                {
-                    return NotFound(new { message = "Group not found" });
-                }
-                throw;
-            }
+            group.DepartmentId = model.DepartmentId;
+            group.GroupName = model.GroupName;
+            group.StudyYear = model.StudyYear;
+
+            _context.Group.Update(group);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // DELETE: api/group/{id}
+        // DELETE: api/Group/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGroup(int id)
         {
             var group = await _context.Group.FindAsync(id);
-
             if (group == null)
             {
-                return NotFound(new { message = "Group not found" });
+                return NotFound();
             }
 
             _context.Group.Remove(group);
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool GroupExists(int id)
-        {
-            return _context.Group.Any(g => g.Id == id);
         }
     }
 }

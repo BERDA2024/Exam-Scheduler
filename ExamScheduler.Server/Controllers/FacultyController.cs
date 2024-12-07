@@ -1,9 +1,10 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExamScheduler.Server.Controllers
+namespace ExamScheduler.Server.Source.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -16,75 +17,109 @@ namespace ExamScheduler.Server.Controllers
             _context = context;
         }
 
+        // GET: api/Faculty
         [HttpGet]
-        public async Task<IActionResult> GetAllFaculties()
+        public async Task<ActionResult<IEnumerable<FacultyModel>>> GetFaculties()
         {
-            var faculties = await _context.Faculty.ToListAsync();
+            var faculties = await _context.Faculty
+                .Select(f => new FacultyModel
+                {
+                    Id = f.Id,
+                    ShortName = f.ShortName,
+                    LongName = f.LongName
+                })
+                .ToListAsync();
+
             return Ok(faculties);
         }
 
+        // GET: api/Faculty/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetFacultyById(int id)
+        public async Task<ActionResult<FacultyModel>> GetFaculty(int id)
         {
+            var faculty = await _context.Faculty.FindAsync(id);
+
+            if (faculty == null)
+            {
+                return NotFound();
+            }
+
+            var facultyModel = new FacultyModel
+            {
+                Id = faculty.Id,
+                ShortName = faculty.ShortName,
+                LongName = faculty.LongName
+            };
+
+            return Ok(facultyModel);
+        }
+
+        // POST: api/Faculty
+        [HttpPost]
+        public async Task<ActionResult<FacultyModel>> CreateFaculty(FacultyModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var faculty = new Faculty
+            {
+                ShortName = model.ShortName,
+                LongName = model.LongName
+            };
+
+            _context.Faculty.Add(faculty);
+            await _context.SaveChangesAsync();
+
+            model.Id = faculty.Id;
+
+            return CreatedAtAction(nameof(GetFaculty), new { id = faculty.Id }, model);
+        }
+
+        // PUT: api/Faculty/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFaculty(int id, FacultyModel model)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var faculty = await _context.Faculty.FindAsync(id);
             if (faculty == null)
             {
-                return NotFound(new { message = "Faculty not found" });
+                return NotFound();
             }
-            return Ok(faculty);
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateFaculty([FromBody] Faculty faculty)
-        {
-            _context.Faculty.Add(faculty);
+            faculty.ShortName = model.ShortName;
+            faculty.LongName = model.LongName;
+
+            _context.Faculty.Update(faculty);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetFacultyById), new { id = faculty.Id }, faculty);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFaculty(int id, [FromBody] Faculty faculty)
-        {
-            if (id != faculty.Id)
-            {
-                return BadRequest(new { message = "ID mismatch" });
-            }
-
-            _context.Entry(faculty).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FacultyExists(id))
-                {
-                    return NotFound(new { message = "Faculty not found" });
-                }
-                throw;
-            }
 
             return NoContent();
         }
 
+        // DELETE: api/Faculty/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFaculty(int id)
         {
             var faculty = await _context.Faculty.FindAsync(id);
             if (faculty == null)
             {
-                return NotFound(new { message = "Faculty not found" });
+                return NotFound();
             }
 
             _context.Faculty.Remove(faculty);
             await _context.SaveChangesAsync();
-            return NoContent();
-        }
 
-        private bool FacultyExists(int id)
-        {
-            return _context.Faculty.Any(e => e.Id == id);
+            return NoContent();
         }
     }
 }

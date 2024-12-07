@@ -8,10 +8,11 @@ namespace ExamScheduler.Server.Source.Domain
         [Key]
         public int Id { get; set; }
 
+        [Required]
         [ForeignKey("User")]
         public required string UserId { get; set; }
 
-        [ForeignKey("Group")]
-        public int GroupID { get; set; }
+        [ForeignKey("Subgroup")]
+        public int? SubgroupID { get; set; }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExamScheduler.Server.Controllers
+namespace ExamScheduler.Server.Source.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -16,75 +17,113 @@ namespace ExamScheduler.Server.Controllers
             _context = context;
         }
 
+        // GET: api/Classroom
         [HttpGet]
-        public async Task<IActionResult> GetAllClassrooms()
+        public async Task<ActionResult<IEnumerable<ClassroomModel>>> GetClassrooms()
         {
-            var classrooms = await _context.Classroom.ToListAsync();
+            var classrooms = await _context.Classroom
+                .Select(c => new ClassroomModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    ShortName = c.ShortName,
+                    BuildingName = c.BuildingName
+                })
+                .ToListAsync();
+
             return Ok(classrooms);
         }
 
+        // GET: api/Classroom/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetClassroomById(int id)
+        public async Task<ActionResult<ClassroomModel>> GetClassroom(int id)
         {
+            var classroom = await _context.Classroom.FindAsync(id);
+
+            if (classroom == null)
+            {
+                return NotFound();
+            }
+
+            var classroomModel = new ClassroomModel
+            {
+                Id = classroom.Id,
+                Name = classroom.Name,
+                ShortName = classroom.ShortName,
+                BuildingName = classroom.BuildingName
+            };
+
+            return Ok(classroomModel);
+        }
+
+        // POST: api/Classroom
+        [HttpPost]
+        public async Task<ActionResult<ClassroomModel>> CreateClassroom(ClassroomModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var classroom = new Classroom
+            {
+                Name = model.Name,
+                ShortName = model.ShortName,
+                BuildingName = model.BuildingName
+            };
+
+            _context.Classroom.Add(classroom);
+            await _context.SaveChangesAsync();
+
+            model.Id = classroom.Id;
+
+            return CreatedAtAction(nameof(GetClassroom), new { id = classroom.Id }, model);
+        }
+
+        // PUT: api/Classroom/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateClassroom(int id, ClassroomModel model)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var classroom = await _context.Classroom.FindAsync(id);
             if (classroom == null)
             {
-                return NotFound(new { message = "Classroom not found" });
+                return NotFound();
             }
-            return Ok(classroom);
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateClassroom([FromBody] Classroom classroom)
-        {
-            _context.Classroom.Add(classroom);
+            classroom.Name = model.Name;
+            classroom.ShortName = model.ShortName;
+            classroom.BuildingName = model.BuildingName;
+
+            _context.Classroom.Update(classroom);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetClassroomById), new { id = classroom.Id }, classroom);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateClassroom(int id, [FromBody] Classroom classroom)
-        {
-            if (id != classroom.Id)
-            {
-                return BadRequest(new { message = "ID mismatch" });
-            }
-
-            _context.Entry(classroom).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClassroomExists(id))
-                {
-                    return NotFound(new { message = "Classroom not found" });
-                }
-                throw;
-            }
 
             return NoContent();
         }
 
+        // DELETE: api/Classroom/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClassroom(int id)
         {
             var classroom = await _context.Classroom.FindAsync(id);
             if (classroom == null)
             {
-                return NotFound(new { message = "Classroom not found" });
+                return NotFound();
             }
 
             _context.Classroom.Remove(classroom);
             await _context.SaveChangesAsync();
-            return NoContent();
-        }
 
-        private bool ClassroomExists(int id)
-        {
-            return _context.Classroom.Any(e => e.Id == id);
+            return NoContent();
         }
     }
 }

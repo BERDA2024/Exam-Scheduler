@@ -83,7 +83,7 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LongName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -140,14 +140,28 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int>("StudyYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubgroupIndex")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Group");
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.GroupSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupSubject");
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Professor", b =>
@@ -186,29 +200,23 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RequestState");
-                });
 
-            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            State = "Pending"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            State = "Accepted"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            State = "Declined"
+                        });
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>
@@ -267,7 +275,7 @@ namespace ExamScheduler.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("GroupID")
+                    b.Property<int?>("SubgroupID")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -298,8 +306,18 @@ namespace ExamScheduler.Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("LongName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int>("ProfessorID")
                         .HasColumnType("int");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -357,9 +375,6 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("RoleID")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

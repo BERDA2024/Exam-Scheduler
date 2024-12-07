@@ -12,7 +12,10 @@ namespace ExamScheduler.Server.Source.Domain
         [ForeignKey("Professor")]
         public int ProfessorID { get; set; }
 
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        [Required]
+        public required DateTime StartDate { get; set; }
+
+        [Required]
+        public required DateTime EndDate { get; set; }
     }
 }

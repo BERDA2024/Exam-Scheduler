@@ -1,0 +1,89 @@
+﻿/* Container principal */
+.register-container {
+    display: flex; /* Activează grid-ul */
+    height: 100vh;
+}
+
+
+.left-section {
+    grid-column: span 2; /* Ocupă 2 coloane */
+    height: 100%; /* Extinde secțiunea pe întreaga înălțime */
+    background-color: #abcdef; /* Fundal deschis */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    .left-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: white; /* White text */
+    }
+
+    .left-section form {
+        margin-top: 20px;
+        height: 80%;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .left-section input {
+        width: 100%; /* Lățimea input-urilor */
+        max-height: 80px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 15px; /* Colțuri rotunjite */
+        font-size: 1rem;
+        text-align: center; /* Aliniază textul în mijloc */
+        margin: 10px;
+        background-color: white;
+        color: #333;
+        text-align: left;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+        .left-section input::placeholder {
+            color: #999; /* Placeholder color */
+        }
+
+    .left-section button {
+        max-height: 100px;
+        max-width: 60%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 2.5px;
+        font-size: 1.7rem;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 15px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+        .left-section button[type="submit"] {
+            background-color: #3b5998; /* Blue button */
+            color: white;
+        }
+
+            .left-section button[type="submit"]:hover {
+                background-color: #2d4373; /* Darker blue on hover */
+            }
+
+        /*.left-section button:not([type="submit"]) {
+            background-color: white;*/ /* White background */
+            /*color: black;
+            font-weight: bold;
+        }*/
+/*
+            .left-section button:not([type="submit"]):hover {
+                background-color: #f0f0f0;
+            }*/
+
+.right-section {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
