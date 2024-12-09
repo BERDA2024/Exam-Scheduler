@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241206081509_InitialCreation")]
+    [Migration("20241209174054_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -124,6 +124,26 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("Faculty");
                 });
 
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.FacultyAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("FacultyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FacultyAdmin");
+                });
+
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -177,6 +197,9 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -278,6 +301,9 @@ namespace ExamScheduler.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("FacultyId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SubgroupID")
                         .HasColumnType("int");
 
@@ -288,6 +314,27 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Student");
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Subgroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubgroupIndex")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subgroup");
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Subject", b =>

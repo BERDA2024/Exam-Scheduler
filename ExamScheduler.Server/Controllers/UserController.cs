@@ -125,5 +125,53 @@ namespace ExamScheduler.Server.Controllers
 
             return Ok(new { message = "User logged out successfully!" });
         }
+
+        [HttpGet("roleSelection")]
+        [Authorize]
+        public async Task<IActionResult> GetRolesBasedOnUserRole()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+            if (userId == null) return BadRequest(new { message = "User not found" });
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found" });
+
+            var userRole = await _userManager.GetRolesAsync(user); 
+
+            if (userRole == null || userRole.Count == 0) return BadRequest(new { message = "Not authorized" });
+
+            var availableRoles = new List<RoleType>();
+
+            if (userRole.Contains("Admin"))
+                availableRoles = [.. Enum.GetValues<RoleType>()];
+
+            if (userRole.Contains("FacultyAdmin"))
+            {
+                availableRoles =
+                [
+                    RoleType.Secretary,
+                    RoleType.Professor,
+                    RoleType.Student,
+                    RoleType.StudentGroupLeader
+                ];
+            }
+
+            if (userRole.Contains("Secretary"))
+            {
+                availableRoles =
+                [
+                    RoleType.Student,
+                    RoleType.StudentGroupLeader
+                ];
+            }
+
+            return Ok(availableRoles.Select(role => new
+            {
+                id = (int)role,
+                name = role.ToString()
+            }));
+        }
     }
 }

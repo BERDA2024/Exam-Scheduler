@@ -1,0 +1,36 @@
+/* Generic styles for table */
+.generic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+    .generic-table th,
+    .generic-table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .generic-table th {
+        background-color: #f4f4f4;
+    }
+
+    /* Action button styles */
+    .generic-table td button {
+        gap: 10px;
+        width: 50%;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+/* Utility styles */
+.generic-management {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}

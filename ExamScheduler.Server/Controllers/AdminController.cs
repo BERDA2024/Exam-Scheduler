@@ -7,23 +7,25 @@ using ExamScheduler.Server.Source.Services;
 using Microsoft.EntityFrameworkCore;
 using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Domain.Enums;
+using NuGet.Protocol.Plugins;
 
 namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AdminController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context, RoleManager<IdentityRole> roleManager) : ControllerBase
+    public class AdminController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context, RoleManager<IdentityRole> roleManager, RolesService userRoleService) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly JwtTokenService _jwtTokenService = jwtTokenService;
         private readonly ApplicationDbContext _context = context;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-
+        private readonly RolesService _userRoleService = userRoleService;
 
         // GET: api/Admin
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public IActionResult GetUsers()
         {
             try
             {
@@ -32,27 +34,142 @@ namespace ExamScheduler.Server.Controllers
                 var userModels = users.Select(user =>
                 {
                     var roles = _userManager.GetRolesAsync(user).Result;
+                    var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
+                    var facultyName = string.Empty;
+
+                    if (facultyId != null)
+                    {
+                        var faculty = _context.Faculty.FirstOrDefault(f => f.Id == facultyId);
+
+                        if (faculty != null) facultyName = faculty.ShortName;
+                    }
+
                     return new UserModel
                     {
                         Id = user.Id,
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
-                        Role = roles.FirstOrDefault() // Assumes a single role per user
+                        Role = roles.FirstOrDefault(), // Assumes a single role per user
+                        Faculty = facultyName
                     };
                 }).ToList();
 
                 //var results = await Task.WhenAll(userModels); // Resolve all tasks
                 return Ok(userModels);
             }
-            catch(Exception error)
+            catch (Exception error)
+            {
+                return BadRequest(new { message = error.ToString() });
+            }
+        }
+
+        // GET: api/Admin
+        [HttpGet("byRole")]
+        [Authorize(Roles = "Admin,FacultyAdmin,Secretary")]
+        public async Task<IActionResult> GetUsersByRole()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+                if (userId == null) return BadRequest(new { message = "User not found" });
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null) return BadRequest(new { message = "User not found" });
+
+                var userRole = await _userManager.GetRolesAsync(user);
+
+                if (userRole == null || userRole.Count == 0) return BadRequest(new { message = "Not authorized" });
+
+                var availableRoles = new List<RoleType>();
+
+                var currentUserFacultyId = await _userRoleService.GetFacultyIdByRole(user);
+
+                var currentFacultyName = string.Empty;
+
+                if (currentUserFacultyId != null)
+                {
+                    var faculty = _context.Faculty.FirstOrDefault(f => f.Id == currentUserFacultyId);
+
+                    if (faculty != null) currentFacultyName = faculty.ShortName;
+                }
+
+                if (userRole.Contains("Admin"))
+                {
+                    availableRoles =
+                    [
+                        RoleType.FacultyAdmin,
+                        RoleType.Secretary,
+                        RoleType.Professor,
+                        RoleType.Student,
+                        RoleType.StudentGroupLeader
+                    ];
+                }
+
+                if (userRole.Contains("FacultyAdmin"))
+                {
+                    availableRoles =
+                    [
+                        RoleType.Secretary,
+                        RoleType.Professor,
+                        RoleType.Student,
+                        RoleType.StudentGroupLeader
+                    ];
+                }
+
+                if (userRole.Contains("Secretary"))
+                {
+                    availableRoles =
+                    [
+                        RoleType.Student,
+                        RoleType.StudentGroupLeader
+                    ];
+                }
+
+                var users = _userManager.Users.ToList();
+
+                var userModels = users.Select(user =>
+                {
+                    var roles = _userManager.GetRolesAsync(user).Result;
+                    var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
+                    var facultyName = string.Empty;
+
+                    if (facultyId != null)
+                    {
+                        var faculty = _context.Faculty.FirstOrDefault(f => f.Id == facultyId);
+
+                        if (faculty != null) facultyName = faculty.ShortName;
+                    }
+
+                    return new UserModel
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Role = roles.FirstOrDefault(), // Assumes a single role per user
+                        Faculty = facultyName
+                    };
+                })
+                .Where(userModel => (availableRoles
+                    .Select(role => Enum.GetName(role))
+                    .Contains(userModel.Role)
+                    || string.IsNullOrEmpty(userModel.Role)) && ((!userRole.Contains("Admin") && userModel.Faculty == currentFacultyName) || userRole.Contains("Admin")))
+                .ToList();
+
+                //var results = await Task.WhenAll(userModels); // Resolve all tasks
+                return Ok(userModels);
+            }
+            catch (Exception error)
             {
                 return BadRequest(new { message = error.ToString() });
             }
         }
 
         // POST: api/Admin
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpPost]
         public async Task<IActionResult> AddUser([FromBody] UserModel model)
         {
@@ -83,8 +200,9 @@ namespace ExamScheduler.Server.Controllers
 
             return Ok(new { message = "User added successfully." });
         }
+
         // PUT: api/Admin/edit
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,FacultyAdmin,Secretary")]
         [HttpPut("edit")]
         public async Task<IActionResult> UpdateUser([FromBody] UserModel model)
         {
@@ -94,43 +212,51 @@ namespace ExamScheduler.Server.Controllers
             }
 
             // Find the user by Id
-            var user = await _userManager.FindByIdAsync(model.Id);
-            if (user == null)
+            var selectedUser = await _userManager.FindByIdAsync(model.Id);
+            if (selectedUser == null)
             {
                 return NotFound(new { message = "User not found." });
             }
 
-            user.UserName = model.Email;
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
+            var activeUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
 
-            if (!string.IsNullOrEmpty(model.Role) && model.Role != "Admin")
+            if (activeUserId == null) return BadRequest(new { message = "User not found" });
+
+            var activeUser = await _userManager.FindByIdAsync(activeUserId);
+
+            if (activeUser == null) return BadRequest(new { message = "User not found" });
+
+            var activeUserRole = await _userManager.GetRolesAsync(activeUser);
+
+            var userRoles = await _userManager.GetRolesAsync(selectedUser);
+            var currentSelecterUserRole = userRoles.FirstOrDefault();
+
+            if (currentSelecterUserRole != null && currentSelecterUserRole != model.Role)
             {
-                var currentRoles = await _userManager.GetRolesAsync(user);
-                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                var faculty = await _context.Faculty.FirstOrDefaultAsync(x => x.ShortName == model.Faculty);
 
-                if (await _roleManager.RoleExistsAsync(model.Role))
-                {
-                    await _userManager.AddToRoleAsync(user, model.Role);
-                }
-                else
-                {
-                    return BadRequest(new { message = "Role does not exist." });
-                }
+                await _userRoleService.ChangeUserRole(selectedUser, model.Role, faculty?.Id);
             }
 
-            // Save the changes
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded)
+            if (activeUserRole.Contains(RoleType.Admin.ToString()))
             {
-                return BadRequest(new { message = "Failed to update user data." });
+                var faculty = await _context.Faculty.FirstOrDefaultAsync(x => x.ShortName == model.Faculty);
+
+                await _userRoleService.ChangeUserFaculty(selectedUser, faculty?.Id);
             }
+
+            selectedUser.UserName = model.Email;
+            selectedUser.FirstName = model.FirstName;
+            selectedUser.LastName = model.LastName;
+            var updateResult = await _userManager.UpdateAsync(selectedUser);
+
+            if (!updateResult.Succeeded) return BadRequest(new { message = "Failed to update user data." });
 
             return Ok(new { message = "User data updated successfully." });
         }
 
         // DELETE: api/Admin/{id}
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,FacultyManager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -156,11 +282,84 @@ namespace ExamScheduler.Server.Controllers
 
                 return BadRequest(new { message = result.Errors.ToString() });
             }
-            catch(Exception error)
+            catch (Exception error)
             {
                 return BadRequest(new { message = error.ToString() });
             }
         }
 
+        // GET: api/Admin/faculties
+        [HttpGet("faculties")]
+        public async Task<IActionResult> GetFaculties()
+        {
+            try
+            {
+                var faculties = await _context.Faculty.ToListAsync();
+
+                return Ok(faculties);
+            }
+            catch (Exception error)
+            {
+                return BadRequest(new { message = error.ToString() });
+            }
+        }
+
+        // DELETE: api/Admin/faculties/{id}
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("faculties/{id}")]
+        public async Task<IActionResult> DeleteFaculty(int id)
+        {
+            try
+            {
+                var faculty = await _context.Faculty.FindAsync(id);
+
+                if (faculty == null)
+                {
+                    return NotFound(new { message = "Not found" });
+                }
+
+                _context.Faculty.Remove(faculty);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Faculty deleted successfully." });
+            }
+            catch (Exception error)
+            {
+                return BadRequest(new { message = error.ToString() });
+            }
+        }
+
+        // POST: api/Admin/faculties
+        [Authorize(Roles = "Admin")]
+        [HttpPost("faculties")]
+        public async Task<IActionResult> AddFaculty([FromBody] Faculty model)
+        {
+            if (model == null)
+            {
+                return BadRequest(new { message = "Faculty cannot be null." });
+            }
+
+            _context.Faculty.Add(model);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Successfully added." });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("faculties/edit")]
+        public async Task<IActionResult> EditFaculty([FromBody] Faculty updatedFaculty)
+        {
+            var existingFaculty = await _context.Faculty.FindAsync(updatedFaculty.Id);
+
+            if (existingFaculty == null) return NotFound(new { message = "Faculty not found." });
+
+            existingFaculty.ShortName = updatedFaculty.ShortName;
+            existingFaculty.LongName = updatedFaculty.LongName;
+
+            _context.Faculty.Update(existingFaculty);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Successfully changed." });
+        }
     }
 }

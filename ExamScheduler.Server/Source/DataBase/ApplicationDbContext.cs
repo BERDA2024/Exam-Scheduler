@@ -14,11 +14,13 @@ namespace ExamScheduler.Server.Source.DataBase
         public DbSet<Classroom> Classroom { get; set; } = default!;
         public DbSet<Department> Department { get; set; } = default!;
         public DbSet<Faculty> Faculty { get; set; } = default!;
+        public DbSet<FacultyAdmin> FacultyAdmin { get; set; } = default!;
         public DbSet<Group> Group { get; set; } = default!;
         public DbSet<GroupSubject> GroupSubject { get; set; } = default!;
         public DbSet<Professor> Professor { get; set; } = default!;
         public DbSet<RequestState> RequestState { get; set; } = default!;
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; } = default!;
+        public DbSet<Subgroup> Subgroup { get; set; } = default!;
         public DbSet<Secretary> Secretary { get; set; } = default!;
         public DbSet<Student> Student { get; set; } = default!;
         public DbSet<Subject> Subject { get; set; } = default!;

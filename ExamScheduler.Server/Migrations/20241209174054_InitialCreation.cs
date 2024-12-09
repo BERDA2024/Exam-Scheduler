@@ -115,6 +115,20 @@ namespace ExamScheduler.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FacultyAdmin",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FacultyId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FacultyAdmin", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Group",
                 columns: table => new
                 {
@@ -150,6 +164,7 @@ namespace ExamScheduler.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FacultyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -208,11 +223,26 @@ namespace ExamScheduler.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SubgroupID = table.Column<int>(type: "int", nullable: true)
+                    SubgroupID = table.Column<int>(type: "int", nullable: true),
+                    FacultyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Student", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subgroup",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    SubgroupIndex = table.Column<string>(type: "nvarchar(1)", maxLength: 1, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subgroup", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -422,6 +452,9 @@ namespace ExamScheduler.Server.Migrations
                 name: "Faculty");
 
             migrationBuilder.DropTable(
+                name: "FacultyAdmin");
+
+            migrationBuilder.DropTable(
                 name: "Group");
 
             migrationBuilder.DropTable(
@@ -441,6 +474,9 @@ namespace ExamScheduler.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Student");
+
+            migrationBuilder.DropTable(
+                name: "Subgroup");
 
             migrationBuilder.DropTable(
                 name: "Subject");
