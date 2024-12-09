@@ -29,7 +29,7 @@ namespace ExamScheduler.Server.Source.DataBase
         {
             base.OnModelCreating(modelBuilder);
 
-            foreach( var state  in Enum.GetValues<RequestStates>())
+            foreach (var state in Enum.GetValues<RequestStates>())
             {
                 modelBuilder.Entity<RequestState>().HasData(
                     new RequestState { Id = (int)state, State = state.ToString() }

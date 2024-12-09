@@ -26,10 +26,10 @@ namespace ExamScheduler.Server.Source.Controllers
                 .Select(sr => new ScheduleRequestModel
                 {
                     Id = sr.Id,
-                    SubjectID = sr.SubjectID,
+                    SubjectName = sr.Subject != null ? sr.Subject.LongName : "Unknown", // Detalii subiect
                     StudentID = sr.StudentID,
                     RequestStateID = sr.RequestStateID,
-                    ClassroomID = sr.ClassroomID,
+                    ClassroomName = sr.Classroom != null ? sr.Classroom.Name : "Unknown", // Detalii sală
                     StartDate = sr.StartDate
                 })
                 .ToListAsync();
@@ -41,7 +41,10 @@ namespace ExamScheduler.Server.Source.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ScheduleRequestModel>> GetScheduleRequest(int id)
         {
-            var scheduleRequest = await _context.ScheduleRequest.FindAsync(id);
+            var scheduleRequest = await _context.ScheduleRequest
+                .Include(sr => sr.Subject)
+                .Include(sr => sr.Classroom)
+                .FirstOrDefaultAsync(sr => sr.Id == id);
 
             if (scheduleRequest == null)
             {
@@ -51,15 +54,16 @@ namespace ExamScheduler.Server.Source.Controllers
             var scheduleRequestModel = new ScheduleRequestModel
             {
                 Id = scheduleRequest.Id,
-                SubjectID = scheduleRequest.SubjectID,
+                SubjectName = scheduleRequest.Subject?.LongName ?? "Unknown", // Detalii subiect
                 StudentID = scheduleRequest.StudentID,
                 RequestStateID = scheduleRequest.RequestStateID,
-                ClassroomID = scheduleRequest.ClassroomID,
+                ClassroomName = scheduleRequest.Classroom?.Name ?? "Unknown", // Detalii sală
                 StartDate = scheduleRequest.StartDate
             };
 
             return Ok(scheduleRequestModel);
         }
+
 
         // POST: api/ScheduleRequest
         [HttpPost]
@@ -71,12 +75,28 @@ namespace ExamScheduler.Server.Source.Controllers
                 return BadRequest(ModelState);
             }
 
+            var subject = await _context.Subject
+                .Where(s => s.LongName == model.SubjectName)
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync();
+
+            if (subject == 0)
+                return NotFound(new { message = "Subject not found." });
+
+            var classroom = await _context.Classroom
+                .Where(s => s.Name == model.ClassroomName)
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync();
+
+            if (classroom == 0)
+                return NotFound(new { message = "Classroom not found." });
+
             var scheduleRequest = new ScheduleRequest
             {
-                SubjectID = model.SubjectID,
+                SubjectID = subject,
                 StudentID = model.StudentID,
-                RequestStateID = model.RequestStateID,
-                ClassroomID = model.ClassroomID,
+                RequestStateID = 1,
+                ClassroomID = classroom,
                 StartDate = model.StartDate
             };
 
@@ -87,6 +107,7 @@ namespace ExamScheduler.Server.Source.Controllers
 
             return CreatedAtAction(nameof(GetScheduleRequest), new { id = scheduleRequest.Id }, model);
         }
+
 
         // PUT: api/ScheduleRequest/{id}
         [HttpPut("{id}")]
@@ -108,10 +129,8 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound();
             }
 
-            scheduleRequest.SubjectID = model.SubjectID;
             scheduleRequest.StudentID = model.StudentID;
             scheduleRequest.RequestStateID = model.RequestStateID;
-            scheduleRequest.ClassroomID = model.ClassroomID;
             scheduleRequest.StartDate = model.StartDate;
 
             _context.ScheduleRequest.Update(scheduleRequest);

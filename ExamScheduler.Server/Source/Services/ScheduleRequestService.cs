@@ -21,10 +21,8 @@ namespace ExamScheduler.Server.Source.Services
                 .Select(sr => new ScheduleRequestModel
                 {
                     Id = sr.Id,
-                    SubjectID = sr.SubjectID,
                     StudentID = sr.StudentID,
                     RequestStateID = sr.RequestStateID,
-                    ClassroomID = sr.ClassroomID,
                     StartDate = sr.StartDate
                 })
                 .ToListAsync();
@@ -45,10 +43,8 @@ namespace ExamScheduler.Server.Source.Services
             var model = new ScheduleRequestModel
             {
                 Id = scheduleRequest.Id,
-                SubjectID = scheduleRequest.SubjectID,
                 StudentID = scheduleRequest.StudentID,
                 RequestStateID = scheduleRequest.RequestStateID,
-                ClassroomID = scheduleRequest.ClassroomID,
                 StartDate = scheduleRequest.StartDate
             };
 
@@ -60,10 +56,8 @@ namespace ExamScheduler.Server.Source.Services
         {
             var scheduleRequest = new ScheduleRequest
             {
-                SubjectID = model.SubjectID,
                 StudentID = model.StudentID,
                 RequestStateID = model.RequestStateID,
-                ClassroomID = model.ClassroomID,
                 StartDate = model.StartDate
             };
 
@@ -85,10 +79,8 @@ namespace ExamScheduler.Server.Source.Services
                 return false;
             }
 
-            scheduleRequest.SubjectID = model.SubjectID;
             scheduleRequest.StudentID = model.StudentID;
             scheduleRequest.RequestStateID = model.RequestStateID;
-            scheduleRequest.ClassroomID = model.ClassroomID;
             scheduleRequest.StartDate = model.StartDate;
 
             _context.ScheduleRequest.Update(scheduleRequest);

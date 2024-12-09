@@ -244,6 +244,10 @@ namespace ExamScheduler.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClassroomID");
+
+                    b.HasIndex("SubjectID");
+
                     b.ToTable("ScheduleRequest");
                 });
 
@@ -285,6 +289,27 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Student");
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Subgroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubgroupIndex")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subgroup");
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Subject", b =>
@@ -530,6 +555,25 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>
+                {
+                    b.HasOne("ExamScheduler.Server.Source.Domain.Classroom", "Classroom")
+                        .WithMany()
+                        .HasForeignKey("ClassroomID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExamScheduler.Server.Source.Domain.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classroom");
+
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -2,121 +2,152 @@
 import { getAuthHeader } from '../Utils/AuthUtils';
 
 const ScheduleExamPage = () => {
-    const [examDetails, setExamDetails] = useState({ Subject: '', Classroom: '', StartDate: '' });
-    const [scheduledExams, setScheduledExams] = useState([]); // Lista de examene salvate
+    const [examDetails, setExamDetails] = useState({
+        Subject: '',
+        StartDate: '',
+        Classroom: ''
+    });
+    const [scheduledExams, setScheduledExams] = useState([]);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
     const authHeader = getAuthHeader();
 
+    // Fetch scheduled exams on load
     useEffect(() => {
-        const fetchScheduledExams = async () => {
-            try {
-                const response = await fetch('https://localhost:7118/api/ScheduleRequest');
-                if (response.ok) {
-                    const data = await response.json();
-                    setScheduledExams(data);
-                } else {
-                    throw new Error('Failed to fetch exams');
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
         fetchScheduledExams();
     }, []);
 
-    const handleChange = (e) => {
+    const fetchScheduledExams = async () => {
+        try {
+            const response = await fetch('https://localhost:7118/api/ScheduleRequest', {
+                method: 'GET',
+                headers: authHeader
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setScheduledExams(data);
+                console.log(data);
+                console.log(scheduledExams);
+            } else {
+                setError('Failed to fetch scheduled exams.');
+            }
+        } catch (err) {
+            setError('An error occurred while fetching scheduled exams.');
+        }
+    };
+
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setExamDetails((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setExamDetails((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!examDetails.Subject || !examDetails.Classroom || !examDetails.StartDate) {
+
+        if (!examDetails.Subject || !examDetails.StartDate || !examDetails.Classroom) {
             setError('All fields are required.');
-            setSuccessMessage('');
             return;
         }
+
+        setError('');
+        setSuccessMessage('');
 
         try {
             const response = await fetch('https://localhost:7118/api/ScheduleRequest', {
                 method: 'POST',
                 headers: {
                     ...authHeader,
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(examDetails),
+                body: JSON.stringify({
+                    SubjectName: examDetails.Subject,
+                    StartDate: examDetails.StartDate,
+                    ClassroomName: examDetails.Classroom
+                })
             });
 
             if (response.ok) {
                 const newExam = await response.json();
-                setScheduledExams((prev) => [...prev, newExam]); // Adăugăm examenul nou la listă
+                setScheduledExams((prev) => [...prev, newExam]);
                 setSuccessMessage('Exam scheduled successfully!');
-                setError('');
-                setExamDetails({ Subject: '', Classroom: '', StartDate: '' }); // Resetăm formularul
+                setExamDetails({ Subject: '', StartDate: '', Classroom: '' });
             } else {
                 const errorData = await response.json();
-                setError(errorData.message || 'Failed to schedule exam');
-                setSuccessMessage('');
+                setError(errorData.message || 'Failed to schedule exam.');
             }
-        } catch (error) {
-            console.error(error);
-            setError('An unexpected error occurred. Please try again.');
-            setSuccessMessage('');
+        } catch (err) {
+            setError('An unexpected error occurred.');
         }
     };
 
     return (
-        <div className="schedule-exam-container">
-            <h2>Schedule Exam</h2>
-            {error && <p className="error">{error}</p>}
-            {successMessage && <p className="success">{successMessage}</p>}
-
+        <div className="schedule-exam-page">
+            <h1>Schedule Exam</h1>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className="form-group">
                     <label>Subject:</label>
                     <input
                         type="text"
                         name="Subject"
                         value={examDetails.Subject}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
+                        placeholder="Enter subject name"
+                        required
                     />
                 </div>
-                <div>
-                    <label>Start Date:</label>
+                <div className="form-group">
+                    <label>Start Date and Time:</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         name="StartDate"
                         value={examDetails.StartDate}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
+                        required
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Classroom:</label>
                     <input
                         type="text"
                         name="Classroom"
                         value={examDetails.Classroom}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
+                        placeholder="Enter classroom name"
+                        required
                     />
                 </div>
-                <button type="submit">Schedule Exam</button>
+                <button type="submit">Request Schedule</button>
             </form>
 
+            {error && <p className="error-message">{error}</p>}
+            {successMessage && <p className="success-message">{successMessage}</p>}
+
+            <h2>Your Scheduled Exams</h2>
             <div className="scheduled-exams">
-                <h3>Your Scheduled Exams</h3>
-                <ul>
-                    {scheduledExams.map((exam, index) => (
-                        <li key={index}>
-                            {exam.Subject} - {exam.StartDate} - {exam.Classroom}
-                        </li>
-                    ))}
-                </ul>
+                {scheduledExams.length > 0 ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Start Date</th>
+                                <th>Classroom</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {scheduledExams.map((exam) => (
+                                <tr key={exam.id}>
+                                    <td>{exam.subjectName || 'Unknown'}</td>
+                                    <td>{new Date(exam.startDate).toLocaleString()}</td>
+                                    <td>{exam.classroomName || 'Unknown'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No exams scheduled yet.</p>
+                )}
             </div>
         </div>
     );

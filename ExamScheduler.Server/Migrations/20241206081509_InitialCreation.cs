@@ -1,5 +1,7 @@
 ﻿using System;
+using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
