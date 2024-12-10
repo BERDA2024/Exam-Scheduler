@@ -4,6 +4,7 @@ import DashboardPage from '../Pages/DashboardPage';
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import ManageUsersPage from '../Pages/ManageUsersPage';
 import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
+import ManageDepartmentsPage from '../Pages/ManageDepartmentsPage';
 import CalendarPage from '../Pages/CalendarPage';
 import './Sidebar.css';
 
@@ -22,6 +23,7 @@ const Sidebar = ({ setActiveContent }) => {
         ],
         FacultyAdmin: [
             { label: "Manage Users", action: <ManageUsersPage /> }
+            { label: "Manage Departments", action: <ManageDepartmentsPage /> }
         ],
         Secretary: [
             { label: "Manage Users", action: <ManageUsersPage /> }

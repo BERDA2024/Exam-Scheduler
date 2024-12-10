@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import FacultyForm from '../../Forms/FacultyForm';
+import DepartmentForm from '../../Forms/DepartmentForm';
 import { getAuthHeader } from '../../Utils/AuthUtils';
 import GenericTable from "../GenericTable/GenericTable";
 import "./UserManagementComponent.css";
@@ -96,8 +96,8 @@ const DepartmentsManagementComponent = () => {
     return (
         <div>
             {showForm && (
-                <FacultyForm
-                    faculty={selectedDepartment}
+                <DepartmentForm
+                    department={selectedDepartment}
                     onClose={() => setShowForm(false)}
                     onRefresh={fetchDepartments}
                 />
