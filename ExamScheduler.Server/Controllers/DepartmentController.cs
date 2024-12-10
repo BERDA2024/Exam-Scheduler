@@ -14,25 +14,47 @@ namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DepartmentController(ApplicationDbContext context, RolesService roleService , UserManager<User> userManager) : ControllerBase
+    public class DepartmentController(ApplicationDbContext context, RolesService roleService, UserManager<User> userManager) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly ApplicationDbContext _context = context;
         private readonly RolesService _rolesService = roleService;
+
         [HttpGet]
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         public async Task<IActionResult> GetAllDepartments()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return BadRequest(new { message = "User not found." });
+
+            var user = await _userManager.FindByNameAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found." });
+
+            var facultyId = await _rolesService.GetFacultyIdByRole(user);
             var departments = await _context.Department
+                .Where(f => f.FacultyId == facultyId)
                 .ToListAsync();
 
             return Ok(departments);
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         public async Task<IActionResult> GetDepartmentById(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return BadRequest(new { message = "User not found." });
+
+            var user = await _userManager.FindByNameAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found." });
+
+            var facultyId = await _rolesService.GetFacultyIdByRole(user);
             var dep = await _context.Department
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id && a.FacultyId == facultyId);
 
             if (dep == null)
             {
@@ -50,19 +72,21 @@ namespace ExamScheduler.Server.Controllers
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
 
-                if (userId == null || request == null)
-                {
-                    return Unauthorized(new { message = "Not connected or bad request." });
-                }
-                var user= await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    return Unauthorized(new { message = "Not connected or bad request." });
-                }
-                var facultyId = await _rolesService.GetFacultyIdByRole(user);
-                var department=new Department() { LongName=request.Long_Name , ShortName=request.Short_Name,FacultyId=facultyId };
+                if (userId == null || request == null) return Unauthorized(new { message = "Not connected or bad request." });
 
-               _context.Department.Add(department);
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null) return Unauthorized(new { message = "Not connected or bad request." });
+
+                var facultyId = await _rolesService.GetFacultyIdByRole(user);
+                var department = new Department()
+                {
+                    LongName = request.LongName,
+                    ShortName = request.ShortName,
+                    FacultyId = facultyId
+                };
+
+                _context.Department.Add(department);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(GetDepartmentById), new { id = request.Id }, request);
@@ -77,12 +101,16 @@ namespace ExamScheduler.Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentModel request)
         {
-            if (id != request.Id)
-            {
-                return BadRequest(new { message = "ID mismatch" });
-            }
+            if (id != request.Id) return BadRequest(new { message = "ID mismatch" });
 
-            _context.Entry(request).State = EntityState.Modified;
+            var department = await _context.Department.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (department == null) return NotFound(new { message = "Department not found." });
+
+            department.ShortName = request.ShortName;
+            department.LongName = request.LongName;
+
+            _context.Entry(department).State = EntityState.Modified;
 
             try
             {
@@ -104,11 +132,9 @@ namespace ExamScheduler.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var depa= await _context.Department.FindAsync(id);
-            if (depa == null)
-            {
-                return NotFound(new { message = "Department not found" });
-            }
+            var depa = await _context.Department.FindAsync(id);
+
+            if (depa == null) return NotFound(new { message = "Department not found" });
 
             _context.Department.Remove(depa);
             await _context.SaveChangesAsync();
@@ -116,7 +142,7 @@ namespace ExamScheduler.Server.Controllers
             return NoContent();
         }
 
-       
+
         private bool DepartmentExists(int id)
         {
             return _context.Department.Any(a => a.Id == id);
