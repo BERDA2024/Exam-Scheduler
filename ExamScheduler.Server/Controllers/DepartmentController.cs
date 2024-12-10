@@ -1,6 +1,7 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +14,11 @@ namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DepartmentController(ApplicationDbContext context, UserManager<User> userManager) : ControllerBase
+    public class DepartmentController(ApplicationDbContext context, RolesService roleService , UserManager<User> userManager) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly ApplicationDbContext _context = context;
-
+        private readonly RolesService _rolesService = roleService;
         [HttpGet]
         public async Task<IActionResult> GetAllDepartments()
         {
@@ -53,8 +54,15 @@ namespace ExamScheduler.Server.Controllers
                 {
                     return Unauthorized(new { message = "Not connected or bad request." });
                 }
+                var user= await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return Unauthorized(new { message = "Not connected or bad request." });
+                }
+                var facultyId = await _rolesService.GetFacultyIdByRole(user);
+                var department=new Department() { LongName=request.Long_Name , ShortName=request.Short_Name,FacultyId=facultyId };
 
-               // _context.Department.Add(request);
+               _context.Department.Add(department);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(GetDepartmentById), new { id = request.Id }, request);
