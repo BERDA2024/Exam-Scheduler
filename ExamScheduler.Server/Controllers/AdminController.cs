@@ -156,9 +156,13 @@ namespace ExamScheduler.Server.Controllers
                 .Where(userModel => (availableRoles
                     .Select(role => Enum.GetName(role))
                     .Contains(userModel.Role)
-                    || string.IsNullOrEmpty(userModel.Role)) && ((!userRole.Contains("Admin") && userModel.Faculty == currentFacultyName) || userRole.Contains("Admin")))
+                    || string.IsNullOrEmpty(userModel.Role)))
                 .ToList();
 
+                if (!userRole.Contains("Admin"))
+                {
+                    userModels = userModels.Where(userModel => userModel.Faculty == currentFacultyName).ToList();
+                }
                 //var results = await Task.WhenAll(userModels); // Resolve all tasks
                 return Ok(userModels);
             }
@@ -233,9 +237,9 @@ namespace ExamScheduler.Server.Controllers
 
             if (currentSelecterUserRole != null && currentSelecterUserRole != model.Role)
             {
-                var faculty = await _context.Faculty.FirstOrDefaultAsync(x => x.ShortName == model.Faculty);
+                var facultyId = await _userRoleService.GetFacultyIdByRole(selectedUser);
 
-                await _userRoleService.ChangeUserRole(selectedUser, model.Role, faculty?.Id);
+                await _userRoleService.ChangeUserRole(selectedUser, model.Role, facultyId);
             }
 
             if (activeUserRole.Contains(RoleType.Admin.ToString()))
