@@ -13,6 +13,49 @@ namespace ExamScheduler.Server.Source.Services
         private readonly ApplicationDbContext _context = context;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
+        public async Task<List<RoleType>?> GetSubRoles(User user)
+        {
+            if (user == null) return null;
+
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            if (userRole == null || userRole.Count == 0) return null;
+
+            if (userRole.Contains("Admin"))
+            {
+                return
+                [
+                    RoleType.FacultyAdmin,
+                        RoleType.Secretary,
+                        RoleType.Professor,
+                        RoleType.Student,
+                        RoleType.StudentGroupLeader
+                ];
+            }
+
+            if (userRole.Contains("FacultyAdmin"))
+            {
+                return
+                [
+                    RoleType.Secretary,
+                    RoleType.Professor,
+                    RoleType.Student,
+                    RoleType.StudentGroupLeader
+                ];
+            }
+
+            if (userRole.Contains("Secretary"))
+            {
+                return
+                [
+                    RoleType.Student,
+                    RoleType.StudentGroupLeader
+                ];
+            }
+
+            return null;
+        }
+
         public async Task<int?> GetFacultyIdByRole(User user)
         {
             var student = await GetStudentById(user);
@@ -153,11 +196,13 @@ namespace ExamScheduler.Server.Source.Services
 
             if (string.IsNullOrEmpty(newRole) || newRole == RoleType.Admin.ToString()) return false;
 
-            if (currentRole != null && currentRole != newRole)
+            if (currentRole != null && currentRole != newRole &&
+                    !((currentRole == RoleType.StudentGroupLeader.ToString() && newRole == RoleType.Student.ToString())
+                    || (currentRole == RoleType.Student.ToString() && newRole == RoleType.StudentGroupLeader.ToString())))
             {
                 var student = await GetStudentById(user);
 
-                if (student != null) _context.Remove(student);
+                if (student != null ) _context.Remove(student);
 
                 var professor = await GetProfessorById(user);
 
@@ -188,23 +233,19 @@ namespace ExamScheduler.Server.Source.Services
             else if ((newRole == RoleType.Student.ToString() || newRole == RoleType.StudentGroupLeader.ToString()) &&
                      !await _context.Student.AnyAsync(st => st.UserId == userId))
             {
-                _context.Student.Add(new Student { UserId = userId, SubgroupID = null });
+                _context.Student.Add(new Student { UserId = userId, SubgroupID = null, FacultyId = facultyId });
+            }
+
+            await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+            if (await _roleManager.RoleExistsAsync(newRole))
+            {
+                await _userManager.AddToRoleAsync(user, newRole);
             }
 
             var result = await _context.SaveChangesAsync();
 
-            if (result > 0)
-            {
-                await _userManager.RemoveFromRolesAsync(user, userRoles);
-
-                if (await _roleManager.RoleExistsAsync(newRole))
-                {
-                    await _userManager.AddToRoleAsync(user, newRole);
-                }
-                return true;
-            }
-
-            return false;
+            return result > 0;
         }
     }
 }

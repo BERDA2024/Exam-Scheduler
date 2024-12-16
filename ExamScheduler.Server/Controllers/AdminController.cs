@@ -83,11 +83,13 @@ namespace ExamScheduler.Server.Controllers
 
                 if (userRole == null || userRole.Count == 0) return BadRequest(new { message = "Not authorized" });
 
-                var availableRoles = new List<RoleType>();
+                var availableRoles = await _userRoleService.GetSubRoles(user);
+
+                if (availableRoles == null) return NotFound(new { message = "Roles not found" });
 
                 var currentUserFacultyId = await _userRoleService.GetFacultyIdByRole(user);
-
                 var currentFacultyName = string.Empty;
+                var users = _userManager.Users.ToList();
 
                 if (currentUserFacultyId != null)
                 {
@@ -95,40 +97,6 @@ namespace ExamScheduler.Server.Controllers
 
                     if (faculty != null) currentFacultyName = faculty.ShortName;
                 }
-
-                if (userRole.Contains("Admin"))
-                {
-                    availableRoles =
-                    [
-                        RoleType.FacultyAdmin,
-                        RoleType.Secretary,
-                        RoleType.Professor,
-                        RoleType.Student,
-                        RoleType.StudentGroupLeader
-                    ];
-                }
-
-                if (userRole.Contains("FacultyAdmin"))
-                {
-                    availableRoles =
-                    [
-                        RoleType.Secretary,
-                        RoleType.Professor,
-                        RoleType.Student,
-                        RoleType.StudentGroupLeader
-                    ];
-                }
-
-                if (userRole.Contains("Secretary"))
-                {
-                    availableRoles =
-                    [
-                        RoleType.Student,
-                        RoleType.StudentGroupLeader
-                    ];
-                }
-
-                var users = _userManager.Users.ToList();
 
                 var userModels = users.Select(user =>
                 {
@@ -163,7 +131,7 @@ namespace ExamScheduler.Server.Controllers
                 {
                     userModels = userModels.Where(userModel => userModel.Faculty == currentFacultyName).ToList();
                 }
-                //var results = await Task.WhenAll(userModels); // Resolve all tasks
+
                 return Ok(userModels);
             }
             catch (Exception error)
@@ -197,10 +165,27 @@ namespace ExamScheduler.Server.Controllers
                 return BadRequest(new { message = result.Errors.ToString() });
             }
 
-            if (!string.IsNullOrEmpty(model.Role) && model.Role != "Admin")
+
+            var activeUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+            if (activeUserId == null) return BadRequest(new { message = "User not found" });
+
+            var activeUser = await _userManager.FindByIdAsync(activeUserId);
+
+            if (activeUser == null) return BadRequest(new { message = "User not found" });
+
+            var activeUserRole = await _userManager.GetRolesAsync(activeUser);
+
+            var facultyId = (int?)null;
+            if (activeUserRole.Contains(RoleType.FacultyAdmin.ToString()))
+                facultyId = await _userRoleService.GetFacultyIdByRole(activeUser);
+            if (activeUserRole.Contains(RoleType.Admin.ToString()))
             {
-                await _userManager.AddToRoleAsync(user, model.Role);
+                var faculty = await _context.Faculty.FirstOrDefaultAsync(x => x.ShortName == model.Faculty);
+                facultyId = faculty?.Id;
             }
+
+            if (!string.IsNullOrEmpty(model.Role) && model.Role != "Admin") await _userRoleService.ChangeUserRole(user, model.Role, facultyId);
 
             return Ok(new { message = "User added successfully." });
         }
@@ -210,17 +195,11 @@ namespace ExamScheduler.Server.Controllers
         [HttpPut("edit")]
         public async Task<IActionResult> UpdateUser([FromBody] UserModel model)
         {
-            if (string.IsNullOrEmpty(model.FirstName) || string.IsNullOrEmpty(model.LastName))
-            {
-                return BadRequest(new { message = "First Name and Last Name are required." });
-            }
+            if (string.IsNullOrEmpty(model.FirstName) || string.IsNullOrEmpty(model.LastName)) return BadRequest(new { message = "First Name and Last Name are required." });
 
-            // Find the user by Id
             var selectedUser = await _userManager.FindByIdAsync(model.Id);
-            if (selectedUser == null)
-            {
-                return NotFound(new { message = "User not found." });
-            }
+
+            if (selectedUser == null) return NotFound(new { message = "User not found." });
 
             var activeUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
 
@@ -260,7 +239,7 @@ namespace ExamScheduler.Server.Controllers
         }
 
         // DELETE: api/Admin/{id}
-        [Authorize(Roles = "Admin,FacultyManager")]
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
