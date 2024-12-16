@@ -2,9 +2,12 @@
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
 import ScheduleRequestForm from '../Components/ScheduleRequest/ScheduleRequestForm';
-import ExamListForm from '../Components/ExamList/ExamListForm';
+import PendingExamsListForm from '../Components/PendingExamsList/PendingExamsListForm';
+import AcceptedExamsListForm from '../Components/AcceptedExamsList/AcceptedExamsListForm';
+import DeclinedExamsListForm from '../Components/DeclinedExamsList/DeclinedExamsListForm';
 import '../Styles/DashboardPage.css';
 import '../Styles/ScheduleExamPage.css';
+
 
 const ScheduleExamPage = () => {
     return (
@@ -20,15 +23,28 @@ const ScheduleExamPage = () => {
                                 <ScheduleRequestForm />
                             </div>
                         </StylizedBlock>
+                        <StylizedBlock title="Accepted List">
+                            {/* Availability block */}
+                            <div className="block-item">
+                                <AcceptedExamsListForm />
+                            </div>
+                        </StylizedBlock>
                     </ScrollableContainer>
                 </div>
 
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Exams List">
+                        <StylizedBlock title="Pending List">
                             {/* Availability block */}
                             <div className="block-item">
-                                <ExamListForm />
+                                <PendingExamsListForm />
+                            </div>
+                        </StylizedBlock>
+                        
+                        <StylizedBlock title="Decline List">
+                            {/* Availability block */}
+                            <div className="block-item">
+                                <DeclinedExamsListForm />
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>

@@ -48,6 +48,13 @@
     border-radius: 4px;
 }
 
+.calendar-day.has-exam {
+    background-color: #007bff; /* Albastru */
+    color: white; /* Text alb */
+    border-radius: 50%; /* Cerc */
+    font-weight: bold;
+}
+
 add-event-button {
     background-color: #007bff;
     color: black;
