@@ -1,5 +1,6 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Domain.Enums;
 using ExamScheduler.Server.Source.Models;
 using ExamScheduler.Server.Source.Services;
 
@@ -28,16 +29,37 @@ namespace ExamScheduler.Server.Controllers
 
             if (userId == null) return BadRequest(new { message = "User not found." });
 
-            var user = await _userManager.FindByNameAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null) return BadRequest(new { message = "User not found." });
 
-            var facultyId = await _rolesService.GetFacultyIdByRole(user);
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            if (userRole == null || userRole.Count == 0) return BadRequest(new { message = "Not authorized" });
+
             var departments = await _context.Department
-                .Where(f => f.FacultyId == facultyId)
                 .ToListAsync();
 
-            return Ok(departments);
+            if (userRole.Contains(RoleType.FacultyAdmin.ToString()))
+            {
+                var facultyId = await _rolesService.GetFacultyIdByRole(user);
+                departments = departments
+                    .Where(f => f.FacultyId == facultyId).ToList();
+            }
+
+            var departmentsModel = departments.Select(department =>
+            {
+                //var faculty = await _context.Faculty.FirstOrDefaultAsync(f => f.Id == department.FacultyId);
+                return new DepartmentModel()
+                {
+                    Id = department.Id,
+                    LongName = department.LongName,
+                    ShortName = department.ShortName,
+                    FacultyName = "faculty?.ShortName"
+                };
+            }).ToList();
+
+            return Ok(departmentsModel);
         }
 
         [HttpGet("{id}")]

@@ -21,9 +21,11 @@ const DepartmentsManagementComponent = () => {
                         ...authHeader
                     }
                 });
+
+                const data = await response.json();
+                console.log(data);
+
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
                     setDepartments(data);
                     setFilteredDepartments(data); // Initialize the filtered list with all faculties
                 } else {
@@ -71,14 +73,11 @@ const DepartmentsManagementComponent = () => {
                         method: "DELETE",
                         headers: { ...authHeader }
                     });
-                    const data = await response.json();
 
                     if (response.ok) {
                         fetchDepartments();
-                        console.log(data);
                     } else {
                         console.error('Failed to delete');
-                        console.error(data);
                     }
                 } catch (error) {
                     setError('An error occurred. Please try again.');
