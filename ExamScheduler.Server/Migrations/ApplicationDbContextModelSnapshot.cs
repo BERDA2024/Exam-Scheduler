@@ -121,6 +121,26 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("Faculty");
                 });
 
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.FacultyAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("FacultyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FacultyAdmin");
+                });
+
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -164,6 +184,25 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("GroupSubject");
                 });
 
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.GroupSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupSubject");
+                });
+
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Professor", b =>
                 {
                     b.Property<int>("Id")
@@ -174,6 +213,9 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -278,6 +320,9 @@ namespace ExamScheduler.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("FacultyId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("SubgroupID")
                         .HasColumnType("int");

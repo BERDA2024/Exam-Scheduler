@@ -3,17 +3,17 @@ GO
 
 INSERT INTO [dbo].[Faculty] ([ShortName], [LongName])
 VALUES
-	('FIESC', 'Facultatea de Inginerie Electrică şi Ştiinţa Calculatoarelor'),
-	('FIMAR', 'Facultatea de Inginerie Mecanică, Autovehicule şi Robotică'),
-	('FEFS', 'Facultatea de Educaţie Fizică şi Sport'),
-	('FIA', 'Facultatea de Inginerie Alimentară'),
-	('FIG', 'Facultatea de Istorie, Geografie și Științe Sociale'),
-	('FLSC', 'Facultatea de Litere şi Ştiinţe ale Comunicării'),
-	('FS', 'Facultatea de Silvicultură'),
-	('FEAA', 'Facultatea de Economie, Administrație și Afaceri'),
-	('FSE', 'Facultatea de Ştiinţe ale Educaţiei'),
-	('FDSA', 'Facultatea de Drept şi Ştiinţe Administrative'),
+	('FIESC', 'Facultatea de Inginerie Electrica si stiinta Calculatoarelor'),
+	('FIMAR', 'Facultatea de Inginerie Mecanica, Autovehicule si Robotica'),
+	('FEFS', 'Facultatea de Educatie Fizica si Sport'),
+	('FIA', 'Facultatea de Inginerie Alimentara'),
+	('FIG', 'Facultatea de Istorie, Geografie si stiinte Sociale'),
+	('FLSC', 'Facultatea de Litere si stiinte ale Comunicarii'),
+	('FS', 'Facultatea de Silvicultura'),
+	('FEAA', 'Facultatea de Economie, Administratie si Afaceri'),
+	('FSE', 'Facultatea de stiinte ale Educatiei'),
+	('FDSA', 'Facultatea de Drept si stiinte Administrative'),
 	('DSPP', 'Departamentul de Specialitate cu Profil Psihopedagogic'),
-	('FMSB', 'Facultatea de Medicină și Științe Biologice'),
+	('FMSB', 'Facultatea de Medicina si stiinte Biologice'),
 	('CSUD', 'Consiliul pentru Studiile Universitare de Doctorat')
 GO
