@@ -48,7 +48,7 @@ const ClassroomsManagementComponent = () => {
                 (classrooms.name.toLowerCase().includes(!search ? '' : search.toLowerCase()) ||
                     classrooms.shortName.toLowerCase().includes(!search ? '' : search.toLowerCase() ||
                         classrooms.buildingName.toLowerCase().includes(!search ? '' : search.toLowerCase()
-                    ))
+                    ))),
         );
         setFilteredClassrooms(filtered);
     };
@@ -64,7 +64,7 @@ const ClassroomsManagementComponent = () => {
     };
 
     const handleDeleteClassroom = async (id) => {
-        if (window.confirm("Are you sure you want to delete this classroom?)) {
+        if (window.confirm("Are you sure you want to delete this classroom?")) {
             if (authHeader != null) {
                 try {
                     const response = await fetch(`https://localhost:7118/api/Classroom/${id}`, {

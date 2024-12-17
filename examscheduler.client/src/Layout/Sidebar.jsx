@@ -7,6 +7,7 @@ import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
 import ManageDepartmentsPage from '../Pages/ManageDepartmentsPage';
 import CalendarPage from '../Pages/CalendarPage';
 import './Sidebar.css';
+import ManageClassroomsPage from '../Pages/ManageClassroomsPage';
 
 const Sidebar = ({ setActiveContent }) => {
     const [userRole, setUserRole] = useState(null);
@@ -20,10 +21,12 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Admin Dashboard", action: <DashboardPage /> },
             { label: "Manage Users", action: <ManageUsersPage /> },
             { label: "Manage Faculties", action: <ManageFacultiesPage /> },
+            
         ],
         FacultyAdmin: [
-            { label: "Manage Users", action: <ManageUsersPage /> }
-            { label: "Manage Departments", action: <ManageDepartmentsPage /> }
+            { label: "Manage Users", action: <ManageUsersPage /> },
+            { label: "Manage Departments", action: <ManageDepartmentsPage /> },
+            { label: "Manage Classrooms", action: <ManageClassroomsPage /> }
         ],
         Secretary: [
             { label: "Manage Users", action: <ManageUsersPage /> }
