@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1738743">
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1738743">
   <PropertyGroup>
     <StartupCommand>npm run dev</StartupCommand>
     <JavaScriptTestRoot>src\</JavaScriptTestRoot>
@@ -8,6 +8,10 @@
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="src\Forms\NewFolder\**" />
+    <TypeScriptConfiguration Remove="src\Forms\NewFolder\**" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="src\Components\Calendar\" />
     <Folder Include="src\Components\ScrollableContainer\" />

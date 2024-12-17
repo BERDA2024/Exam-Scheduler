@@ -4,6 +4,9 @@ import RegisterPage from './Pages/RegisterPage';
 import LoginPage from './Pages/LoginPage';
 import DashboardPage from './Pages/DashboardPage';
 import Layout from './Layout/Layout';
+import NotificationSettingsPage from './Pages/NotificationSettingsPage';
+
+
 
 const App = () => {
     return (
@@ -13,6 +16,7 @@ const App = () => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/dashboard" element={<Layout />} />
                 <Route path="/" element={<LoginPage />} />
+                <Route path="/notification-settings" element={<NotificationSettingsPage />} />
             </Routes>
         </Router>
     );
