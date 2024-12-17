@@ -26,7 +26,7 @@ const DepartmentsManagementComponent = () => {
                     setDepartments(data);
                     setFilteredDepartments(data); // Initialize the filtered list with all faculties
                 } else {
-                    console.error('Failed to get faculties');
+                    console.error('Failed to get departments');
                 }
             }
         } catch (error) {

@@ -12,7 +12,7 @@ const DepartmentManagementPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Manage Users">
+                        <StylizedBlock title="Manage Departments">
                             {/* Availability block */}
                             <div className="block-item">
                                 <DepartmentManagementComponent />

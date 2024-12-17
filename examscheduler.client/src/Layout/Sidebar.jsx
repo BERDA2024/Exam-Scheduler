@@ -21,6 +21,7 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Admin Dashboard", action: <DashboardPage /> },
             { label: "Manage Users", action: <ManageUsersPage /> },
             { label: "Manage Faculties", action: <ManageFacultiesPage /> },
+            { label: "Manage Departments", action: <ManageDepartmentsPage /> },
             
         ],
         FacultyAdmin: [
