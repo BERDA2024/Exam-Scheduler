@@ -12,16 +12,19 @@ namespace ExamScheduler.Server.Source.Domain
         [ForeignKey("Subject")]
         public int SubjectID { get; set; }
 
+        [Required]
         [ForeignKey("Student")]
         public int StudentID { get; set; }
 
-
+        [Required]
         [ForeignKey("RequestState")]
         public int RequestStateID { get; set; }
 
+        [Required]
         [ForeignKey("Classroom")]
         public int ClassroomID { get; set; }
 
+        [Required]
         public DateTime StartDate { get; set; }
     }
 }

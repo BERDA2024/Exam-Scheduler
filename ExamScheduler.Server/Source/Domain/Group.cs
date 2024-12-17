@@ -9,16 +9,14 @@ namespace ExamScheduler.Server.Source.Domain
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey("Department")]
+        public required int DepartmentId { get; set; }
+
+        [Required]
         [StringLength(50)]
         public required string GroupName { get; set; }
 
         [Required]
-        [StringLength(1)]
-        public required string SubgroupIndex { get; set; }
-
-        [ForeignKey("Department")]
-        public int DepartmentId { get; set; }
-
-        public int StudyYear { get; set; }
+        public required int StudyYear { get; set; }
     }
 }

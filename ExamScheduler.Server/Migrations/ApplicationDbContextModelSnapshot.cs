@@ -83,7 +83,7 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LongName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -121,6 +121,26 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("Faculty");
                 });
 
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.FacultyAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("FacultyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FacultyAdmin");
+                });
+
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -140,14 +160,28 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int>("StudyYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubgroupIndex")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Group");
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.GroupSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupSubject");
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Professor", b =>
@@ -160,6 +194,9 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<int?>("FacultyId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -186,6 +223,23 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RequestState");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            State = "Pending"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            State = "Accepted"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            State = "Declined"
+                        });
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>
@@ -244,7 +298,10 @@ namespace ExamScheduler.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("GroupID")
+                    b.Property<int?>("FacultyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SubgroupID")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -254,6 +311,27 @@ namespace ExamScheduler.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Student");
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Subgroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubgroupIndex")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subgroup");
                 });
 
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Subject", b =>
@@ -275,8 +353,18 @@ namespace ExamScheduler.Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("LongName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int>("ProfessorID")
                         .HasColumnType("int");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 

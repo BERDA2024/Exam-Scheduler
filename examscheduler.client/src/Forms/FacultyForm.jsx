@@ -1,25 +1,21 @@
 import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
-import { getUserRole } from '../Utils/RoleUtils';
 import { getURL } from '../Utils/URLUtils';
-import RoleSelector from '../Utils/RoleSelector';
-import FacultySelector from '../Utils/FacultySelector';
 import "./FormStyles.css";
 
-const UserForm = ({ user, onClose, onRefresh }) => {
-    const [userDetails, setUserDetails] = useState(user ? user : { id: '', email: '', lastName: '', firstName: '', role: '', faculty:'' });
+const FacultyForm = ({ faculty, onClose, onRefresh }) => {
+    const [facultyDetails, setFacultyDetails] = useState(faculty ? faculty : { id: 0, longName: '', shortName: ''});
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const authHeader = getAuthHeader();
     const address = getURL();
-    const role = getUserRole();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setSuccessMessage('');
         setErrorMessage('');
-        setUserDetails((userDetails) => ({
-            ...userDetails,
+        setFacultyDetails((facultyDetails) => ({
+            ...facultyDetails,
             [name]: value, // Dynamically update the corresponding property
         }));
     };
@@ -32,16 +28,14 @@ const UserForm = ({ user, onClose, onRefresh }) => {
         setSuccessMessage('');
 
         if (authHeader) {
-            const response = await fetch(address + `api/Admin/` + (user ? `edit` : ``), {
-                method: (user ? "PUT" : "POST"),
+            console.log(facultyDetails);
+            const response = await fetch(address + `api/Admin/faculties/` + (faculty ? `edit` : ``), {
+                method: (faculty ? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    Id: userDetails.id,
-                    Email: userDetails.email,
-                    FirstName: userDetails.firstName,
-                    LastName: userDetails.lastName,
-                    Role: userDetails.role,
-                    Faculty: userDetails.faculty
+                    Id: facultyDetails.id,
+                    LongName: facultyDetails.longName,
+                    ShortName: facultyDetails.shortName,
                 }),
             });
 
@@ -71,58 +65,26 @@ const UserForm = ({ user, onClose, onRefresh }) => {
         <div className="form-container">
             <div className="form">
                 <form onSubmit={handleSubmit}>
-                    {!user && (
-                        <div className= "form-input-div">
-                            <label>Email:</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={userDetails.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    )}
 
                     <div className="form-input-div">
-                        <label>First Name:</label>
+                        <label>Long Name:</label>
                         <input
                             type="text"
-                            name="firstName"
-                            value={userDetails.firstName}
+                            name="longName"
+                            value={facultyDetails.longName}
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="form-input-div">
-                        <label>Last Name:</label>
+                        <label>Short Name:</label>
                         <input
                             type="text"
-                            name="lastName"
-                            value={userDetails.lastName}
+                            name="shortName"
+                            value={facultyDetails.shortName}
                             onChange={handleChange}
                         />
                     </div>
-
-                    <div className="form-input-div">
-                        <label>Role:</label>
-                        <RoleSelector
-                            selectName="role" // Ensure this matches the key in userDetails
-                            roleValue={userDetails.role}
-                            onRoleChange={handleChange}
-                            includeAllRoles={false}
-                            includeNone={true}
-                        />
-                    </div>
-
-                    {role == 'Admin' && <div className="form-input-div">
-                        <label>Faculty:</label>
-                        <FacultySelector
-                            selectName="faculty" // Ensure this matches the key in userDetails
-                            facultyValue={userDetails.faculty}
-                            onFacultyChange={handleChange}
-                            includeNone={true}
-                        />
-                    </div>}
 
                     {/* Display success message */}
                     {successMessage && <div className="message message-success">{successMessage}</div>}
@@ -131,7 +93,7 @@ const UserForm = ({ user, onClose, onRefresh }) => {
                     {errorMessage && <div className="message message-error">{errorMessage}</div>}
 
                     <div className="form-buttons">
-                        <button type="submit">{user ? "Update" : "Add"} User</button>
+                        <button type="submit">{faculty ? "Update" : "Add"} Faculty</button>
                         <button type="button" onClick={onClose}>
                             Cancel
                         </button>
@@ -142,4 +104,4 @@ const UserForm = ({ user, onClose, onRefresh }) => {
     );
 };
 
-export default UserForm;
+export default FacultyForm;

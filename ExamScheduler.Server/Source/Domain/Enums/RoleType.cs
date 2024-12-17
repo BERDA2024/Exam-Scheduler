@@ -3,9 +3,9 @@
     public enum RoleType
     {
         Admin = 1,
-        Secretary = 2,
-        Professor = 3,
-        DepartmentHead = 4,
+        FacultyAdmin = 2,
+        Secretary = 3,
+        Professor = 4,
         Student = 5,
         StudentGroupLeader = 6,
     }
