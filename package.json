@@ -5,6 +5,6 @@
     "cors": "^2.8.5",
     "jwt-decode": "^4.0.0",
     "react-calendar": "^5.1.0",
-    "react-router-dom": "^7.0.1"
+    "react-router-dom": "^7.0.2"
   }
 }

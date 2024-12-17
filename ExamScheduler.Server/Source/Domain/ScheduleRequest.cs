@@ -26,5 +26,8 @@ namespace ExamScheduler.Server.Source.Domain
 
         [Required]
         public DateTime StartDate { get; set; }
+
+        public Subject Subject { get; set; }
+        public Classroom Classroom { get; set; }
     }
 }

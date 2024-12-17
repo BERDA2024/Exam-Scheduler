@@ -1,80 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import AddEventPopup from './AddEventPopup';
+﻿import React, { useState, useEffect } from 'react';
+import DayDetail from './DayDetail';
 import './Calendar.css';
+import { getAuthHeader } from '../../Utils/AuthUtils';
 
 const Calendar = () => {
+    const [currentDate, setCurrentDate] = useState(new Date());
     const [daysInMonth, setDaysInMonth] = useState([]);
+    const [examDays, setExamDays] = useState({});
     const [selectedDay, setSelectedDay] = useState(null);
-    const [events, setEvents] = useState([]);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const authHeader = getAuthHeader();
 
     useEffect(() => {
-        // Logic to fetch days of the current month and events for the selected day
         loadCalendar();
-    }, []);
+        fetchExamDays();
+    }, [currentDate]);
 
     const loadCalendar = () => {
-        // Simulate loading the days of the month
-        const days = Array.from({ length: 31 }, (_, i) => i + 1); // Example days of the month
-        setDaysInMonth(days);
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
 
-        if (selectedDay) {
-            fetchEvents(selectedDay);
+        // Numărul de zile în luna curentă
+        const daysInThisMonth = new Date(year, month + 1, 0).getDate();
+        setDaysInMonth(Array.from({ length: daysInThisMonth }, (_, i) => i + 1));
+    };
+
+    const fetchExamDays = async () => {
+        try {
+            const response = await fetch('https://localhost:7118/api/ScheduleRequest', {
+                method: 'GET',
+                headers: authHeader
+            });
+            const data = await response.json();
+
+            const filteredExams = data.filter((exam) => exam.requestStateID === 2);
+
+            const daysWithExams = filteredExams.reduce((acc, exam) => {
+                const examDate = new Date(exam.startDate);
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+
+                if (
+                    examDate.getFullYear() === year &&
+                    examDate.getMonth() === month
+                ) {
+                    const day = examDate.getDate();
+                    if (!acc[day]) acc[day] = [];
+                    acc[day].push({
+                        subject: exam.subjectName || 'Unknown',
+                        classroom: exam.classroomName || 'Unknown',
+                        time: examDate.toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        }),
+                    });
+                }
+                return acc;
+            }, {});
+
+            setExamDays(daysWithExams);
+        } catch (error) {
+            console.error('Error fetching exam days:', error);
         }
     };
 
-    const fetchEvents = (day) => {
-        // Replace this with an actual API call to fetch events for a day
-        setEvents([
-            { id: 1, name: "Sample Event 1" },
-            { id: 2, name: "Sample Event 2" }
-        ]);
+    const handlePreviousMonth = () => {
+        setCurrentDate(
+            new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+        );
+        setSelectedDay(null);
     };
 
-    const handleDayClick = (day) => {
-        setSelectedDay(day);
-        fetchEvents(day);
-    };
-
-    const handleOpenPopup = () => {
-        setIsPopupOpen(true);
-    };
-
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
+    const handleNextMonth = () => {
+        setCurrentDate(
+            new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+        );
+        setSelectedDay(null);
     };
 
     return (
         <div className="calendar-container">
+            <div className="calendar-header">
+                <button onClick={handlePreviousMonth}>&lt;</button>
+                <h2>
+                    {currentDate.toLocaleString('default', {
+                        month: 'long',
+                        year: 'numeric',
+                    })}
+                </h2>
+                <button onClick={handleNextMonth}>&gt;</button>
+            </div>
             <div className="calendar">
-                {daysInMonth.map(day => (
-                    <div key={day} className="calendar-day" onClick={() => handleDayClick(day)}>
+                {daysInMonth.map((day) => (
+                    <div
+                        key={day}
+                        className={`calendar-day ${examDays[day] ? 'has-exam' : ''}`}
+                        onClick={() => setSelectedDay(day)}
+                    >
                         {day}
                     </div>
                 ))}
             </div>
-            <div className="day-detail">
-                {selectedDay ? (
-                    <>
-                        <h3>Day {selectedDay}</h3>
-                        <div className="events-list">
-                            {events.length > 0 ? (
-                                events.map(event => (
-                                    <div key={event.id} className="event-item">
-                                        {event.name}
-                                    </div>
-                                ))
-                            ) : (
-                                <p>No events for this day.</p>
-                            )}
-                        </div>
-                        <button className="add-event-button" onClick={handleOpenPopup}>Add Event</button>
-                    </>
-                ) : (
-                    <p>Select a day to see details.</p>
-                )}
-            </div>
-            {isPopupOpen && <AddEventPopup onClose={handleClosePopup} />}
+            <DayDetail
+                selectedDay={selectedDay}
+                events={examDays[selectedDay] || []}
+            />
         </div>
     );
 };
