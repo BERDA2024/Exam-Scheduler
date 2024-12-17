@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAuthHeader } from '../../Utils/AuthUtils';
-//import ClassroomForm from '../../Forms/ClassroomForm';
+import ClassroomForm from '../../Forms/ClassroomForm';
 
 import GenericTable from "../GenericTable/GenericTable";
 import "./UserManagementComponent.css";
@@ -60,6 +60,7 @@ const ClassroomsManagementComponent = () => {
     };
 
     const handleEditClassroom = (classroom) => {
+        console.log(classroom);
         setSelectedClassroom(classroom); // Set the selected faculty for editing
         setShowForm(true);
     };
@@ -72,14 +73,11 @@ const ClassroomsManagementComponent = () => {
                         method: "DELETE",
                         headers: { ...authHeader }
                     });
-                    const data = await response.json();
 
                     if (response.ok) {
                         fetchClassrooms();
-                        console.log(data);
                     } else {
                         console.error('Failed to delete');
-                        console.error(data);
                     }
                 } catch (error) {
                     setError('An error occurred. Please try again.');
@@ -101,7 +99,7 @@ const ClassroomsManagementComponent = () => {
         <div>
             {showForm && (
                 <ClassroomForm
-                    department={selectedClassroom}
+                    classroom={selectedClassroom}
                     onClose={() => setShowForm(false)}
                     onRefresh={fetchClassrooms}
                 />

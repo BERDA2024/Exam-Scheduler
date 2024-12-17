@@ -96,7 +96,7 @@ namespace ExamScheduler.Server.Controllers
                 throw;
             }
 
-            return NoContent();
+            return Ok(new {message = "Classromm update succesfuly"});
         }
 
         [Authorize(Roles = "Admin,FacultyAdmin")]

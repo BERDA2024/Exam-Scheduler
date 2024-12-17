@@ -47,7 +47,7 @@ const ClassroomForm = ({ classroom, onClose, onRefresh }) => {
                 result = JSON.parse(text);  // Attempt to parse it as JSON
             } catch (e) {
                 setErrorMessage("Invalid server response.");
-                console.error(text);
+                console.error(e);
                 return;
             }
             if (response.ok) {
@@ -56,8 +56,7 @@ const ClassroomForm = ({ classroom, onClose, onRefresh }) => {
                 onClose(); // Close the form
             }
             else {
-                setErrorMessage('Operation Failed');
-                console.error(result.message);
+                setErrorMessage(result.message);
             }
         }
     };
