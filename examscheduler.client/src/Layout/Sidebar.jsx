@@ -4,6 +4,7 @@ import DashboardPage from '../Pages/DashboardPage';
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import ManageUsersPage from '../Pages/ManageUsersPage';
 import CalendarPage from '../Pages/CalendarPage';
+import ScheduleExamPage from '../Pages/ScheduleExamPage';
 import './Sidebar.css';
 
 const Sidebar = ({ setActiveContent }) => {
@@ -27,8 +28,8 @@ const Sidebar = ({ setActiveContent }) => {
         Student: [
             { label: "View Exams", action: "loadExams" },
         ],
-        GroupLeader: [
-            { label: "Request Exam", action: "loadExamRequest" },
+        StudentGroupLeader: [
+            { label: "Request Exam", action: <ScheduleExamPage /> },
         ],
     };
 

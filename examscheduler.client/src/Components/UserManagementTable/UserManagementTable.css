@@ -6,7 +6,7 @@
 .controls {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
 }
 
 .user-table {
@@ -21,7 +21,10 @@
         padding: 10px;
         text-align: left;
     }
-
+        .user-table td button {
+            gap: 10px;
+            width: 50%;
+        }
     .user-table th {
         background-color: #f4f4f4;
     }

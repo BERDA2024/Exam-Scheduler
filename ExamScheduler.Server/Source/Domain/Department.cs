@@ -10,7 +10,7 @@ namespace ExamScheduler.Server.Source.Domain
 
         [Required]
         [StringLength(100)]
-        public required string Name { get; set; }
+        public required string LongName { get; set; }
 
         [Required]
         [StringLength(50)]

@@ -21,6 +21,7 @@ const LoginPage = () => {
         e.preventDefault();
 
         try {
+            localStorage.clear()
             const response = await fetch('https://localhost:7118/api/User/login', {
                 method: 'POST',
                 headers: {
