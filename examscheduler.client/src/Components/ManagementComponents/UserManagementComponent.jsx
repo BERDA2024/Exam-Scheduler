@@ -134,7 +134,7 @@ const UserManagementTable = () => {
                                 <td>{user.firstName}</td>
                                 <td>{user.lastName}</td>
                                 <td>{user.role}</td>
-                                <td>
+                                <td className="controls">
                                     <button
                                         className="user-management-button"
                                         onClick={() => handleEditUser(user)}

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
-import UserManagementTable from '../Components/UserManagementTable/UserManagementTable';
+import UserManagementComponent from '../Components/ManagementComponents/UserManagementComponent';
 import '../Styles/DashboardPage.css';
 
-const ProfileSettingsPage = () => {
+const UserManagementPage = () => {
     return (
         <div className="dashboard-container">
             {/* Body */}
@@ -15,7 +15,7 @@ const ProfileSettingsPage = () => {
                         <StylizedBlock title="Manage Users">
                             {/* Availability block */}
                             <div className="block-item">
-                                <UserManagementTable />
+                                <UserManagementComponent />
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>
@@ -25,4 +25,4 @@ const ProfileSettingsPage = () => {
     );
 };
 
-export default ProfileSettingsPage;
+export default UserManagementPage;

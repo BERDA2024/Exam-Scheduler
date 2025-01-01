@@ -3,8 +3,10 @@ import { getUserRole } from '../Utils/RoleUtils';
 import DashboardPage from '../Pages/DashboardPage';
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import ManageUsersPage from '../Pages/ManageUsersPage';
+import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
 import CalendarPage from '../Pages/CalendarPage';
 import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
+import ScheduleExamPage from '../Pages/ScheduleExamPage';
 import './Sidebar.css';
 
 const Sidebar = ({ setActiveContent }) => {
@@ -18,9 +20,13 @@ const Sidebar = ({ setActiveContent }) => {
         Admin: [
             { label: "Admin Dashboard", action: <DashboardPage /> },
             { label: "Manage Users", action: <ManageUsersPage /> },
+            { label: "Manage Faculties", action: <ManageFacultiesPage /> },
+        ],
+        FacultyAdmin: [
+            { label: "Manage Users", action: <ManageUsersPage /> }
         ],
         Secretary: [
-            { label: "Manage Students", action: "loadManageStudents" },
+            { label: "Manage Users", action: <ManageUsersPage /> }
         ],
         Professor: [
             { label: "Availability", action: "loadAvailability" },
@@ -28,8 +34,8 @@ const Sidebar = ({ setActiveContent }) => {
         Student: [
             { label: "View Exams", action: "loadExams" },
         ],
-        GroupLeader: [
-            { label: "Request Exam", action: "loadExamRequest" },
+        StudentGroupLeader: [
+            { label: "Request Exam", action: <ScheduleExamPage /> },
         ],
     };
 
