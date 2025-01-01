@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from "react";
-import "./UserManagementTable.css";
 import { getAuthHeader } from '../../Utils/AuthUtils';
+import { getUserRole } from '../../Utils/RoleUtils';
+import GenericTable from "../GenericTable/GenericTable";
+import RoleSelector from '../../Utils/RoleSelector';
 import UserForm from '../../Forms/UserForm';
+import "./UserManagementComponent.css";
 
-const UserManagementTable = () => {
+const UserManagementComponent = () => {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [filterRole, setFilterRole] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null); // For editing
+    const [userRole, setUserRole] = useState(null);
     const [error, setError] = useState('');
     const [filteredUsers, setFilteredUsers] = useState([]); // Holds the filtered users
     const authHeader = getAuthHeader();
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch("https://localhost:7118/api/Admin");
-            if (response.ok) {
-                const data = await response.json();
-                setUsers(data);
-                setFilteredUsers(data); // Initialize the filtered list with all users
-            } else {
-                console.error('Failed to get users');
+            if (authHeader) {
+                const response = await fetch("https://localhost:7118/api/Admin/byRole", {
+                    headers: {
+                        ...authHeader
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsers(data);
+                    setFilteredUsers(data); // Initialize the filtered list with all users
+                } else {
+                    console.error('Failed to get users');
+                }
             }
         } catch (error) {
             setError('An error occurred. Please try again.');
@@ -30,6 +40,8 @@ const UserManagementTable = () => {
     };
 
     useEffect(() => {
+        const role = getUserRole();
+        setUserRole(role);
         fetchUsers();
     }, []);
 
@@ -85,6 +97,14 @@ const UserManagementTable = () => {
         }
     };
 
+    const columns = [
+        { key: "email", header: "Email" },
+        { key: "firstName", header: "First Name" },
+        { key: "lastName", header: "Last Name" },
+        { key: "role", header: "Role" },
+        { key: "faculty", header: "Faculty" },
+    ];
+
     return (
         <div>
             {showForm && (
@@ -95,7 +115,7 @@ const UserManagementTable = () => {
                 />
             )}
 
-            <div className="user-management">
+            <div className="data-management">
                 <div className="controls">
                     <input
                         type="text"
@@ -103,60 +123,20 @@ const UserManagementTable = () => {
                         value={search}
                         onChange={handleSearchChange}
                     />
-                    <select value={filterRole} onChange={handleFilterChange}>
-                        <option value="">All Roles</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Secretary">Secretary</option>
-                        <option value="Professor">Professor</option>
-                        <option value="DepartmentHead">Department Head</option>
-                        <option value="Student">Student</option>
-                        <option value="StudentGroupLeader">Student Group Leader</option>
-                    </select>
-                    <button className="user-management-button" onClick={handleSearch}>Search</button>
-                    <button className="user-management-button" onClick={handleAddUser}>Add User</button>
+                    <RoleSelector roleValue={filterRole} onRoleChange={handleFilterChange} />
+                    <button className="data-management-button" onClick={handleSearch}>Search</button>
+                    {(userRole == 'Admin' || userRole == 'FacultyAdmin') && <button className="data-management-button" onClick={handleAddUser}>Add User</button>}
                 </div>
 
-
-                <table className="user-table">
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredUsers.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.email}</td>
-                                <td>{user.firstName}</td>
-                                <td>{user.lastName}</td>
-                                <td>{user.role}</td>
-                                <td className="controls">
-                                    <button
-                                        className="user-management-button"
-                                        onClick={() => handleEditUser(user)}
-                                        disabled={user.role === "Admin"}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="user-management-button"
-                                        onClick={() => handleDeleteUser(user.id)}
-                                        disabled={user.role === "Admin"}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <GenericTable
+                    columns={columns}
+                    data={filteredUsers}
+                    onEdit={handleEditUser}
+                    onDelete={userRole == 'Admin' || userRole == 'FacultyAdmin' ? handleDeleteUser : null}
+                />
             </div>
         </div>
     );
 };
 
-export default UserManagementTable;
+export default UserManagementComponent;
