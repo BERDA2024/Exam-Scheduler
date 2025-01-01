@@ -24,11 +24,6 @@ namespace ExamScheduler.Server.Source.DataBase
         public DbSet<Secretary> Secretary { get; set; } = default!;
         public DbSet<Student> Student { get; set; } = default!;
         public DbSet<Subject> Subject { get; set; } = default!;
-        public DbSet<Subgroup> Subgroup { get; set; } = default!;
-
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
