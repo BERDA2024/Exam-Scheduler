@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Models;
 using ExamScheduler.Server.Source.Domain.Enums;
-using NuGet.Protocol.Plugins;
 
 namespace ExamScheduler.Server.Controllers
 {
