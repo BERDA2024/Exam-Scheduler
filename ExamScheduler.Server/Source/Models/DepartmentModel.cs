@@ -14,6 +14,6 @@ namespace ExamScheduler.Server.Source.Models
         [StringLength(50, ErrorMessage = "ShortName cannot exceed 50 characters.")]
         public string ShortName { get; set; } = string.Empty;
 
-        public int? FacultyId { get; set; } // Este opțional, conform definiției din clasă
+        public string? FacultyName { get; set; } 
     }
 }

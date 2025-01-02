@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
-import FacultiesManagementComponent from '../Components/ManagementComponents/FacultiesManagementComponent';
+import DepartmentManagementComponent from '../Components/ManagementComponents/DepartmentsManagementComponent';
 import '../Styles/DashboardPage.css';
 
-const FacultiesManagementPage = () => {
+const DepartmentManagementPage = () => {
     return (
         <div className="dashboard-container">
             {/* Body */}
@@ -12,10 +12,10 @@ const FacultiesManagementPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Manage Faculties">
+                        <StylizedBlock title="Manage Departments">
                             {/* Availability block */}
                             <div className="block-item">
-                                <FacultiesManagementComponent />
+                                <DepartmentManagementComponent />
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>
@@ -25,4 +25,4 @@ const FacultiesManagementPage = () => {
     );
 };
 
-export default FacultiesManagementPage;
+export default DepartmentManagementPage;
