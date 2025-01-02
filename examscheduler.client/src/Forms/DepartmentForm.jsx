@@ -40,24 +40,14 @@ const DepartmentForm = ({ department, onClose, onRefresh }) => {
                 }),
             });
 
-            const text = await response.text();  // Get raw response text
-
-            let result;
-            try {
-                result = JSON.parse(text);  // Attempt to parse it as JSON
-            } catch (e) {
-                setErrorMessage("Invalid server response.");
-                console.error(text);
-                return;
-            }
             if (response.ok) {
-                setSuccessMessage(result.message); // This will be the success message returned from the API
-                onRefresh(); // Refresh the user list
+                setSuccessMessage(response.message);
+                onRefresh(); // Refresh the list
                 onClose(); // Close the form
             }
             else {
                 setErrorMessage('Operation Failed');
-                console.error(result.message);
+                console.error(response.message);
             }
         }
     };

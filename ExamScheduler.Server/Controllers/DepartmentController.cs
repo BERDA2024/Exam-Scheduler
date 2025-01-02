@@ -101,6 +101,9 @@ namespace ExamScheduler.Server.Controllers
                 if (user == null) return Unauthorized(new { message = "Not connected or bad request." });
 
                 var facultyId = await _rolesService.GetFacultyIdByRole(user);
+
+                if (facultyId == null) return BadRequest(new { message = "Can't create department." });
+
                 var department = new Department()
                 {
                     LongName = request.LongName,
