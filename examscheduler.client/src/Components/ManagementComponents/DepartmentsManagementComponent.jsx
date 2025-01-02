@@ -22,10 +22,8 @@ const DepartmentsManagementComponent = () => {
                     }
                 });
 
-                const data = await response.json();
-                console.log(data);
-
                 if (response.ok) {
+                    const data = await response.json();
                     setDepartments(data);
                     setFilteredDepartments(data); // Initialize the filtered list with all faculties
                 } else {
@@ -60,7 +58,6 @@ const DepartmentsManagementComponent = () => {
     };
 
     const handleEditDepartment = (department) => {
-        console.log(department);
         setSelectedDepartment(department); // Set the selected faculty for editing
         setShowForm(true);
     };

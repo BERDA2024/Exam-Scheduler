@@ -28,7 +28,6 @@ const DepartmentForm = ({ department, onClose, onRefresh }) => {
         setSuccessMessage('');
 
         if (authHeader) {
-            console.log(departmentDetails);
             const response = await fetch(address + `api/Department/` + (department ? `${ departmentDetails.id }` : ``), {
                 method: (department? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
