@@ -9,7 +9,8 @@ import "./UserManagementComponent.css";
 
 const UserManagementComponent = () => {
     const [users, setUsers] = useState([]);
-    const [search, setSearch] = useState("");
+    const [emailSearch, setEmailSearch] = useState("");
+    const [nameSearch, setNameSearch] = useState("");
     const [filterRole, setFilterRole] = useState("");
     const [filterFaculty, setFilterFaculty] = useState("");
     const [showForm, setShowForm] = useState(false);
@@ -42,23 +43,29 @@ const UserManagementComponent = () => {
     };
 
     useEffect(() => {
+        handleRefreshPage()
+    }, []);
+
+    const handleRefreshPage = () => {
         const role = getUserRole();
         setUserRole(role);
         fetchUsers();
-    }, []);
+        handleSearch();
+    }
 
-    const handleSearchChange = (e) => setSearch(e.target.value);
-
-    const handleFilterChange = (e) => setFilterRole(e.target.value);
-
-    const handleFacultyFilter = (e) => setFilterFaculty(e.target.value);
+    const handleEmailSearchChange = (e) => setEmailSearch(e.target.value);
+    const handleNameSearchChange = (e) => setNameSearch(e.target.value);
+    const handleRoleFilterChange = (e) => setFilterRole(e.target.value);
+    const handleFacultyFilterChange = (e) => setFilterFaculty(e.target.value);
 
     const handleSearch = () => {
         const filtered = users.filter(
             (user) =>
                 user &&
                 user.email &&
-                user.email.toLowerCase().includes(!search ? '' : search.toLowerCase()) &&
+                user.email.toLowerCase().includes(!emailSearch ? '' : emailSearch.toLowerCase().trim()) &&
+                (user.firstName.toLowerCase().includes(!nameSearch ? '' : nameSearch.toLowerCase().trim()) ||
+                user.lastName.toLowerCase().includes(!nameSearch ? '' : nameSearch.toLowerCase().trim())) &&
                 (!filterRole || user.role === filterRole) &&
                 (filterFaculty === "" || (filterFaculty != "" && filterFaculty === user.faculty))
         );
@@ -116,7 +123,7 @@ const UserManagementComponent = () => {
                 <UserForm
                     user={selectedUser}
                     onClose={() => setShowForm(false)}
-                    onRefresh={fetchUsers}
+                    onRefresh={handleRefreshPage}
                 />
             )}
 
@@ -125,16 +132,23 @@ const UserManagementComponent = () => {
                     <input
                         type="text"
                         placeholder="Search by email"
-                        value={search}
-                        onChange={handleSearchChange}
+                        value={emailSearch}
+                        onChange={handleEmailSearchChange}
                     />
-                    <RoleSelector roleValue={filterRole} onRoleChange={handleFilterChange} />
+
+                    <input
+                        type="text"
+                        placeholder="Search by name"
+                        value={nameSearch}
+                        onChange={handleNameSearchChange}
+                    />
+                    <RoleSelector roleValue={filterRole} onRoleChange={handleRoleFilterChange} />
 
                     {userRole == 'Admin' &&
                         <FacultySelector
                             selectName="faculty"
                             facultyValue={filterFaculty}
-                            onFacultyChange={handleFacultyFilter}
+                            onFacultyChange={handleFacultyFilterChange}
                             includeNone={true}
                             includeNoneText={"All Faculties"}
                         />}
