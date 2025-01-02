@@ -1,129 +1,123 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Services;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExamScheduler.Server.Source.Controllers
+using System.Security.Claims;
+
+namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClassroomController : ControllerBase
+    public class ClassroomController(ApplicationDbContext context, RolesService roleService, UserManager<User> userManager) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly ApplicationDbContext _context = context;
+        private readonly RolesService _rolesService = roleService;
 
-        public ClassroomController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/Classroom
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClassroomModel>>> GetClassrooms()
+        [Authorize(Roles = "Admin,FacultyAdmin")]
+        public async Task<IActionResult> GetAllClassrooms()
         {
-            var classrooms = await _context.Classroom
-                .Select(c => new ClassroomModel
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    ShortName = c.ShortName,
-                    BuildingName = c.BuildingName
-                })
-                .ToListAsync();
-
+            var classrooms = await _context.Classroom.ToListAsync();
             return Ok(classrooms);
         }
 
-        // GET: api/Classroom/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClassroomModel>> GetClassroom(int id)
+        [Authorize(Roles = "Admin,FacultyAdmin")]
+        public async Task<IActionResult> GetClassroomById(int id)
         {
             var classroom = await _context.Classroom.FindAsync(id);
-
             if (classroom == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Classroom not found." });
             }
-
-            var classroomModel = new ClassroomModel
-            {
-                Id = classroom.Id,
-                Name = classroom.Name,
-                ShortName = classroom.ShortName,
-                BuildingName = classroom.BuildingName
-            };
-
-            return Ok(classroomModel);
+            return Ok(classroom);
         }
 
-        // POST: api/Classroom
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpPost]
-        public async Task<ActionResult<ClassroomModel>> CreateClassroom(ClassroomModel model)
+        public async Task<IActionResult> CreateClassroom([FromBody] Classroom request)
         {
-            if (!ModelState.IsValid)
+            if (request == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new { message = "Invalid request." });
             }
 
             var classroom = new Classroom
             {
-                Name = model.Name,
-                ShortName = model.ShortName,
-                BuildingName = model.BuildingName
+                Name = request.Name,
+                ShortName = request.ShortName,
+                BuildingName = request.BuildingName
             };
 
             _context.Classroom.Add(classroom);
             await _context.SaveChangesAsync();
 
-            model.Id = classroom.Id;
-
-            return CreatedAtAction(nameof(GetClassroom), new { id = classroom.Id }, model);
+            return CreatedAtAction(nameof(GetClassroomById), new { id = classroom.Id }, classroom);
         }
 
-        // PUT: api/Classroom/{id}
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateClassroom(int id, ClassroomModel model)
+        public async Task<IActionResult> UpdateClassroom(int id, [FromBody] Classroom request)
         {
-            if (id != model.Id)
+            if (id != request.Id)
             {
-                return BadRequest("ID mismatch.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+                return BadRequest(new { message = "ID mismatch." });
             }
 
             var classroom = await _context.Classroom.FindAsync(id);
             if (classroom == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Classroom not found." });
             }
 
-            classroom.Name = model.Name;
-            classroom.ShortName = model.ShortName;
-            classroom.BuildingName = model.BuildingName;
+            classroom.Name = request.Name;
+            classroom.ShortName = request.ShortName;
+            classroom.BuildingName = request.BuildingName;
 
-            _context.Classroom.Update(classroom);
-            await _context.SaveChangesAsync();
+            _context.Entry(classroom).State = EntityState.Modified;
 
-            return NoContent();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClassroomExists(id))
+                {
+                    return NotFound(new { message = "Classroom not found." });
+                }
+                throw;
+            }
+
+            return Ok(new {message = "Classromm update succesfuly"});
         }
 
-        // DELETE: api/Classroom/{id}
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClassroom(int id)
         {
             var classroom = await _context.Classroom.FindAsync(id);
             if (classroom == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Classroom not found." });
             }
 
             _context.Classroom.Remove(classroom);
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private bool ClassroomExists(int id)
+        {
+            return _context.Classroom.Any(c => c.Id == id);
         }
     }
 }

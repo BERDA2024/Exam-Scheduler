@@ -3,8 +3,8 @@ import { getAuthHeader } from '../Utils/AuthUtils';
 import { getURL } from '../Utils/URLUtils';
 import "./FormStyles.css";
 
-const FacultyForm = ({ faculty, onClose, onRefresh }) => {
-    const [facultyDetails, setFacultyDetails] = useState(faculty ? faculty : { id: 0, longName: '', shortName: ''});
+const ClassroomForm = ({ classroom, onClose, onRefresh }) => {
+    const [classroomDetails, setClassDetails] = useState(classroom ? classroom : { id: 0, name: '', shortName: '', buildingName:'' });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const authHeader = getAuthHeader();
@@ -14,8 +14,8 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
         const { name, value } = e.target;
         setSuccessMessage('');
         setErrorMessage('');
-        setFacultyDetails((facultyDetails) => ({
-            ...facultyDetails,
+        setClassDetails((classDetails) => ({
+            ...classDetails,
             [name]: value, // Dynamically update the corresponding property
         }));
     };
@@ -28,14 +28,15 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
         setSuccessMessage('');
 
         if (authHeader) {
-            console.log(facultyDetails);
-            const response = await fetch(address + `api/Admin/faculties/` + (faculty ? `edit` : ``), {
-                method: (faculty ? "PUT" : "POST"),
+            console.log(classroomDetails);
+            const response = await fetch(address + `api/Classroom/` + (classroom ? `${ classroomDetails.id }` : ``), {
+                method: (classroom? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    Id: facultyDetails.id,
-                    LongName: facultyDetails.longName,
-                    ShortName: facultyDetails.shortName,
+                    Id: classroomDetails.id,
+                    Name: classroomDetails.name,
+                    ShortName: classroomDetails.shortName,
+                    BuildingName: classroomDetails.buildingName
                 }),
             });
 
@@ -46,7 +47,7 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                 result = JSON.parse(text);  // Attempt to parse it as JSON
             } catch (e) {
                 setErrorMessage("Invalid server response.");
-                console.error(text);
+                console.error(e);
                 return;
             }
             if (response.ok) {
@@ -55,8 +56,7 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                 onClose(); // Close the form
             }
             else {
-                setErrorMessage('Operation Failed. ' + result.message);
-                console.error(result.message);
+                setErrorMessage(result.message);
             }
         }
     };
@@ -67,11 +67,11 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                 <form onSubmit={handleSubmit}>
 
                     <div className="form-input-div">
-                        <label>Long Name:</label>
+                        <label>Name:</label>
                         <input
                             type="text"
-                            name="longName"
-                            value={facultyDetails.longName}
+                            name="name"
+                            value={classroomDetails.name}
                             onChange={handleChange}
                         />
                     </div>
@@ -81,10 +81,22 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                         <input
                             type="text"
                             name="shortName"
-                            value={facultyDetails.shortName}
+                            value={classroomDetails.shortName}
                             onChange={handleChange}
                         />
                     </div>
+
+                    <div className="form-input-div">
+                        <label>Building Name:</label>
+                        <input
+                            type="text"
+                            name="buildingName"
+                            value={classroomDetails.buildingName}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    
 
                     {/* Display success message */}
                     {successMessage && <div className="message message-success">{successMessage}</div>}
@@ -93,7 +105,7 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                     {errorMessage && <div className="message message-error">{errorMessage}</div>}
 
                     <div className="form-buttons">
-                        <button type="submit">{faculty ? "Update" : "Add"} Faculty</button>
+                        <button type="submit">{classroom ? "Update" : "Add"} Classroom</button>
                         <button type="button" onClick={onClose}>
                             Cancel
                         </button>
@@ -104,4 +116,4 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
     );
 };
 
-export default FacultyForm;
+export default ClassroomForm;
