@@ -10,7 +10,7 @@ public class EmailService
         _configuration = configuration;
     }
 
-    public async Task SendEmailAsync(string toEmail, string subject, string body)
+    public Task SendEmailAsync(string toEmail, string subject, string body)
     {
         var emailSettings = _configuration.GetSection("EmailSettings");
 
@@ -35,5 +35,7 @@ public class EmailService
         {
             smtp.SendAsync(message, null);
         }
+
+        return Task.CompletedTask;
     }
 }

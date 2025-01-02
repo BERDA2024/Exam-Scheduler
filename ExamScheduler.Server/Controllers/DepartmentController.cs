@@ -1,129 +1,176 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
+using ExamScheduler.Server.Source.Domain.Enums;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Services;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExamScheduler.Server.Source.Controllers
+using System.Security.Claims;
+
+namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DepartmentController : ControllerBase
+    public class DepartmentController(ApplicationDbContext context, RolesService roleService, UserManager<User> userManager) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly ApplicationDbContext _context = context;
+        private readonly RolesService _rolesService = roleService;
 
-        public DepartmentController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/Department
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DepartmentModel>>> GetDepartments()
+        [Authorize(Roles = "Admin,FacultyAdmin")]
+        public async Task<IActionResult> GetAllDepartments()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return BadRequest(new { message = "User not found." });
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found." });
+
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            if (userRole == null || userRole.Count == 0) return BadRequest(new { message = "Not authorized" });
+
             var departments = await _context.Department
-                .Select(d => new DepartmentModel
-                {
-                    Id = d.Id,
-                    LongName = d.LongName,
-                    ShortName = d.ShortName,
-                    FacultyId = d.FacultyId
-                })
                 .ToListAsync();
 
-            return Ok(departments);
+            if (userRole.Contains(RoleType.FacultyAdmin.ToString()))
+            {
+                var facultyId = await _rolesService.GetFacultyIdByRole(user);
+                departments = departments
+                    .Where(f => f.FacultyId == facultyId).ToList();
+            }
+
+            var departmentsModel = departments.Select(department =>
+            {
+                //var faculty = await _context.Faculty.FirstOrDefaultAsync(f => f.Id == department.FacultyId);
+                return new DepartmentModel()
+                {
+                    Id = department.Id,
+                    LongName = department.LongName,
+                    ShortName = department.ShortName,
+                    FacultyName = "faculty?.ShortName"
+                };
+            }).ToList();
+
+            return Ok(departmentsModel);
         }
 
-        // GET: api/Department/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<DepartmentModel>> GetDepartment(int id)
+        [Authorize(Roles = "Admin,FacultyAdmin")]
+        public async Task<IActionResult> GetDepartmentById(int id)
         {
-            var department = await _context.Department.FindAsync(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (department == null)
+            if (userId == null) return BadRequest(new { message = "User not found." });
+
+            var user = await _userManager.FindByNameAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found." });
+
+            var facultyId = await _rolesService.GetFacultyIdByRole(user);
+            var dep = await _context.Department
+                .FirstOrDefaultAsync(a => a.Id == id && a.FacultyId == facultyId);
+
+            if (dep == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Department not found" });
             }
 
-            var departmentModel = new DepartmentModel
-            {
-                Id = department.Id,
-                LongName = department.LongName,
-                ShortName = department.ShortName,
-                FacultyId = department.FacultyId
-            };
-
-            return Ok(departmentModel);
+            return Ok(dep);
         }
 
-        // POST: api/Department
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpPost]
-        public async Task<ActionResult<DepartmentModel>> CreateDepartment(DepartmentModel model)
+        public async Task<IActionResult> CreateDepartment([FromBody] DepartmentModel request)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+                if (userId == null || request == null) return Unauthorized(new { message = "Not connected or bad request." });
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null) return Unauthorized(new { message = "Not connected or bad request." });
+
+                var facultyId = await _rolesService.GetFacultyIdByRole(user);
+
+                if (facultyId == null) return BadRequest(new { message = "Can't create department." });
+
+                var department = new Department()
+                {
+                    LongName = request.LongName,
+                    ShortName = request.ShortName,
+                    FacultyId = facultyId
+                };
+
+                _context.Department.Add(department);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetDepartmentById), new { id = request.Id }, request);
             }
-
-            var department = new Department
+            catch (Exception ex)
             {
-                LongName = model.LongName,
-                ShortName = model.ShortName,
-                FacultyId = model.FacultyId
-            };
-
-            _context.Department.Add(department);
-            await _context.SaveChangesAsync();
-
-            model.Id = department.Id;
-
-            return CreatedAtAction(nameof(GetDepartment), new { id = department.Id }, model);
+                return BadRequest(new { message = "SomeError: " + ex.Message });
+            }
         }
 
-        // PUT: api/Department/{id}
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDepartment(int id, DepartmentModel model)
+        public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentModel request)
         {
-            if (id != model.Id)
+            if (id != request.Id) return BadRequest(new { message = "ID mismatch" });
+
+            var department = await _context.Department.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (department == null) return NotFound(new { message = "Department not found." });
+
+            department.ShortName = request.ShortName;
+            department.LongName = request.LongName;
+
+            _context.Entry(department).State = EntityState.Modified;
+
+            try
             {
-                return BadRequest("ID mismatch.");
+                await _context.SaveChangesAsync();
             }
-
-            if (!ModelState.IsValid)
+            catch (DbUpdateConcurrencyException)
             {
-                return BadRequest(ModelState);
+                if (!DepartmentExists(id))
+                {
+                    return NotFound(new { message = "Faculty not found" });
+                }
+                throw;
             }
-
-            var department = await _context.Department.FindAsync(id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            department.LongName = model.LongName;
-            department.ShortName = model.ShortName;
-            department.FacultyId = model.FacultyId;
-
-            _context.Department.Update(department);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // DELETE: api/Department/{id}
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var department = await _context.Department.FindAsync(id);
-            if (department == null)
-            {
-                return NotFound();
-            }
+            var depa = await _context.Department.FindAsync(id);
 
-            _context.Department.Remove(department);
+            if (depa == null) return NotFound(new { message = "Department not found" });
+
+            _context.Department.Remove(depa);
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+
+        private bool DepartmentExists(int id)
+        {
+            return _context.Department.Any(a => a.Id == id);
         }
     }
 }
