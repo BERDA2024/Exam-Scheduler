@@ -3,6 +3,7 @@ import { getAuthHeader } from '../../Utils/AuthUtils';
 import { getUserRole } from '../../Utils/RoleUtils';
 import GenericTable from "../GenericTable/GenericTable";
 import RoleSelector from '../../Utils/RoleSelector';
+import FacultySelector from '../../Utils/FacultySelector';
 import UserForm from '../../Forms/UserForm';
 import "./UserManagementComponent.css";
 
@@ -10,6 +11,7 @@ const UserManagementComponent = () => {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [filterRole, setFilterRole] = useState("");
+    const [filterFaculty, setFilterFaculty] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null); // For editing
     const [userRole, setUserRole] = useState(null);
@@ -49,13 +51,16 @@ const UserManagementComponent = () => {
 
     const handleFilterChange = (e) => setFilterRole(e.target.value);
 
+    const handleFacultyFilter = (e) => setFilterFaculty(e.target.value);
+
     const handleSearch = () => {
         const filtered = users.filter(
             (user) =>
                 user &&
                 user.email &&
                 user.email.toLowerCase().includes(!search ? '' : search.toLowerCase()) &&
-                (!filterRole || user.role === filterRole)
+                (!filterRole || user.role === filterRole) &&
+                (filterFaculty === "" || (filterFaculty != "" && filterFaculty === user.faculty))
         );
         setFilteredUsers(filtered);
     };
@@ -124,6 +129,15 @@ const UserManagementComponent = () => {
                         onChange={handleSearchChange}
                     />
                     <RoleSelector roleValue={filterRole} onRoleChange={handleFilterChange} />
+
+                    {userRole == 'Admin' &&
+                        <FacultySelector
+                            selectName="faculty"
+                            facultyValue={filterFaculty}
+                            onFacultyChange={handleFacultyFilter}
+                            includeNone={true}
+                            includeNoneText={"All Faculties"}
+                        />}
                     <button className="data-management-button" onClick={handleSearch}>Search</button>
                     {(userRole == 'Admin' || userRole == 'FacultyAdmin') && <button className="data-management-button" onClick={handleAddUser}>Add User</button>}
                 </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getURL } from './URLUtils';
 import { getAuthHeader } from './AuthUtils';
 
-const FacultySelector = ({ selectName = 'faculty', facultyValue, onFacultyChange, includeNone = false }) => {
+const FacultySelector = ({ selectName = 'faculty', facultyValue, onFacultyChange, includeNone = false, includeNoneText = 'None' }) => {
     const [faculties, setFaculties] = useState([]);
     const URL = getURL();
     const authHeader = getAuthHeader();
@@ -32,7 +32,7 @@ const FacultySelector = ({ selectName = 'faculty', facultyValue, onFacultyChange
 
     return (
         <select name={selectName} value={facultyValue} onChange={onFacultyChange}>
-            {includeNone && <option key={0} value=''>None</option>}
+            {includeNone && <option key={0} value=''>{includeNoneText}</option>}
             {faculties.map((faculty) => (
                 <option key={faculty.id} value={faculty.shortName}>{faculty.shortName}</option>
             ))}

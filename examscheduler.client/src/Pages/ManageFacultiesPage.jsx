@@ -12,7 +12,7 @@ const FacultiesManagementPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Manage Users">
+                        <StylizedBlock title="Manage Faculties">
                             {/* Availability block */}
                             <div className="block-item">
                                 <FacultiesManagementComponent />

@@ -316,10 +316,14 @@ namespace ExamScheduler.Server.Controllers
         [HttpPost("faculties")]
         public async Task<IActionResult> AddFaculty([FromBody] Faculty model)
         {
-            if (model == null)
+            if (model == null || string.IsNullOrEmpty(model.LongName) || string.IsNullOrEmpty(model.ShortName))
             {
                 return BadRequest(new { message = "Faculty cannot be null." });
             }
+
+            var faculty = await _context.Faculty.FirstOrDefaultAsync(f => f.ShortName == model.ShortName);
+
+            if (faculty != null) return BadRequest(new { message = "Faculty short name taken." });
 
             _context.Faculty.Add(model);
             await _context.SaveChangesAsync();
