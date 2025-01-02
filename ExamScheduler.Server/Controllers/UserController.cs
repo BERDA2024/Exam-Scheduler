@@ -11,12 +11,13 @@ namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, EmailService emailService) : ControllerBase
+    public class UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, EmailService emailService, RolesService userRoleService) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly JwtTokenService _jwtTokenService = jwtTokenService;
         private readonly EmailService _emailService = emailService;
+        private readonly RolesService _userRoleService = userRoleService;
 
         [HttpGet("profile")]
         [Authorize] // Ensures that only authenticated users can access this endpoint
@@ -138,34 +139,9 @@ namespace ExamScheduler.Server.Controllers
 
             if (user == null) return BadRequest(new { message = "User not found" });
 
-            var userRole = await _userManager.GetRolesAsync(user); 
+            var availableRoles = await _userRoleService.GetSubRoles(user);
 
-            if (userRole == null || userRole.Count == 0) return BadRequest(new { message = "Not authorized" });
-
-            var availableRoles = new List<RoleType>();
-
-            if (userRole.Contains("Admin"))
-                availableRoles = [.. Enum.GetValues<RoleType>()];
-
-            if (userRole.Contains("FacultyAdmin"))
-            {
-                availableRoles =
-                [
-                    RoleType.Secretary,
-                    RoleType.Professor,
-                    RoleType.Student,
-                    RoleType.StudentGroupLeader
-                ];
-            }
-
-            if (userRole.Contains("Secretary"))
-            {
-                availableRoles =
-                [
-                    RoleType.Student,
-                    RoleType.StudentGroupLeader
-                ];
-            }
+            if (availableRoles == null) return NotFound(new { message = "Roles not found" });
 
             return Ok(availableRoles.Select(role => new
             {

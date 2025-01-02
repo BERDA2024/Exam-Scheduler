@@ -20,7 +20,7 @@ const RoleSelector = ({ selectName = 'role', roleValue, onRoleChange, includeAll
                         const data = await response.json();
                         setRoles(data);
                     } else {
-                        console.error("Failed to fetch roles");
+                        console.error("Failed to fetch roles. " + response.body);
                     }
                 }
             } catch (error) {

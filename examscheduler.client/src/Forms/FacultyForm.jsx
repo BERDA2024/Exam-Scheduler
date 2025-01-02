@@ -55,7 +55,7 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                 onClose(); // Close the form
             }
             else {
-                setErrorMessage('Operation Failed');
+                setErrorMessage('Operation Failed. ' + result.message);
                 console.error(result.message);
             }
         }
