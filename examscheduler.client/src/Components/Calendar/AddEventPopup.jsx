@@ -15,13 +15,14 @@ const AddEventPopup = ({ onClose }) => {
             <div className="popup-content">
                 <h3>Add Event</h3>
                 <input
+                    className="popup-input"
                     type="text"
                     placeholder="Event Name"
                     value={eventName}
                     onChange={(e) => setEventName(e.target.value)}
                 />
-                <button onClick={handleAddEvent}>Add</button>
-                <button onClick={onClose}>Close</button>
+                <button className="popup-button" onClick={handleAddEvent}>Add</button>
+                <button className="popup-button" onClick={onClose}>Close</button>
             </div>
         </div>
     );

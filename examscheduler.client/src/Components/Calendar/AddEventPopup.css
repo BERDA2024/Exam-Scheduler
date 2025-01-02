@@ -16,9 +16,15 @@
     border-radius: 8px;
     width: 300px;
     text-align: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    row-gap: 10px;
 }
 
-input {
+.popup-input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -26,7 +32,7 @@ input {
     border: 1px solid #ddd;
 }
 
-button {
+.popup-button {
     width: 100%;
     padding: 10px;
     background-color: #28a745;
@@ -35,6 +41,6 @@ button {
     cursor: pointer;
 }
 
-    button:hover {
+    .popup-button:hover {
         background-color: #218838;
     }

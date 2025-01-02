@@ -9,6 +9,14 @@ namespace ExamScheduler.Server.Source.Domain
         public int Id { get; set; }
 
         [Required]
+        [StringLength(100)]
+        public required string LongName { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public required string ShortName { get; set; }
+
+        [Required]
         [ForeignKey("Professor")]
         public required int ProfessorID { get; set; }
 
@@ -16,8 +24,10 @@ namespace ExamScheduler.Server.Source.Domain
         [ForeignKey("Department")]
         public required int DepartmentId { get; set; }
 
+        [Required]
         public int ExamDuration { get; set; }
 
+        [Required]
         [StringLength(50)]
         public required string ExamType { get; set; }
     }

@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { getAuthHeader } from '../Utils/AuthUtils';
+import React from 'react';
 import ChangePasswordForm from '../Forms/ChangePasswordForm';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
 import '../Styles/DashboardPage.css';
 
 const ProfileSettingsPage = () => {
-     return (
+    return (
         <div className="dashboard-container">
             {/* Body */}
             <div className="dashboard-body">
@@ -16,7 +15,7 @@ const ProfileSettingsPage = () => {
                         <StylizedBlock title="Change Password">
                             {/* Availability block */}
                             <div className="block-item">
-                                 <ChangePasswordForm />
+                                <ChangePasswordForm />
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>

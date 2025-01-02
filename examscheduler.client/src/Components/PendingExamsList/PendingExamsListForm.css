@@ -1,0 +1,36 @@
+﻿/* PendingExamsListForm.css */
+.scheduled-exams {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+    .scheduled-exams table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .scheduled-exams th, .scheduled-exams td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .scheduled-exams th {
+        background-color: #f4f4f4;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .scheduled-exams tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    .scheduled-exams p {
+        text-align: center;
+        color: #888;
+        font-size: 14px;
+    }

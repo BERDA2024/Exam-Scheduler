@@ -1,0 +1,13 @@
+﻿/*.dashboard-body {
+    display: grid;*/ /* Activează Grid */
+    /*grid-template-columns: 1fr 1fr;*/ /* Două coloane de dimensiuni egale */
+    /*gap: 20px;*/ /* Spațiu între blocuri */
+    /*padding: 20px;
+}
+
+.block-item {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}*/

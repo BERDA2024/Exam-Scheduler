@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1738743">
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1738743">
   <PropertyGroup>
     <StartupCommand>npm run dev</StartupCommand>
     <JavaScriptTestRoot>src\</JavaScriptTestRoot>
@@ -9,7 +9,15 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="src\Forms\NewFolder\**" />
+    <TypeScriptConfiguration Remove="src\Forms\NewFolder\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="src\Components\Calendar\" />
+    <Folder Include="src\Components\AcceptedExamsList\" />
+    <Folder Include="src\Components\DeclinedExamsList\" />
+    <Folder Include="src\Components\ScheduleRequest\" />
+    <Folder Include="src\Components\UserManagementTable\" />
     <Folder Include="src\Components\ScrollableContainer\" />
     <Folder Include="src\Components\StylizedBlock\" />
   </ItemGroup>

@@ -5,17 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ExamScheduler.Server.Source.Services;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Domain.Enums;
 
 namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, EmailService emailService) : ControllerBase
+    public class UserController(JwtTokenService jwtTokenService, UserManager<User> userManager, SignInManager<User> signInManager, EmailService emailService, RolesService userRoleService) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly SignInManager<User> _signInManager = signInManager;
         private readonly JwtTokenService _jwtTokenService = jwtTokenService;
         private readonly EmailService _emailService = emailService;
+        private readonly RolesService _userRoleService = userRoleService;
 
         [HttpGet("profile")]
         [Authorize] // Ensures that only authenticated users can access this endpoint
@@ -42,9 +44,9 @@ namespace ExamScheduler.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email};
+            var user = new User() { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);  // Hashes password automatically
-            
+
             if (result.Succeeded)
             {
                 try
@@ -63,6 +65,7 @@ namespace ExamScheduler.Server.Controllers
 
             return BadRequest(new { message = result.Errors });
         }
+
         // Method to change the user's password
         [Authorize]
         [HttpPost]
@@ -122,6 +125,29 @@ namespace ExamScheduler.Server.Controllers
             await _signInManager.SignOutAsync();  // Sign out the user
 
             return Ok(new { message = "User logged out successfully!" });
+        }
+
+        [HttpGet("roleSelection")]
+        [Authorize]
+        public async Task<IActionResult> GetRolesBasedOnUserRole()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+            if (userId == null) return BadRequest(new { message = "User not found" });
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found" });
+
+            var availableRoles = await _userRoleService.GetSubRoles(user);
+
+            if (availableRoles == null) return NotFound(new { message = "Roles not found" });
+
+            return Ok(availableRoles.Select(role => new
+            {
+                id = (int)role,
+                name = role.ToString()
+            }));
         }
     }
 }
