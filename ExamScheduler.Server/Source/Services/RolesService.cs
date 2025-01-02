@@ -26,10 +26,10 @@ namespace ExamScheduler.Server.Source.Services
                 return
                 [
                     RoleType.FacultyAdmin,
-                        RoleType.Secretary,
-                        RoleType.Professor,
-                        RoleType.Student,
-                        RoleType.StudentGroupLeader
+                    RoleType.Secretary,
+                    RoleType.Professor,
+                    RoleType.Student,
+                    RoleType.StudentGroupLeader
                 ];
             }
 

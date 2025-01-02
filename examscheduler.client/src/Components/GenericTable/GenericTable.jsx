@@ -14,7 +14,7 @@ const GenericTable = ({ columns, data, onEdit, onDelete }) => {
             </thead>
             <tbody>
                 {data.map((row) => (
-                    <tr key={row.id}> {/* Using the id as the key */}
+                    <tr key={row.id}>
                         {columns.map((col) => (
                             <td key={col.key}>{row[col.key]}</td>
                         ))}
@@ -24,17 +24,13 @@ const GenericTable = ({ columns, data, onEdit, onDelete }) => {
                                     <button
                                         className="generic-management-button"
                                         onClick={() => onEdit(row)}
-                                    >
-                                        Edit
-                                    </button>
+                                    >Edit</button>
                                 )}
                                 {onDelete && (
                                     <button
                                         className="generic-management-button"
-                                        onClick={() => onDelete(row.id)} // Pass the id for deletion
-                                    >
-                                        Delete
-                                    </button>
+                                        onClick={() => onDelete(row.id)}
+                                    >Delete</button>
                                 )}
                             </td>
                         )}
