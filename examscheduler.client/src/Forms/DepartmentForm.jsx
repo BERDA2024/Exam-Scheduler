@@ -3,8 +3,8 @@ import { getAuthHeader } from '../Utils/AuthUtils';
 import { getURL } from '../Utils/URLUtils';
 import "./FormStyles.css";
 
-const FacultyForm = ({ faculty, onClose, onRefresh }) => {
-    const [facultyDetails, setFacultyDetails] = useState(faculty ? faculty : { id: 0, longName: '', shortName: ''});
+const DepartmentForm = ({ department, onClose, onRefresh }) => {
+    const [departmentDetails, setDepDetails] = useState(department ? department : { id: 0, longName: '', shortName: '',facultyName:'' });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const authHeader = getAuthHeader();
@@ -14,8 +14,8 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
         const { name, value } = e.target;
         setSuccessMessage('');
         setErrorMessage('');
-        setFacultyDetails((facultyDetails) => ({
-            ...facultyDetails,
+        setDepDetails((depDetails) => ({
+            ...depDetails,
             [name]: value, // Dynamically update the corresponding property
         }));
     };
@@ -28,35 +28,26 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
         setSuccessMessage('');
 
         if (authHeader) {
-            console.log(facultyDetails);
-            const response = await fetch(address + `api/Admin/faculties/` + (faculty ? `edit` : ``), {
-                method: (faculty ? "PUT" : "POST"),
+            console.log(departmentDetails);
+            const response = await fetch(address + `api/Department/` + (department ? `${ departmentDetails.id }` : ``), {
+                method: (department? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    Id: facultyDetails.id,
-                    LongName: facultyDetails.longName,
-                    ShortName: facultyDetails.shortName,
+                    Id: departmentDetails.id,
+                    ShortName: departmentDetails.shortName,
+                    LongName: departmentDetails.longName,
+                    FacultyName: departmentDetails.facultyName
                 }),
             });
 
-            const text = await response.text();  // Get raw response text
-
-            let result;
-            try {
-                result = JSON.parse(text);  // Attempt to parse it as JSON
-            } catch (e) {
-                setErrorMessage("Invalid server response.");
-                console.error(text);
-                return;
-            }
             if (response.ok) {
-                setSuccessMessage(result.message); // This will be the success message returned from the API
-                onRefresh(); // Refresh the user list
+                setSuccessMessage(response.message);
+                onRefresh(); // Refresh the list
                 onClose(); // Close the form
             }
             else {
-                setErrorMessage('Operation Failed. ' + result.message);
-                console.error(result.message);
+                setErrorMessage('Operation Failed');
+                console.error(response.message);
             }
         }
     };
@@ -71,7 +62,7 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                         <input
                             type="text"
                             name="longName"
-                            value={facultyDetails.longName}
+                            value={departmentDetails.longName}
                             onChange={handleChange}
                         />
                     </div>
@@ -81,7 +72,7 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                         <input
                             type="text"
                             name="shortName"
-                            value={facultyDetails.shortName}
+                            value={departmentDetails.shortName}
                             onChange={handleChange}
                         />
                     </div>
@@ -93,7 +84,7 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
                     {errorMessage && <div className="message message-error">{errorMessage}</div>}
 
                     <div className="form-buttons">
-                        <button type="submit">{faculty ? "Update" : "Add"} Faculty</button>
+                        <button type="submit">{department ? "Update" : "Add"} Department</button>
                         <button type="button" onClick={onClose}>
                             Cancel
                         </button>
@@ -104,4 +95,4 @@ const FacultyForm = ({ faculty, onClose, onRefresh }) => {
     );
 };
 
-export default FacultyForm;
+export default DepartmentForm;

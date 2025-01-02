@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { getUserRole } from '../Utils/RoleUtils';
 import DashboardPage from '../Pages/DashboardPage';
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import ManageUsersPage from '../Pages/ManageUsersPage';
 import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
+import ManageDepartmentsPage from '../Pages/ManageDepartmentsPage';
 import CalendarPage from '../Pages/CalendarPage';
+import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
 import './Sidebar.css';
+import ManageClassroomsPage from '../Pages/ManageClassroomsPage';
 
 const Sidebar = ({ setActiveContent }) => {
     const [userRole, setUserRole] = useState(null);
@@ -20,9 +23,13 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Admin Dashboard", action: <DashboardPage /> },
             { label: "Manage Users", action: <ManageUsersPage /> },
             { label: "Manage Faculties", action: <ManageFacultiesPage /> },
+            { label: "Manage Departments", action: <ManageDepartmentsPage /> },
+            
         ],
         FacultyAdmin: [
-            { label: "Manage Users", action: <ManageUsersPage /> }
+            { label: "Manage Users", action: <ManageUsersPage /> },
+            { label: "Manage Departments", action: <ManageDepartmentsPage /> },
+            { label: "Manage Classrooms", action: <ManageClassroomsPage /> }
         ],
         Secretary: [
             { label: "Manage Users", action: <ManageUsersPage /> }
@@ -40,7 +47,8 @@ const Sidebar = ({ setActiveContent }) => {
 
     const commonButtons = [
         { label: "Calendar", action: <CalendarPage /> },
-        { label: "Settings", action: <ProfileSettingsPage /> }
+        { label: "Settings", action: <ProfileSettingsPage /> },
+        { label: "Notificări", action: <NotificationSettingsPage /> }, // Buton adăugat aici
     ];
 
     const getActionFromLabel = (label) => {
