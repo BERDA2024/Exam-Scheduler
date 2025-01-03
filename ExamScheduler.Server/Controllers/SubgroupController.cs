@@ -22,12 +22,6 @@ namespace ExamScheduler.Server.Source.Controllers
         public async Task<ActionResult<IEnumerable<SubgroupModel>>> GetSubgroups()
         {
             var subgroups = await _context.Subgroup
-                .Select(s => new SubgroupModel
-                {
-                    Id = s.Id,
-                    GroupId = s.GroupId,
-                    SubgroupIndex = s.SubgroupIndex
-                })
                 .ToListAsync();
 
             return Ok(subgroups);
@@ -47,7 +41,6 @@ namespace ExamScheduler.Server.Source.Controllers
             var subgroupModel = new SubgroupModel
             {
                 Id = subgroup.Id,
-                GroupId = subgroup.GroupId,
                 SubgroupIndex = subgroup.SubgroupIndex
             };
 
@@ -65,7 +58,7 @@ namespace ExamScheduler.Server.Source.Controllers
 
             var subgroup = new Subgroup
             {
-                GroupId = model.GroupId,
+                GroupId = 0,//model.GroupId,
                 SubgroupIndex = model.SubgroupIndex
             };
 
@@ -97,7 +90,7 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound();
             }
 
-            subgroup.GroupId = model.GroupId;
+            //subgroup.GroupId = model.GroupId;
             subgroup.SubgroupIndex = model.SubgroupIndex;
 
             _context.Subgroup.Update(subgroup);
