@@ -184,25 +184,6 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("GroupSubject");
                 });
 
-            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.GroupSubject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GroupID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubjectID")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GroupSubject");
-                });
-
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Professor", b =>
                 {
                     b.Property<int>("Id")

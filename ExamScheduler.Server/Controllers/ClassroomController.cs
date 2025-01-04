@@ -21,12 +21,14 @@ namespace ExamScheduler.Server.Controllers
         private readonly RolesService _rolesService = roleService;
 
         [HttpGet]
-        [Authorize(Roles = "Admin,FacultyAdmin")]
+        [Authorize(Roles = "Admin,FacultyAdmin,StudentGroupLeader")]
         public async Task<IActionResult> GetAllClassrooms()
         {
             var classrooms = await _context.Classroom.ToListAsync();
+            Console.WriteLine($"Classrooms fetched: {classrooms.Count}");
             return Ok(classrooms);
         }
+
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,FacultyAdmin")]

@@ -64,7 +64,6 @@ namespace ExamScheduler.Server.Source.Controllers
             return Ok(scheduleRequestModel);
         }
 
-
         // POST: api/ScheduleRequest
         [HttpPost]
         [Authorize(Roles = "Admin,StudentGroupLeader")]
@@ -108,7 +107,6 @@ namespace ExamScheduler.Server.Source.Controllers
             return CreatedAtAction(nameof(GetScheduleRequest), new { id = scheduleRequest.Id }, model);
         }
 
-
         // PUT: api/ScheduleRequest/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateScheduleRequest(int id, ScheduleRequestModel model)
@@ -132,6 +130,20 @@ namespace ExamScheduler.Server.Source.Controllers
             scheduleRequest.StudentID = model.StudentID;
             scheduleRequest.RequestStateID = model.RequestStateID;
             scheduleRequest.StartDate = model.StartDate;
+
+            if (!string.IsNullOrEmpty(model.ClassroomName))
+            {
+                var classroom = await _context.Classroom
+                    .Where(c => c.Name == model.ClassroomName)
+                    .FirstOrDefaultAsync();
+
+                if (classroom == null)
+                {
+                    return NotFound(new { message = "Classroom not found." });
+                }
+
+                scheduleRequest.ClassroomID = classroom.Id;
+            }
 
             _context.ScheduleRequest.Update(scheduleRequest);
             await _context.SaveChangesAsync();
