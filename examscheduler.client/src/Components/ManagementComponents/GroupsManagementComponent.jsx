@@ -75,14 +75,14 @@ const GroupsManagementComponent = () => {
                         method: "DELETE",
                         headers: { ...authHeader }
                     });
-                    const data = await response.json();
 
                     if (response.ok) {
+                        const data = await response.json();
                         fetchGroups();
                         console.log(data);
                     } else {
                         console.error('Failed to delete');
-                        console.error(data);
+                        console.error(response);
                     }
                 } catch (error) {
                     setError('An error occurred. Please try again.');

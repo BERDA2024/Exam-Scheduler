@@ -13,5 +13,7 @@ namespace ExamScheduler.Server.Source.Models
         [Required(ErrorMessage = "SubgroupIndex is required.")]
         [StringLength(1, ErrorMessage = "SubgroupIndex must be a single character.")]
         public string SubgroupIndex { get; set; } = string.Empty; // Indexul subgrupului
+
+        public string FullName { get; set; } = string.Empty;
     }
 }

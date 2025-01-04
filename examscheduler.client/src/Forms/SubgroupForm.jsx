@@ -4,8 +4,8 @@ import { getURL } from '../Utils/URLUtils';
 import "./FormStyles.css";
 import DepartmentSelector from "../Utils/DepartmentSelector";
 
-const GroupForm = ({ group, onClose, onRefresh }) => {
-    const [groupDetails, setGroupDetails] = useState(group ? group : { id: 0, departmentName: '', groupName: '', studyYear: 0 });
+const SubgroupForm = ({ subgroup, onClose, onRefresh }) => {
+    const [subgroupDetails, setSubgroupDetails] = useState(subgroup ? subgroup : { id: 0, groupName: '', subgroupIndex: '', fullName: '' });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const authHeader = getAuthHeader();
@@ -15,8 +15,8 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
         const { name, value } = e.target;
         setSuccessMessage('');
         setErrorMessage('');
-        setGroupDetails((groupDetails) => ({
-            ...groupDetails,
+        setSubgroupDetails((subgroupDetails) => ({
+            ...subgroupDetails,
             [name]: value, // Dynamically update the corresponding property
         }));
     };
@@ -29,14 +29,14 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
         setSuccessMessage('');
 
         if (authHeader) {
-            const response = await fetch(address + `api/Group/` + (group ? `${ groupDetails.id }` : ``), {
-                method: (group? "PUT" : "POST"),
+            const response = await fetch(address + `api/Subgroup/` + (subgroup ? `${ subgroupDetails.id }` : ``), {
+                method: (subgroup? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    Id: groupDetails.id,
-                    DepartmentName: groupDetails.departmentName,
-                    GroupName: groupDetails.groupName,
-                    StudyYear: groupDetails.studyYear
+                    Id: subgroupDetails.id,
+                    GroupName: subgroupDetails.groupName,
+                    SubgroupIndex: subgroupDetails.subgroupIndex.toLowerCase(),
+                    FullName: subgroupDetails.fullName
                 }),
             });
             if (response.ok) {
@@ -45,7 +45,7 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
                 onClose(); // Close the form
             }
             else {
-                setErrorMessage('Operation Failed');
+                setErrorMessage('Operation Failed. ' + response.message);
                 console.error(response);
             }
         }
@@ -56,35 +56,29 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
             <div className="form">
                 <form onSubmit={handleSubmit}>
 
-                     <div className="form-input-div">
-                        <label>Department:</label>
-                        <DepartmentSelector
-                            selectName="departmentName" // Ensure this matches the key in groupDetails
-                            departmentValue={groupDetails.departmentName}
-                            onDepartmentChange={handleChange}
-                            includeNone={true}
-                        />
-                    </div>
-
                     <div className="form-input-div">
                         <label>Group Name:</label>
                         <input
                             type="text"
                             name="groupName"
-                            value={groupDetails.groupName}
+                            value={subgroupDetails.groupName}
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="form-input-div">
-                        <label>Study Year:</label>
+                        <label>Index:</label>
                         <input
-                            type="number"
-                            name="studyYear"
-                            value={groupDetails.studyYear}
-                            min="1" // Minimum value allowed
-                            max="6" // Maximum value allowed
-                            onChange={handleChange}
+                            type="text"
+                            name="subgroupIndex"
+                            value={subgroupDetails.subgroupIndex}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Allow only a single character that is a letter (a-z, A-Z)
+                                if (value.length <= 1 && /^[a-zA-Z]?$/.test(value)) {
+                                    handleChange(e);
+                                }
+                            }}
                         />
                     </div>
 
@@ -95,7 +89,7 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
                     {errorMessage && <div className="message message-error">{errorMessage}</div>}
 
                     <div className="form-buttons">
-                        <button type="submit">{group ? "Update" : "Add"} Group</button>
+                        <button type="submit">{subgroup ? "Update" : "Add"} Subgroup</button>
                         <button type="button" onClick={onClose}>
                             Cancel
                         </button>
@@ -106,4 +100,4 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
     );
 };
 
-export default GroupForm;
+export default SubgroupForm;

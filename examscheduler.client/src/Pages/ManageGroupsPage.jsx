@@ -2,6 +2,7 @@ import React from 'react';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
 import GroupsManagementComponent from '../Components/ManagementComponents/GroupsManagementComponent';
+import SubgroupsManagementComponent from '../Components/ManagementComponents/SubgroupsManagementComponent';
 import '../Styles/DashboardPage.css';
 
 const GroupsManagementPage = () => {
@@ -16,6 +17,12 @@ const GroupsManagementPage = () => {
                             {/* Availability block */}
                             <div className="block-item">
                                 <GroupsManagementComponent />
+                            </div>
+                        </StylizedBlock>
+                        <StylizedBlock title="Manage Subgroups">
+                            {/* Availability block */}
+                            <div className="block-item">
+                                <SubgroupsManagementComponent />
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>

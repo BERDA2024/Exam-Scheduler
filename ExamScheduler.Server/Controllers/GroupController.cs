@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace ExamScheduler.Server.Source.Controllers
+namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -71,10 +71,7 @@ namespace ExamScheduler.Server.Source.Controllers
         {
             var group = await _context.Group.FindAsync(id);
 
-            if (group == null)
-            {
-                return NotFound();
-            }
+            if (group == null) return NotFound(new { message = "Group not found." });
 
             var department = await _context.Department.FirstOrDefaultAsync(d => d.Id == id);
 
