@@ -16,6 +16,8 @@ namespace ExamScheduler.Server.Source.Domain
         [ForeignKey("Student")]
         public int StudentID { get; set; }
 
+        public int? SubgroupID { get; set; } // Acesta poate fi null, conform clasei StudentModel
+
         [Required]
         [ForeignKey("RequestState")]
         public int RequestStateID { get; set; }
@@ -27,7 +29,18 @@ namespace ExamScheduler.Server.Source.Domain
         [Required]
         public DateTime StartDate { get; set; }
 
+        [Required]
+        public int ExamDuration { get; set; } // Durata examenului în minute
+
+        [Required]
+        [StringLength(50)]
+        public string ExamType { get; set; } // Tipul examenului (de exemplu, "Oral", "Written")
+
+        public string? RejectionReason { get; set; } // Motivul respingerii (dacă există)
+
         public Subject Subject { get; set; }
+        public Student Student { get; set; }
         public Classroom Classroom { get; set; }
     }
+
 }
