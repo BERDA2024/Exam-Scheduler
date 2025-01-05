@@ -10,6 +10,8 @@ namespace ExamScheduler.Server.Source.Models
         [Required(ErrorMessage = "StudentID is required.")]
         public int StudentID { get; set; }
 
+        public int? SubgroupID { get; set; } // Adăugat SubgroupID
+
         [Required(ErrorMessage = "RequestStateID is required.")]
         public int RequestStateID { get; set; }
 

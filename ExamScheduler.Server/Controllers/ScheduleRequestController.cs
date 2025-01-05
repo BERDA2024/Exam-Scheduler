@@ -26,17 +26,21 @@ namespace ExamScheduler.Server.Source.Controllers
         public async Task<ActionResult<IEnumerable<ScheduleRequestModel>>> GetScheduleRequests()
         {
             var scheduleRequests = await _context.ScheduleRequest
+                .Include(sr => sr.Student)
+                .Include(sr => sr.Subject)
+                .Include(sr => sr.Classroom)
                 .Select(sr => new ScheduleRequestModel
                 {
                     Id = sr.Id,
                     SubjectName = sr.Subject != null ? sr.Subject.LongName : "Unknown",
                     StudentID = sr.StudentID,
+                    SubgroupID = sr.SubgroupID, // Preluăm SubgroupID din ScheduleRequest
                     RequestStateID = sr.RequestStateID,
                     ClassroomName = sr.Classroom != null ? sr.Classroom.Name : "Unknown",
                     StartDate = sr.StartDate,
                     ExamDuration = sr.ExamDuration,
                     ExamType = sr.ExamType,
-                    RejectionReason = sr.RejectionReason
+                    RejectionReason = sr.RejectionReason ?? "Not specified"
                 })
                 .ToListAsync();
 
@@ -62,12 +66,13 @@ namespace ExamScheduler.Server.Source.Controllers
                 Id = scheduleRequest.Id,
                 SubjectName = scheduleRequest.Subject?.LongName ?? "Unknown",
                 StudentID = scheduleRequest.StudentID,
+                SubgroupID = scheduleRequest.SubgroupID, // Preluăm SubgroupID
                 RequestStateID = scheduleRequest.RequestStateID,
                 ClassroomName = scheduleRequest.Classroom?.Name ?? "Unknown",
                 StartDate = scheduleRequest.StartDate,
                 ExamDuration = scheduleRequest.ExamDuration,
                 ExamType = scheduleRequest.ExamType,
-                RejectionReason = scheduleRequest.RejectionReason
+                RejectionReason = scheduleRequest.RejectionReason ?? "Not specified"
             };
 
             return Ok(scheduleRequestModel);
@@ -86,7 +91,7 @@ namespace ExamScheduler.Server.Source.Controllers
 
             _logger.LogInformation("Received schedule request: {@Model}", model);
 
-            // Fetch Subject ID
+            // Obținem SubjectID din baza de date
             var subjectId = await _context.Subject
                 .Where(s => s.LongName == model.SubjectName)
                 .Select(s => s.Id)
@@ -99,7 +104,7 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound(new { message = errorMessage });
             }
 
-            // Fetch Classroom ID
+            // Obținem ClassroomID din baza de date
             var classroomId = await _context.Classroom
                 .Where(c => c.Name == model.ClassroomName)
                 .Select(c => c.Id)
@@ -112,21 +117,20 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound(new { message = errorMessage });
             }
 
-            // Verificare dacă există suprapuneri
-            var overlappingExam = await _context.ScheduleRequest
-                .Where(sr => sr.ClassroomID == classroomId &&
-                             sr.StartDate < model.StartDate.AddMinutes(model.ExamDuration) &&
-                             model.StartDate < sr.StartDate.AddMinutes(sr.ExamDuration))
+            // Obținem SubgroupID din Student
+            var subgroupId = await _context.Student
+                .Where(s => s.Id == model.StudentID)
+                .Select(s => s.SubgroupID)
                 .FirstOrDefaultAsync();
 
-            if (overlappingExam != null)
+            if (subgroupId == null)
             {
-                var errorMessage = $"Classroom '{model.ClassroomName}' is already booked during this time.";
+                var errorMessage = $"Student with ID {model.StudentID} does not belong to any subgroup.";
                 _logger.LogWarning(errorMessage);
-                return Conflict(new { message = errorMessage });
+                return NotFound(new { message = errorMessage });
             }
 
-            // Validate StartDate
+            // Verificăm dacă StartDate este în trecut
             if (model.StartDate < DateTime.Now)
             {
                 var errorMessage = "StartDate cannot be in the past.";
@@ -136,11 +140,13 @@ namespace ExamScheduler.Server.Source.Controllers
 
             try
             {
+                // Creăm obiectul ScheduleRequest
                 var scheduleRequest = new ScheduleRequest
                 {
                     SubjectID = subjectId,
                     StudentID = model.StudentID,
-                    RequestStateID = 1, // Default state
+                    SubgroupID = subgroupId.Value, // Setăm SubgroupID
+                    RequestStateID = 1, // Statusul inițial (poate fi configurat diferit)
                     ClassroomID = classroomId,
                     StartDate = model.StartDate,
                     ExamDuration = model.ExamDuration,
@@ -148,6 +154,7 @@ namespace ExamScheduler.Server.Source.Controllers
                     RejectionReason = model.RejectionReason
                 };
 
+                // Adăugăm cererea în baza de date
                 _context.ScheduleRequest.Add(scheduleRequest);
                 await _context.SaveChangesAsync();
 
@@ -186,16 +193,10 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound(new { message = $"Schedule request with ID {id} not found." });
             }
 
-            // Actualizează doar câmpurile care au fost modificate
+            // Actualizăm ScheduleRequest
             scheduleRequest.StudentID = model.StudentID;
             scheduleRequest.RequestStateID = model.RequestStateID;
-
-            // Verifică dacă data de început a fost modificată
-            if (model.StartDate != DateTime.MinValue && model.StartDate != scheduleRequest.StartDate)
-            {
-                scheduleRequest.StartDate = model.StartDate;
-            }
-
+            scheduleRequest.StartDate = model.StartDate != DateTime.MinValue ? model.StartDate : scheduleRequest.StartDate;
             scheduleRequest.ExamDuration = model.ExamDuration;
             scheduleRequest.ExamType = model.ExamType;
             scheduleRequest.RejectionReason = model.RejectionReason;

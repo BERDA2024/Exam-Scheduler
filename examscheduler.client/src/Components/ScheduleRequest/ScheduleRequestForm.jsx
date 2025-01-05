@@ -202,7 +202,7 @@ const ScheduleRequestForm = () => {
             StartDate: examDetails.StartDate,
             ClassroomName: examDetails.Classroom,
             ExamDuration: 90, // Default duration
-            ExamType: 'Written', // Default exam type
+            ExamType: 'NULL', // Default exam type
             RejectionReason: null, // Default rejection reason
             StudentID: 1, // Assume StudentID is 1 or fetch it from auth
             RequestStateID: 1, // Default request state (pending)

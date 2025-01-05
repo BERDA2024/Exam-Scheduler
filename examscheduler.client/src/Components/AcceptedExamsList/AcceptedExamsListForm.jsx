@@ -22,9 +22,14 @@ const AcceptedExamsListForm = () => {
             if (response.ok) {
                 const data = await response.json();
 
+                // Filtrăm examenele acceptate (requestStateID === 2)
                 const filteredExams = data.filter((exam) => exam.requestStateID === 2);
-                setScheduledExams(filteredExams);
-                console.log(filteredExams);
+
+                // Sortăm examenele după data de început
+                const sortedExams = filteredExams.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+                setScheduledExams(sortedExams);
+                console.log(sortedExams);
             } else {
                 setError('Failed to fetch scheduled exams.');
             }

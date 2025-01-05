@@ -113,62 +113,66 @@ const EditSubjectsForm = () => {
             {scheduleRequests.length === 0 ? (
                 <p>No accepted exams available.</p>
             ) : (
-                <ul>
-                    {scheduleRequests.map((request) => (
-                        <li key={request.id}>
-                            {editRequest?.id === request.id ? (
-                                <div className="edit-form">
-                                    <label>
-                                        Exam Type:
-                                        <select
-                                            name="examType"
-                                            value={editRequest.examType}
-                                            onChange={handleChange}
-                                        >
-                                            {examTypes.map((type) => (
-                                                <option key={type} value={type}>
-                                                    {type}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                    <label>
-                                        Exam Duration (minutes):
-                                        <input
-                                            type="number"
-                                            name="examDuration"
-                                            value={editRequest.examDuration}
-                                            onChange={handleChange}
-                                            min="10"
-                                            max="300"
-                                        />
-                                    </label>
-                                    <label>
-                                        Start Date:
-                                        <input
-                                            type="date"
-                                            name="startDate"
-                                            value={editRequest.startDate}
-                                            onChange={handleChange}
-                                        />
-                                    </label>
-                                    <button onClick={handleSave}>Save</button>
-                                    <button onClick={() => setEditRequest(null)}>Cancel</button>
-                                </div>
-                            ) : (
-                                <div className="schedule-details">
-                                    <span>
-                                        {request.subjectName} -{" "}
-                                        Type: {request.examType || "N/A"}, Duration:{" "}
-                                        {request.examDuration || "N/A"} minutes, Date:{" "}
-                                        {new Date(request.startDate).toLocaleString()}
-                                    </span>
-                                    <button onClick={() => handleEdit(request)}>Edit</button>
-                                </div>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                    <ul>
+                        {scheduleRequests
+                            .slice() // Crează o copie a array-ului pentru a nu modifica array-ul original
+                            .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)) // Sortează cererile după data startDate
+                            .reverse()
+                            .map((request) => (
+                                <li key={request.id}>
+                                    {editRequest?.id === request.id ? (
+                                        <div className="edit-form">
+                                            <label>
+                                                Exam Type:
+                                                <select
+                                                    name="examType"
+                                                    value={editRequest.examType}
+                                                    onChange={handleChange}
+                                                >
+                                                    {examTypes.map((type) => (
+                                                        <option key={type} value={type}>
+                                                            {type}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </label>
+                                            <label>
+                                                Exam Duration (minutes):
+                                                <input
+                                                    type="number"
+                                                    name="examDuration"
+                                                    value={editRequest.examDuration}
+                                                    onChange={handleChange}
+                                                    min="10"
+                                                    max="300"
+                                                />
+                                            </label>
+                                            <label>
+                                                Start Date:
+                                                <input
+                                                    type="date"
+                                                    name="startDate"
+                                                    value={editRequest.startDate}
+                                                    onChange={handleChange}
+                                                />
+                                            </label>
+                                            <button onClick={handleSave}>Save</button>
+                                            <button onClick={() => setEditRequest(null)}>Cancel</button>
+                                        </div>
+                                    ) : (
+                                        <div className="schedule-details">
+                                            <span>
+                                                {request.subjectName} -{" "}
+                                                Type: {request.examType || "N/A"}, Duration:{" "}
+                                                {request.examDuration || "N/A"} minutes, Date:{" "}
+                                                {new Date(request.startDate).toLocaleString()}
+                                            </span>
+                                            <button onClick={() => handleEdit(request)}>Edit</button>
+                                        </div>
+                                    )}
+                                </li>
+                            ))}
+                    </ul>
             )}
         </div>
     );

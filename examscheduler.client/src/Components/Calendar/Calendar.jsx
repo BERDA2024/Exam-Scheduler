@@ -19,16 +19,14 @@ const Calendar = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
 
-        const firstDayOfMonth = new Date(year, month, 1).getDay(); // Ziua săptămânii (0 - Duminică)
-        const daysInThisMonth = new Date(year, month + 1, 0).getDate(); // Nr. de zile în lună
-        const daysInLastMonth = new Date(year, month, 0).getDate(); // Nr. de zile în luna anterioară
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInThisMonth = new Date(year, month + 1, 0).getDate();
+        const daysInLastMonth = new Date(year, month, 0).getDate();
 
-        // Calculează offset-ul pentru a începe din ziua săptămânii corectă
         const leadingDays = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
         const days = [];
 
-        // Adaugă zilele din luna precedentă
         for (let i = leadingDays; i > 0; i--) {
             days.push({
                 date: new Date(year, month - 1, daysInLastMonth - i + 1),
@@ -36,7 +34,6 @@ const Calendar = () => {
             });
         }
 
-        // Adaugă zilele curente
         for (let i = 1; i <= daysInThisMonth; i++) {
             days.push({
                 date: new Date(year, month, i),
@@ -44,7 +41,6 @@ const Calendar = () => {
             });
         }
 
-        // Adaugă zilele din luna următoare pentru completare
         const trailingDays = 7 - (days.length % 7);
         for (let i = 1; i <= trailingDays && trailingDays < 7; i++) {
             days.push({
@@ -78,6 +74,8 @@ const Calendar = () => {
                         hour: '2-digit',
                         minute: '2-digit',
                     }),
+                    examType: exam.examType || 'Unknown',
+                    duration: exam.examDuration || 0,
                 });
 
                 return acc;
@@ -91,21 +89,17 @@ const Calendar = () => {
 
     const handlePreviousMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-        setSelectedDay(null);  // Resetarea selecției la schimbarea lunii
+        setSelectedDay(null);
     };
 
     const handleNextMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-        setSelectedDay(null);  // Resetarea selecției la schimbarea lunii
+        setSelectedDay(null);
     };
 
     const handleDayClick = (day) => {
-        // Verifică dacă ziua face parte din luna curentă și anul curent
         if (day.isCurrentMonth) {
-            const isSameMonthYear = day.date.getMonth() === currentDate.getMonth() && day.date.getFullYear() === currentDate.getFullYear();
-            if (isSameMonthYear) {
-                setSelectedDay(day.date.getDate());
-            }
+            setSelectedDay(day.date.getDate());
         }
     };
 
@@ -136,7 +130,7 @@ const Calendar = () => {
                         <div
                             key={index}
                             className={`calendar-day ${day.isCurrentMonth ? 'current-month' : 'other-month'
-                                } ${hasExam ? 'has-exam' : ''} ${selectedDay === day.date.getDate() ? 'selected' : ''
+                                } ${hasExam ? 'has-exam' : ''} ${selectedDay === day.date.getDate() && day.isCurrentMonth ? 'selected' : ''
                                 }`}
                             onClick={() => handleDayClick(day)}
                         >
@@ -145,16 +139,18 @@ const Calendar = () => {
                     );
                 })}
             </div>
-            <DayDetail
-                selectedDay={selectedDay}
-                events={
-                    selectedDay
-                        ? examDays[
-                        `${currentDate.getFullYear()}-${currentDate.getMonth()}-${selectedDay}`
-                        ] || []
-                        : []
-                }
-            />
+            {selectedDay && (
+                <DayDetail
+                    selectedDay={selectedDay}
+                    events={
+                        selectedDay
+                            ? examDays[
+                            `${currentDate.getFullYear()}-${currentDate.getMonth()}-${selectedDay}`
+                            ] || []
+                            : []
+                    }
+                />
+            )}
         </div>
     );
 };

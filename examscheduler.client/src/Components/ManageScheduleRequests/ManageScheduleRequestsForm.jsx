@@ -78,57 +78,60 @@ const ManageScheduleRequestsForm = () => {
             <h3>Schedule Requests</h3>
             {error && <p className="error-message">{error}</p>}
             <ul>
-                {scheduleRequests.map((request) => (
-                    <li key={request.id}>
-                        <p>
-                            <strong>Subject:</strong> {request.subjectName} <br />
-                            <strong>Student:</strong> {request.studentID} <br />
-                            <strong>Date:</strong> {new Date(request.startDate).toLocaleString()} <br />
-                            <strong>Classroom:</strong> {request.classroomName} <br />
-                            <strong>Status:</strong>{' '}
-                            {request.requestStateID === 1
-                                ? 'Pending'
-                                : request.requestStateID === 2
-                                    ? 'Approved'
-                                    : 'Rejected'}
-                            {request.requestStateID === 3 && request.rejectionReason && (
-                                <span>
-                                    <br />
-                                    <strong>Reason:</strong> {request.rejectionReason}
-                                </span>
-                            )}
-                        </p>
-                        <div className="buttons">
-                            <button
-                                onClick={() => updateRequestState(request.id, 2)}
-                                className="approve"
-                                disabled={request.requestStateID === 2} // Disable if already approved
-                            >
-                                Approve
-                            </button>
-                            <button
-                                onClick={() => updateRequestState(request.id, 3)}
-                                className="reject"
-                            >
-                                Reject
-                            </button>
-                            {(request.requestStateID === 1 || request.requestStateID === 2 || request.requestStateID === 3) && (
-                                <div className="rejection-reason">
-                                    <label>
-                                        Rejection Reason:
-                                        <textarea
-                                            value={rejectionReasons[request.id] || ''}
-                                            onChange={(e) =>
-                                                handleRejectionReasonChange(request.id, e.target.value)
-                                            }
-                                            placeholder="Enter reason for rejection..."
-                                        />
-                                    </label>
-                                </div>
-                            )}
-                        </div>
-                    </li>
-                ))}
+                {scheduleRequests
+                    .slice() // Crează o copie a array-ului pentru a nu modifica array-ul original
+                    .reverse() // Inversează ordinea
+                    .map((request) => (
+                        <li key={request.id}>
+                            <p>
+                                <strong>Subject:</strong> {request.subjectName} <br />
+                                <strong>Student:</strong> {request.studentID} <br />
+                                <strong>Date:</strong> {new Date(request.startDate).toLocaleString()} <br />
+                                <strong>Classroom:</strong> {request.classroomName} <br />
+                                <strong>Status:</strong>{' '}
+                                {request.requestStateID === 1
+                                    ? 'Pending'
+                                    : request.requestStateID === 2
+                                        ? 'Approved'
+                                        : 'Rejected'}
+                                {request.requestStateID === 3 && request.rejectionReason && (
+                                    <span>
+                                        <br />
+                                        <strong>Reason:</strong> {request.rejectionReason}
+                                    </span>
+                                )}
+                            </p>
+                            <div className="buttons">
+                                <button
+                                    onClick={() => updateRequestState(request.id, 2)}
+                                    className="approve"
+                                    disabled={request.requestStateID === 2} // Disable if already approved
+                                >
+                                    Approve
+                                </button>
+                                <button
+                                    onClick={() => updateRequestState(request.id, 3)}
+                                    className="reject"
+                                >
+                                    Reject
+                                </button>
+                                {(request.requestStateID === 1 || request.requestStateID === 2 || request.requestStateID === 3) && (
+                                    <div className="rejection-reason">
+                                        <label>
+                                            Rejection Reason:
+                                            <textarea
+                                                value={rejectionReasons[request.id] || ''}
+                                                onChange={(e) =>
+                                                    handleRejectionReasonChange(request.id, e.target.value)
+                                                }
+                                                placeholder="Enter reason for rejection..."
+                                            />
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
+                        </li>
+                    ))}
             </ul>
         </div>
     );

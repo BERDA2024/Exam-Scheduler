@@ -22,8 +22,13 @@ const DeclinedExamsListForm = () => {
             if (response.ok) {
                 const data = await response.json();
 
+                // Filtrăm examenele cu RequestStateID = 3 (pentru examenele respinse)
                 const filteredExams = data.filter((exam) => exam.requestStateID === 3);
-                setScheduledExams(filteredExams);
+
+                // Verificăm dacă lista de examene este deja actualizată
+                if (filteredExams.length > 0 && filteredExams.length !== scheduledExams.length) {
+                    setScheduledExams(filteredExams); // Setăm lista cu examenele noi
+                }
                 console.log(filteredExams);
             } else {
                 setError('Failed to fetch scheduled exams.');
@@ -32,6 +37,7 @@ const DeclinedExamsListForm = () => {
             setError('An error occurred while fetching scheduled exams.');
         }
     };
+
 
     return (
         <div>
