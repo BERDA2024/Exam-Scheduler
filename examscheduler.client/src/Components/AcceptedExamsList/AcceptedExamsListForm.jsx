@@ -4,7 +4,7 @@ import { getAuthHeader } from '../../Utils/AuthUtils';
 
 const AcceptedExamsListForm = () => {
     const [scheduledExams, setScheduledExams] = useState([]);
-    const [error, setError] = useState(null); 
+    const [error, setError] = useState(null);
     const authHeader = getAuthHeader();
 
     // Fetch scheduled exams on load
@@ -45,6 +45,8 @@ const AcceptedExamsListForm = () => {
                                 <th>Subject</th>
                                 <th>Start Date</th>
                                 <th>Classroom</th>
+                                <th>Duration</th>
+                                <th>Exam Type</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,6 +55,8 @@ const AcceptedExamsListForm = () => {
                                     <td>{exam.subjectName || 'Unknown'}</td>
                                     <td>{new Date(exam.startDate).toLocaleString()}</td>
                                     <td>{exam.classroomName || 'Unknown'}</td>
+                                    <td>{exam.examDuration ? `${exam.examDuration} minutes` : 'Unknown'}</td>
+                                    <td>{exam.examType || 'Unknown'}</td>
                                 </tr>
                             ))}
                         </tbody>

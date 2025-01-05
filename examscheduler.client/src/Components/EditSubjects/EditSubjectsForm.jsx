@@ -6,10 +6,9 @@ const EditSubjectsForm = () => {
     const [scheduleRequests, setScheduleRequests] = useState([]);
     const [editRequest, setEditRequest] = useState(null);
     const [error, setError] = useState(null);
-    const [classrooms, setClassrooms] = useState([]); // Lista de săli din backend
-    const [filteredClassrooms, setFilteredClassrooms] = useState([]); // Săli filtrate pe măsură ce scrii
-    const [classroomSearch, setClassroomSearch] = useState(""); // Căutare sală
     const authHeader = getAuthHeader(); // Obține antetul pentru autentificare
+
+    const examTypes = ["Colocviu", "Oral", "Scris", "Moodle"]; // Tipuri de examene disponibile
 
     // Fetch toate cererile de programare
     const fetchScheduleRequests = async () => {
@@ -35,54 +34,26 @@ const EditSubjectsForm = () => {
         }
     };
 
-    // Fetch sălile din backend
-    const fetchClassrooms = async () => {
-        try {
-            const response = await fetch("https://localhost:7118/api/Classroom", {
-                method: "GET",
-                headers: authHeader,
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch classrooms.");
-            }
-
-            const data = await response.json();
-            setClassrooms(data); // Salvează lista de săli
-        } catch (error) {
-            console.error(error);
-            setError("Failed to fetch classrooms.");
-        }
-    };
-
-    // Funcție de căutare a sălilor în dropdown
-    const handleClassroomSearch = (e) => {
-        const searchValue = e.target.value;
-        setClassroomSearch(searchValue);
-
-        if (searchValue === "") {
-            setFilteredClassrooms([]); // Dacă nu se scrie nimic, ascundem lista
-        } else {
-            // Filtrarea sălilor pe baza textului căutat
-            const filtered = classrooms.filter((classroom) =>
-                classroom.name.toLowerCase().includes(searchValue.toLowerCase())
-            );
-            setFilteredClassrooms(filtered);
-        }
-    };
-
     // Funcție pentru a iniția editarea unei cereri
     const handleEdit = (request) => {
         setEditRequest({
             id: request.id,
-            startDate: request.startDate || "", // Default pentru data
-            classroomName: request.classroomName || "", // Default pentru sală
+            examType: request.examType || "Colocviu", // Default pentru tipul de examen
+            examDuration: request.examDuration || 60, // Default pentru durata examenului (minute)
+            startDate: request.startDate ? new Date(request.startDate).toISOString().split("T")[0] : "", // Formatăm corect data
         });
     };
 
     // Salvează modificările
     const handleSave = async () => {
         if (!editRequest) return;
+
+        // Validăm data înainte de a o trimite
+        const isValidDate = new Date(editRequest.startDate).toString() !== "Invalid Date";
+        if (!isValidDate) {
+            setError("Invalid date format");
+            return;
+        }
 
         const originalRequest = scheduleRequests.find((req) => req.id === editRequest.id);
         if (!originalRequest) {
@@ -101,10 +72,11 @@ const EditSubjectsForm = () => {
                     },
                     body: JSON.stringify({
                         id: editRequest.id,
-                        startDate: editRequest.startDate,
-                        classroomName: editRequest.classroomName,
+                        examType: editRequest.examType,
+                        examDuration: editRequest.examDuration,
                         studentID: originalRequest.studentID,
                         requestStateID: originalRequest.requestStateID,
+                        startDate: editRequest.startDate, // Trimitem data corectă
                     }),
                 }
             );
@@ -129,15 +101,14 @@ const EditSubjectsForm = () => {
         setEditRequest({ ...editRequest, [name]: value });
     };
 
-    // Fetch cererile și sălile la încărcarea componentului
+    // Fetch cererile la încărcarea componentului
     useEffect(() => {
         fetchScheduleRequests();
-        fetchClassrooms();
     }, []);
 
     return (
         <div>
-            <h3>Edit Exam Schedule</h3>
+            <h3>Edit Exam Details</h3>
             {error && <p className="error-message">{error}</p>}
             {scheduleRequests.length === 0 ? (
                 <p>No accepted exams available.</p>
@@ -148,42 +119,38 @@ const EditSubjectsForm = () => {
                             {editRequest?.id === request.id ? (
                                 <div className="edit-form">
                                     <label>
-                                        Date:
-                                        <input
-                                            type="datetime-local"
-                                            name="startDate"
-                                            value={editRequest.startDate || ""}
+                                        Exam Type:
+                                        <select
+                                            name="examType"
+                                            value={editRequest.examType}
                                             onChange={handleChange}
+                                        >
+                                            {examTypes.map((type) => (
+                                                <option key={type} value={type}>
+                                                    {type}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                    <label>
+                                        Exam Duration (minutes):
+                                        <input
+                                            type="number"
+                                            name="examDuration"
+                                            value={editRequest.examDuration}
+                                            onChange={handleChange}
+                                            min="10"
+                                            max="300"
                                         />
                                     </label>
                                     <label>
-                                        Classroom:
+                                        Start Date:
                                         <input
-                                            type="text"
-                                            value={classroomSearch}
-                                            onChange={handleClassroomSearch}
-                                            placeholder="Start typing to search for a classroom..."
+                                            type="date"
+                                            name="startDate"
+                                            value={editRequest.startDate}
+                                            onChange={handleChange}
                                         />
-                                        {/* Dropdown care se deschide doar dacă există text introdus */}
-                                        {filteredClassrooms.length > 0 && classroomSearch && (
-                                            <ul className="dropdown-list">
-                                                {filteredClassrooms.map((classroom) => (
-                                                    <li
-                                                        key={classroom.id}
-                                                        onClick={() => {
-                                                            setClassroomSearch(classroom.name);
-                                                            setEditRequest({
-                                                                ...editRequest,
-                                                                classroomName: classroom.name,
-                                                            });
-                                                            setFilteredClassrooms([]); // Ascunde lista după selecție
-                                                        }}
-                                                    >
-                                                        {classroom.name}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
                                     </label>
                                     <button onClick={handleSave}>Save</button>
                                     <button onClick={() => setEditRequest(null)}>Cancel</button>
@@ -192,10 +159,9 @@ const EditSubjectsForm = () => {
                                 <div className="schedule-details">
                                     <span>
                                         {request.subjectName} -{" "}
-                                        {request.startDate
-                                            ? new Date(request.startDate).toLocaleString("ro-RO")
-                                            : "No date set"}{" "}
-                                        in {request.classroomName || "Unknown"}
+                                        Type: {request.examType || "N/A"}, Duration:{" "}
+                                        {request.examDuration || "N/A"} minutes, Date:{" "}
+                                        {new Date(request.startDate).toLocaleString()}
                                     </span>
                                     <button onClick={() => handleEdit(request)}>Edit</button>
                                 </div>

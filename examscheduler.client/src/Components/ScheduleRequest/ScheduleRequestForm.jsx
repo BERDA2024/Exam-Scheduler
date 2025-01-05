@@ -8,8 +8,9 @@ const ScheduleRequestForm = () => {
         StartDate: '',
         StartDateMin: '',
         StartDateMax: '',
-        Classroom: ''
+        Classroom: '',
     });
+
     const [scheduledExams, setScheduledExams] = useState([]);
     const [subjects, setSubjects] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
@@ -30,17 +31,17 @@ const ScheduleRequestForm = () => {
         try {
             const response = await fetch('https://localhost:7118/api/ScheduleRequest', {
                 method: 'GET',
-                headers: authHeader
+                headers: authHeader,
             });
 
             if (response.ok) {
                 const data = await response.json();
                 setScheduledExams(data);
             } else {
-                console.error('Failed to fetch scheduled exams');
+                throw new Error('Failed to fetch scheduled exams');
             }
         } catch (err) {
-            console.error('Error fetching scheduled exams:', err);
+            console.error(err.message);
         }
     };
 
@@ -48,17 +49,17 @@ const ScheduleRequestForm = () => {
         try {
             const response = await fetch('https://localhost:7118/api/Subject', {
                 method: 'GET',
-                headers: authHeader
+                headers: authHeader,
             });
 
             if (response.ok) {
                 const data = await response.json();
                 setSubjects(data);
             } else {
-                console.error('Failed to fetch subjects');
+                throw new Error('Failed to fetch subjects');
             }
         } catch (err) {
-            console.error('Error fetching subjects:', err);
+            console.error(err.message);
         }
     };
 
@@ -66,17 +67,17 @@ const ScheduleRequestForm = () => {
         try {
             const response = await fetch('https://localhost:7118/api/Classroom', {
                 method: 'GET',
-                headers: authHeader
+                headers: authHeader,
             });
 
             if (response.ok) {
                 const data = await response.json();
                 setClassrooms(data);
             } else {
-                console.error('Failed to fetch classrooms');
+                throw new Error('Failed to fetch classrooms');
             }
         } catch (err) {
-            console.error('Error fetching classrooms:', err);
+            console.error(err.message);
         }
     };
 
@@ -195,6 +196,18 @@ const ScheduleRequestForm = () => {
             return;
         }
 
+        // Set default values for fields not provided by the frontend
+        const scheduleRequestData = {
+            SubjectName: examDetails.Subject,
+            StartDate: examDetails.StartDate,
+            ClassroomName: examDetails.Classroom,
+            ExamDuration: 90, // Default duration
+            ExamType: 'Written', // Default exam type
+            RejectionReason: null, // Default rejection reason
+            StudentID: 1, // Assume StudentID is 1 or fetch it from auth
+            RequestStateID: 1, // Default request state (pending)
+        };
+
         try {
             const response = await fetch('https://localhost:7118/api/ScheduleRequest', {
                 method: 'POST',
@@ -202,11 +215,7 @@ const ScheduleRequestForm = () => {
                     ...authHeader,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    SubjectName: examDetails.Subject,
-                    StartDate: examDetails.StartDate,
-                    ClassroomName: examDetails.Classroom,
-                }),
+                body: JSON.stringify(scheduleRequestData),
             });
 
             if (response.ok) {

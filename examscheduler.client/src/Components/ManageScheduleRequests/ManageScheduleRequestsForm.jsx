@@ -5,6 +5,7 @@ import { getAuthHeader } from '../../Utils/AuthUtils'; // Importă funcția getA
 const ManageScheduleRequestsForm = () => {
     const [scheduleRequests, setScheduleRequests] = useState([]);
     const [error, setError] = useState(null);
+    const [rejectionReasons, setRejectionReasons] = useState({}); // Pentru motivele de respingere
     const authHeader = getAuthHeader();
 
     // Fetch schedule requests
@@ -39,6 +40,7 @@ const ManageScheduleRequestsForm = () => {
             const updatedRequest = {
                 ...requestToUpdate,
                 requestStateID, // Update state
+                rejectionReason: requestStateID === 3 ? rejectionReasons[id] || '' : null, // Adaugă motivul respingerii dacă starea e "Respins"
             };
 
             const response = await fetch(`https://localhost:7118/api/ScheduleRequest/${id}`, {
@@ -60,6 +62,11 @@ const ManageScheduleRequestsForm = () => {
             console.error('Error updating request state:', error);
             setError('An error occurred while updating the request state.');
         }
+    };
+
+    // Gestionare schimbări în caseta text pentru motivul respingerii
+    const handleRejectionReasonChange = (id, reason) => {
+        setRejectionReasons({ ...rejectionReasons, [id]: reason });
     };
 
     useEffect(() => {
@@ -84,11 +91,18 @@ const ManageScheduleRequestsForm = () => {
                                 : request.requestStateID === 2
                                     ? 'Approved'
                                     : 'Rejected'}
+                            {request.requestStateID === 3 && request.rejectionReason && (
+                                <span>
+                                    <br />
+                                    <strong>Reason:</strong> {request.rejectionReason}
+                                </span>
+                            )}
                         </p>
                         <div className="buttons">
                             <button
                                 onClick={() => updateRequestState(request.id, 2)}
                                 className="approve"
+                                disabled={request.requestStateID === 2} // Disable if already approved
                             >
                                 Approve
                             </button>
@@ -98,12 +112,25 @@ const ManageScheduleRequestsForm = () => {
                             >
                                 Reject
                             </button>
+                            {(request.requestStateID === 1 || request.requestStateID === 2 || request.requestStateID === 3) && (
+                                <div className="rejection-reason">
+                                    <label>
+                                        Rejection Reason:
+                                        <textarea
+                                            value={rejectionReasons[request.id] || ''}
+                                            onChange={(e) =>
+                                                handleRejectionReasonChange(request.id, e.target.value)
+                                            }
+                                            placeholder="Enter reason for rejection..."
+                                        />
+                                    </label>
+                                </div>
+                            )}
                         </div>
                     </li>
                 ))}
             </ul>
         </div>
-
     );
 };
 
