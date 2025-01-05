@@ -4,7 +4,7 @@ import { getAuthHeader } from '../../Utils/AuthUtils';
 
 const DeclinedExamsListForm = () => {
     const [scheduledExams, setScheduledExams] = useState([]);
-    const [error, setError] = useState(null); 
+    const [error, setError] = useState(null);
     const authHeader = getAuthHeader();
 
     // Fetch scheduled exams on load
@@ -45,6 +45,7 @@ const DeclinedExamsListForm = () => {
                                 <th>Subject</th>
                                 <th>Start Date</th>
                                 <th>Classroom</th>
+                                <th>Rejection Reason</th> {/* Add column for rejection reason */}
                             </tr>
                         </thead>
                         <tbody>
@@ -53,6 +54,7 @@ const DeclinedExamsListForm = () => {
                                     <td>{exam.subjectName || 'Unknown'}</td>
                                     <td>{new Date(exam.startDate).toLocaleString()}</td>
                                     <td>{exam.classroomName || 'Unknown'}</td>
+                                    <td>{exam.rejectionReason || 'No reason provided'}</td> {/* Display rejection reason */}
                                 </tr>
                             ))}
                         </tbody>

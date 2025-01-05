@@ -1,0 +1,80 @@
+﻿/* Stilizare generală pentru card */
+.card {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    /* Titlul cardului */
+    .card h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    /* Listă de elemente */
+    .card ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Element individual din listă */
+    .card li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+        /* Textul principal al fiecărui element */
+        .card li p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+            flex: 1;
+        }
+
+    /* Stilizarea butoanelor */
+    .card button {
+        padding: 8px 12px;
+        font-size: 14px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-left: 10px;
+    }
+
+        /* Buton Approve */
+        .card button.approve {
+            background-color: #28a745;
+        }
+
+            .card button.approve:hover {
+                background-color: #218838;
+            }
+
+        /* Buton Reject */
+        .card button.reject {
+            background-color: #dc3545;
+        }
+
+            .card button.reject:hover {
+                background-color: #c82333;
+            }
+
+    /* Margine între butoane */
+    .card .buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }

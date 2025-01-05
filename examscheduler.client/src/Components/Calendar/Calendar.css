@@ -1,69 +1,96 @@
+﻿/* Calendar Styles */
 .calendar-container {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+button {
+    font-size: 24px;
+    padding: 5px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+.calendar-weekdays {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.weekday {
+    width: 14%;
+    text-align: center;
+    font-weight: bold;
 }
 
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 10px;
-    padding: 20px;
-    max-width: 400px;
-    flex-grow: 1;
+    width: 100%;
+    max-width: 600px;
 }
 
 .calendar-day {
-    color: black;
-    background-color: #f1f1f1;
-    padding: 10px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-    .calendar-day:hover {
-        background-color: #e0e0e0;
+    .calendar-day.current-month {
+        background-color: #fff; /* Zilele din luna curentă au fundal alb */
+        color: #000; /* Textul pentru zilele din luna curentă */
     }
 
-.day-detail {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    flex-basis: 300px;
-    max-width: 300px;
-    height: 300px;
-    overflow-y: auto;
+    .calendar-day.other-month {
+        background-color: #f0f0f0; /* Zilele din alte luni au fundal gri deschis */
+        color: #ccc; /* Textul pentru zilele din alte luni */
+        opacity: 0.6; /* Zilele din alte luni sunt mai slabe vizual */
+    }
+
+    .calendar-day.has-exam {
+        border: 2px solid #ff6347; /* Zilele cu examene sunt marcate cu bordură roșie */
+    }
+
+    .calendar-day.selected {
+        background-color: #007bff; /* Ziua selectată are fundal albastru */
+        color: #fff; /* Text alb pentru ziua selectată */
+    }
+
+/* Detalii zi */
+.day-detail-container {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f7f7f7;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 5px;
 }
 
-.events-list {
-    margin-bottom: 15px;
-}
+    .day-detail-container h3 {
+        font-size: 18px;
+    }
 
-.event-item {
-    background-color: #f9f9f9;
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 4px;
-}
-
-.calendar-day.has-exam {
-    background-color: #007bff; /* Albastru */
-    color: white; /* Text alb */
-    border-radius: 50%; /* Cerc */
-    font-weight: bold;
-}
-
-add-event-button {
-    background-color: #007bff;
-    color: black;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-    add-event-button:hover {
-        background-color: #0056b3;
+    .day-detail-container p {
+        font-size: 16px;
     }

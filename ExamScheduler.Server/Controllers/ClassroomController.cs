@@ -21,10 +21,11 @@ namespace ExamScheduler.Server.Controllers
         private readonly RolesService _rolesService = roleService;
 
         [HttpGet]
-        [Authorize(Roles = "Admin,FacultyAdmin")]
+        [Authorize(Roles = "Admin,FacultyAdmin,StudentGroupLeader")]
         public async Task<IActionResult> GetAllClassrooms()
         {
             var classrooms = await _context.Classroom.ToListAsync();
+            Console.WriteLine($"Classrooms fetched: {classrooms.Count}");
             return Ok(classrooms);
         }
 
@@ -97,6 +98,30 @@ namespace ExamScheduler.Server.Controllers
             }
 
             return Ok(new {message = "Classromm update succesfuly"});
+        }
+
+        [HttpGet("check-availability")]
+        [Authorize(Roles = "Admin,FacultyAdmin,StudentGroupLeader")]
+        public async Task<IActionResult> CheckClassroomAvailability(int classroomId, DateTime examStartDate, int examDuration)
+        {
+            // Calculăm intervalul de timp pentru examen
+            var examEndDate = examStartDate.AddMinutes(examDuration);
+
+            // Verificăm dacă există un alt examen în aceeași sală și în același interval
+            var isClassroomOccupied = await _context.ScheduleRequest
+                .AnyAsync(req =>
+                    req.ClassroomID == classroomId &&
+                    req.RequestStateID == 2 && // Doar cererile aprobate
+                    (examStartDate < req.StartDate.AddMinutes(req.ExamDuration) && // Începutul examenului nostru este înainte de finalul unui examen existent
+                     examEndDate > req.StartDate) // Sfârșitul examenului nostru este după începutul unui examen existent
+                );
+
+            if (isClassroomOccupied)
+            {
+                return Conflict(new { message = "The classroom is already booked for the selected time." });
+            }
+
+            return Ok(new { message = "The classroom is available." });
         }
 
         [Authorize(Roles = "Admin,FacultyAdmin")]

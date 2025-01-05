@@ -1,0 +1,118 @@
+﻿/* Stilizare generală pentru formularul de editare */
+.edit-form {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .edit-form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    /* Alinierea câmpurilor input */
+    .edit-form input,
+    .edit-form select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+        /* Alinierea textului în inputurile de tip text și dropdown */
+        .edit-form input[type="text"],
+        .edit-form select {
+            padding-left: 10px; /* Adaugă un spațiu la stânga pentru aliniere */
+        }
+
+    /* Stil pentru butoanele din formular */
+    .edit-form button {
+        padding: 10px 15px;
+        font-size: 14px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+        .edit-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .edit-form button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+/* Lista de sugestii pentru autocomplete */
+.autocomplete-suggestions {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 10;
+    margin-top: 5px;
+    padding-left: 10px; /* Aliniere a textului în lista de sugestii */
+}
+
+/* Stil pentru fiecare sugestie din lista de autocomplete */
+.autocomplete-suggestion {
+    padding: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+    /* Hover pe fiecare sugestie */
+    .autocomplete-suggestion:hover {
+        background-color: #f1f1f1;
+    }
+
+/* Stil pentru containerul de detalii din lista de cereri */
+.schedule-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Stil pentru mesajele de eroare */
+.error-message {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* Stiluri pentru titlu */
+h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Stilizarea listei de cereri pentru a elimina punctele */
+ul {
+    list-style-type: none; /* Elimină punctele de la începutul fiecărui element */
+    padding-left: 0; /* Îndepărtează marginea din stânga */
+    margin: 0; /* Îndepărtează marginea implicită */
+}
+
+/* Elementele din lista de cereri */
+li {
+    margin-bottom: 15px; /* Spațiu între fiecare element */
+}

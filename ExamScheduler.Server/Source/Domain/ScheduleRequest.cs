@@ -27,7 +27,17 @@ namespace ExamScheduler.Server.Source.Domain
         [Required]
         public DateTime StartDate { get; set; }
 
+        [Required]
+        public int ExamDuration { get; set; } // Durata examenului în minute
+
+        [Required]
+        [StringLength(50)]
+        public string ExamType { get; set; } // Tipul examenului (de exemplu, "Oral", "Written")
+
+        public string? RejectionReason { get; set; } // Motivul respingerii (dacă există)
+
         public Subject Subject { get; set; }
         public Classroom Classroom { get; set; }
     }
+
 }
