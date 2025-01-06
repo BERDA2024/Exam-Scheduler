@@ -9,6 +9,7 @@ import ManageGroupsPage from '../Pages/ManageGroupsPage';
 import CalendarPage from '../Pages/CalendarPage';
 import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
+import ProfessorManagementPage from '../Pages/ProfessorManagementPage';
 import './Sidebar.css';
 import ManageClassroomsPage from '../Pages/ManageClassroomsPage';
 
@@ -37,7 +38,7 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Manage Groups", action: <ManageGroupsPage /> }
         ],
         Professor: [
-            { label: "Availability", action: "loadAvailability" },
+            { label: "Exams Management", action: <ProfessorManagementPage /> },
         ],
         Student: [
             { label: "View Exams", action: "loadExams" },

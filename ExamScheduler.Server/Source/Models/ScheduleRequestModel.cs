@@ -4,19 +4,29 @@ namespace ExamScheduler.Server.Source.Models
 {
     public class ScheduleRequestModel
     {
-        public int Id { get; set; } // ID pentru identificare
-
-        public string? SubjectName { get; set; } // Numele materiei (pentru frontend)
+        public int Id { get; set; }
+        public string? SubjectName { get; set; }
 
         [Required(ErrorMessage = "StudentID is required.")]
-        public int StudentID { get; set; } // ID-ul studentului
+        public int StudentID { get; set; }
+
+        public int? SubgroupID { get; set; } // Adăugat SubgroupID
 
         [Required(ErrorMessage = "RequestStateID is required.")]
-        public int RequestStateID { get; set; } // ID-ul stării cererii
+        public int RequestStateID { get; set; }
 
-        public string? ClassroomName { get; set; } // Numele sălii (pentru frontend)
+        public string? ClassroomName { get; set; }
 
         [Required(ErrorMessage = "StartDate is required.")]
-        public DateTime StartDate { get; set; } // Data și ora începutului
+        public DateTime StartDate { get; set; }
+
+        [Required(ErrorMessage = "ExamDuration is required.")]
+        public int ExamDuration { get; set; }
+
+        [Required(ErrorMessage = "ExamType is required.")]
+        [StringLength(50, ErrorMessage = "ExamType cannot exceed 50 characters.")]
+        public string ExamType { get; set; }
+
+        public string? RejectionReason { get; set; }
     }
 }
