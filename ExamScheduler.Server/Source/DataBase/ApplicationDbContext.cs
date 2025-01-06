@@ -29,6 +29,55 @@ namespace ExamScheduler.Server.Source.DataBase
         {
             base.OnModelCreating(modelBuilder);
 
+            // Explicit configuration for Student and User
+            modelBuilder.Entity<Student>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Explicit configuration for Professor and User
+            modelBuilder.Entity<Professor>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Explicit configuration for Secretary and User
+            modelBuilder.Entity<Secretary>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Explicit configuration for FacultyAdmin and User
+            modelBuilder.Entity<FacultyAdmin>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Explicit configuration for Student and Subgroup
+            modelBuilder.Entity<Student>()
+                .HasOne<Subgroup>()
+                .WithMany()
+                .HasForeignKey(s => s.SubgroupID)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Explicit configuration for Subgroup and Group
+            modelBuilder.Entity<Subgroup>()
+                .HasOne<Group>()
+                .WithMany()
+                .HasForeignKey(sg => sg.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Explicit configuration for Department and Faculty
+            modelBuilder.Entity<Department>()
+                .HasOne<Faculty>()
+                .WithMany()
+                .HasForeignKey(sg => sg.FacultyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             foreach (var state in Enum.GetValues<RequestStates>())
             {
                 modelBuilder.Entity<RequestState>().HasData(
