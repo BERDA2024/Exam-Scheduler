@@ -95,6 +95,8 @@ namespace ExamScheduler.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FacultyId");
+
                     b.ToTable("Department");
                 });
 
@@ -134,9 +136,11 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("FacultyAdmin");
                 });
@@ -200,9 +204,11 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Professor");
                 });
@@ -303,9 +309,11 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Secretary");
                 });
@@ -326,9 +334,13 @@ namespace ExamScheduler.Server.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubgroupID");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Student");
                 });
@@ -350,6 +362,8 @@ namespace ExamScheduler.Server.Migrations
                         .HasColumnType("nvarchar(1)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Subgroup");
                 });
@@ -599,6 +613,32 @@ namespace ExamScheduler.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Department", b =>
+                {
+                    b.HasOne("ExamScheduler.Server.Source.Domain.Faculty", null)
+                        .WithMany()
+                        .HasForeignKey("FacultyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.FacultyAdmin", b =>
+                {
+                    b.HasOne("ExamScheduler.Server.Source.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Professor", b =>
+                {
+                    b.HasOne("ExamScheduler.Server.Source.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ExamScheduler.Server.Source.Domain.ScheduleRequest", b =>
                 {
                     b.HasOne("ExamScheduler.Server.Source.Domain.Classroom", "Classroom")
@@ -624,6 +664,38 @@ namespace ExamScheduler.Server.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Secretary", b =>
+                {
+                    b.HasOne("ExamScheduler.Server.Source.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Student", b =>
+                {
+                    b.HasOne("ExamScheduler.Server.Source.Domain.Subgroup", null)
+                        .WithMany()
+                        .HasForeignKey("SubgroupID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ExamScheduler.Server.Source.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ExamScheduler.Server.Source.Domain.Subgroup", b =>
+                {
+                    b.HasOne("ExamScheduler.Server.Source.Domain.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
