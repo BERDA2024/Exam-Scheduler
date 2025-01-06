@@ -5,7 +5,7 @@ import GenericTable from "../GenericTable/GenericTable";
 import RoleSelector from '../../Utils/RoleSelector';
 import FacultySelector from '../../Utils/FacultySelector';
 import UserForm from '../../Forms/UserForm';
-import "./UserManagementComponent.css";
+import "./ManagementComponent.css";
 
 const UserManagementComponent = () => {
     const [users, setUsers] = useState([]);

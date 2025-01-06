@@ -16,6 +16,39 @@ namespace ExamScheduler.Server.Controllers
         private readonly UserManager<User> _userManager = userManager;
         private readonly ApplicationDbContext _context = context;
 
+        [HttpGet("availability-by-subject")]
+        public async Task<IActionResult> GetAvailabilityBySubject(string subjectName)
+        {
+            try
+            {
+                // Găsește subiectul și profesorul asociat
+                var subject = await _context.Subject
+                    .FirstOrDefaultAsync(s => s.LongName == subjectName);
+
+                if (subject == null)
+                {
+                    return NotFound(new { message = "Subject not found." });
+                }
+
+                // Găsește disponibilitățile profesorului asociat subiectului
+                var availability = await _context.Availability
+                    .Where(a => a.ProfessorID == subject.ProfessorID)
+                    .ToListAsync();
+
+                if (availability.Count == 0)
+                {
+                    return NotFound(new { message = "No availability found for the professor." });
+                }
+
+                return Ok(availability);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Error: " + ex.Message });
+            }
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllAvailabilities()
         {
@@ -45,32 +78,36 @@ namespace ExamScheduler.Server.Controllers
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // ID-ul utilizatorului conectat
 
-                if (userId == null || request == null)
+                if (string.IsNullOrEmpty(userId) || request == null)
                 {
-                    return Unauthorized(new { message = "Not connected or bad request." });
+                    return BadRequest(new { message = "Invalid request or user not authenticated." });
                 }
 
-                var user = await _userManager.FindByIdAsync(userId);
-
-                if (user == null)
+                // Găsește profesorul corespunzător utilizatorului conectat
+                var professor = await _context.Professor.FirstOrDefaultAsync(p => p.UserId == userId);
+                if (professor == null)
                 {
-                    return Unauthorized(new { message = "User is not found" });
+                    return Unauthorized(new { message = "Professor not found." });
                 }
 
-                //var professor = await _context.Professor.FirstOrDefaultAsync(a => a.UserId == userId);
+                // Creează și salvează disponibilitatea
+                var availability = new Availability
+                {
+                    ProfessorID = professor.Id,
+                    StartDate = request.StartDate,
+                    EndDate = request.EndDate
+                };
 
-                //if (professor == null) return Unauthorized(new { message = "Professor not found." });
-
-                var availability = new Availability() { ProfessorID = 0, StartDate = request.StartDate, EndDate = request.EndDate };
                 _context.Availability.Add(availability);
                 await _context.SaveChangesAsync();
+
                 return CreatedAtAction(nameof(GetAvailabilityById), new { id = availability.Id }, availability);
             }
             catch (Exception ex)
             {
-                return BadRequest("SomeError: " + ex.Message);
+                return BadRequest(new { message = "Error: " + ex.Message });
             }
         }
 

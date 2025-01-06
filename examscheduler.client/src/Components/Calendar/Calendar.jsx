@@ -5,30 +5,58 @@ import { getAuthHeader } from '../../Utils/AuthUtils';
 
 const Calendar = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [daysInMonth, setDaysInMonth] = useState([]);
+    const [calendarDays, setCalendarDays] = useState([]);
     const [examDays, setExamDays] = useState({});
     const [selectedDay, setSelectedDay] = useState(null);
     const authHeader = getAuthHeader();
 
     useEffect(() => {
-        loadCalendar();
+        generateCalendarDays();
         fetchExamDays();
     }, [currentDate]);
 
-    const loadCalendar = () => {
+    const generateCalendarDays = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
 
-        // Numărul de zile în luna curentă
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInThisMonth = new Date(year, month + 1, 0).getDate();
-        setDaysInMonth(Array.from({ length: daysInThisMonth }, (_, i) => i + 1));
+        const daysInLastMonth = new Date(year, month, 0).getDate();
+
+        const leadingDays = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+
+        const days = [];
+
+        for (let i = leadingDays; i > 0; i--) {
+            days.push({
+                date: new Date(year, month - 1, daysInLastMonth - i + 1),
+                isCurrentMonth: false,
+            });
+        }
+
+        for (let i = 1; i <= daysInThisMonth; i++) {
+            days.push({
+                date: new Date(year, month, i),
+                isCurrentMonth: true,
+            });
+        }
+
+        const trailingDays = 7 - (days.length % 7);
+        for (let i = 1; i <= trailingDays && trailingDays < 7; i++) {
+            days.push({
+                date: new Date(year, month + 1, i),
+                isCurrentMonth: false,
+            });
+        }
+
+        setCalendarDays(days);
     };
 
     const fetchExamDays = async () => {
         try {
             const response = await fetch('https://localhost:7118/api/ScheduleRequest', {
                 method: 'GET',
-                headers: authHeader
+                headers: authHeader,
             });
             const data = await response.json();
 
@@ -36,24 +64,20 @@ const Calendar = () => {
 
             const daysWithExams = filteredExams.reduce((acc, exam) => {
                 const examDate = new Date(exam.startDate);
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
+                const examKey = `${examDate.getFullYear()}-${examDate.getMonth()}-${examDate.getDate()}`;
 
-                if (
-                    examDate.getFullYear() === year &&
-                    examDate.getMonth() === month
-                ) {
-                    const day = examDate.getDate();
-                    if (!acc[day]) acc[day] = [];
-                    acc[day].push({
-                        subject: exam.subjectName || 'Unknown',
-                        classroom: exam.classroomName || 'Unknown',
-                        time: examDate.toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                        }),
-                    });
-                }
+                if (!acc[examKey]) acc[examKey] = [];
+                acc[examKey].push({
+                    subject: exam.subjectName || 'Unknown',
+                    classroom: exam.classroomName || 'Unknown',
+                    time: examDate.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }),
+                    examType: exam.examType || 'Unknown',
+                    duration: exam.examDuration || 0,
+                });
+
                 return acc;
             }, {});
 
@@ -64,17 +88,19 @@ const Calendar = () => {
     };
 
     const handlePreviousMonth = () => {
-        setCurrentDate(
-            new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-        );
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
         setSelectedDay(null);
     };
 
     const handleNextMonth = () => {
-        setCurrentDate(
-            new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-        );
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
         setSelectedDay(null);
+    };
+
+    const handleDayClick = (day) => {
+        if (day.isCurrentMonth) {
+            setSelectedDay(day.date.getDate());
+        }
     };
 
     return (
@@ -89,21 +115,42 @@ const Calendar = () => {
                 </h2>
                 <button onClick={handleNextMonth}>&gt;</button>
             </div>
-            <div className="calendar">
-                {daysInMonth.map((day) => (
-                    <div
-                        key={day}
-                        className={`calendar-day ${examDays[day] ? 'has-exam' : ''}`}
-                        onClick={() => setSelectedDay(day)}
-                    >
+            <div className="calendar-weekdays">
+                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                    <div key={day} className="weekday">
                         {day}
                     </div>
                 ))}
             </div>
-            <DayDetail
-                selectedDay={selectedDay}
-                events={examDays[selectedDay] || []}
-            />
+            <div className="calendar">
+                {calendarDays.map((day, index) => {
+                    const dayKey = `${day.date.getFullYear()}-${day.date.getMonth()}-${day.date.getDate()}`;
+                    const hasExam = examDays[dayKey];
+                    return (
+                        <div
+                            key={index}
+                            className={`calendar-day ${day.isCurrentMonth ? 'current-month' : 'other-month'
+                                } ${hasExam ? 'has-exam' : ''} ${selectedDay === day.date.getDate() && day.isCurrentMonth ? 'selected' : ''
+                                }`}
+                            onClick={() => handleDayClick(day)}
+                        >
+                            {day.date.getDate()}
+                        </div>
+                    );
+                })}
+            </div>
+            {selectedDay && (
+                <DayDetail
+                    selectedDay={selectedDay}
+                    events={
+                        selectedDay
+                            ? examDays[
+                            `${currentDate.getFullYear()}-${currentDate.getMonth()}-${selectedDay}`
+                            ] || []
+                            : []
+                    }
+                />
+            )}
         </div>
     );
 };
