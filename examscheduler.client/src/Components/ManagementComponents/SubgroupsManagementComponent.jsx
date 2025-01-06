@@ -1,33 +1,32 @@
-import React, { useEffect, useState } from "react";
-import DepartmentForm from '../../Forms/DepartmentForm';
+import React, { useState, useEffect } from "react";
 import { getAuthHeader } from '../../Utils/AuthUtils';
 import GenericTable from "../GenericTable/GenericTable";
 import "./ManagementComponent.css";
+import SubgroupForm from "../../Forms/SubgroupForm";
 
-const DepartmentsManagementComponent = () => {
-    const [departments, setDepartments] = useState([]);
+const SubgroupsManagementComponent = () => {
+    const [subgroups, setSubgroups] = useState([]);
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
-    const [selectedDepartment, setSelectedDepartment] = useState(null); // For editing
+    const [selectedSubgroup, setSelectedSubgroup] = useState(null); // For editing
     const [error, setError] = useState('');
-    const [filteredDepartments, setFilteredDepartments] = useState([]); // Holds the filtered faculties
+    const [filteredSubgroup, setFilteredSubgroups] = useState([]); // Holds the filtered faculties
     const authHeader = getAuthHeader();
 
-    const fetchDepartments = async () => {
+    const fetchSubgroups = async () => {
         try {
             if (authHeader) {
-                const response = await fetch("https://localhost:7118/api/Department", {
+                const response = await fetch("https://localhost:7118/api/Subgroup", {
                     headers: {
                         ...authHeader
                     }
                 });
-
                 if (response.ok) {
                     const data = await response.json();
-                    setDepartments(data);
-                    setFilteredDepartments(data); // Initialize the filtered list with all faculties
+                    setSubgroups(data);
+                    setFilteredSubgroups(data); // Initialize the filtered list with all subgroups
                 } else {
-                    console.error('Failed to get departments');
+                    console.error('Failed to get subgroups');
                 }
             }
         } catch (error) {
@@ -37,44 +36,44 @@ const DepartmentsManagementComponent = () => {
     };
 
     useEffect(() => {
-        fetchDepartments();
+        fetchSubgroups();
     }, []);
 
     const handleSearchChange = (e) => setSearch(e.target.value);
 
     const handleSearch = () => {
-        const filtered = departments.filter(
-            (departments) =>
-                departments &&
-                (departments.longName.toLowerCase().includes(!search ? '' : search.toLowerCase()) ||
-                    departments.shortName.toLowerCase().includes(!search ? '' : search.toLowerCase()))
+        const filtered = subgroups.filter(
+            (subgroup) =>
+                subgroup &&
+                subgroup.fullName.toLowerCase().includes(!search ? '' : search.toLowerCase())
         );
-        setFilteredDepartments(filtered);
+        setFilteredSubgroups(filtered);
     };
 
-    const handleAddDepartment = () => {
-        setSelectedDepartment(null); // Clear selection for new faculty
+    const handleAddSubgroup = () => {
+        setSelectedSubgroup(null); // Clear selection for new faculty
         setShowForm(true);
     };
 
-    const handleEditDepartment = (department) => {
-        setSelectedDepartment(department); // Set the selected faculty for editing
+    const handleEditSubgroup = (subgroup) => {
+        setSelectedSubgroup(subgroup); // Set the selected faculty for editing
         setShowForm(true);
     };
 
-    const handleDeleteDepartment = async (id) => {
-        if (window.confirm("Are you sure you want to delete this department")) {
+    const handleDeleteSubgroup = async (id) => {
+        if (window.confirm("Are you sure you want to delete this subgroup?")) {
             if (authHeader != null) {
                 try {
-                    const response = await fetch(`https://localhost:7118/api/Department/${id}`, {
+                    const response = await fetch(`https://localhost:7118/api/Subgroup/${id}`, {
                         method: "DELETE",
                         headers: { ...authHeader }
                     });
 
                     if (response.ok) {
-                        fetchDepartments();
+                        fetchSubgroups();
                     } else {
                         console.error('Failed to delete');
+                        console.error(response);
                     }
                 } catch (error) {
                     setError('An error occurred. Please try again.');
@@ -87,17 +86,16 @@ const DepartmentsManagementComponent = () => {
     };
 
     const columns = [
-        { key: "longName", header: "Long Name" },
-        { key: "shortName", header: "Short Name" },
+        { key: "fullName", header: "Name" },
     ];
 
     return (
         <div>
             {showForm && (
-                <DepartmentForm
-                    department={selectedDepartment}
+                <SubgroupForm
+                    subgroup={selectedSubgroup}
                     onClose={() => setShowForm(false)}
-                    onRefresh={fetchDepartments}
+                    onRefresh={fetchSubgroups}
                 />
             )}
 
@@ -110,18 +108,18 @@ const DepartmentsManagementComponent = () => {
                         onChange={handleSearchChange}
                     />
                     <button className="data-management-button" onClick={handleSearch}>Search</button>
-                    <button className="data-management-button" onClick={handleAddDepartment}>Add Department</button>
+                    <button className="data-management-button" onClick={handleAddSubgroup}>Add Subgroup</button>
                 </div>
 
                 <GenericTable
                     columns={columns}
-                    data={filteredDepartments}
-                    onEdit={handleEditDepartment}
-                    onDelete={handleDeleteDepartment}
+                    data={filteredSubgroup}
+                    onEdit={handleEditSubgroup}
+                    onDelete={handleDeleteSubgroup}
                 />
             </div>
         </div>
     );
 };
 
-export default DepartmentsManagementComponent;
+export default SubgroupsManagementComponent;
