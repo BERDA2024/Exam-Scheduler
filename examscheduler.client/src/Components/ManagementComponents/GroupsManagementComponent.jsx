@@ -77,8 +77,6 @@ const GroupsManagementComponent = () => {
                     });
 
                     if (response.ok) {
-                        const data = await response.json();
-                        console.log(data);
                         fetchGroups();
                     } else {
                         console.error('Failed to delete');

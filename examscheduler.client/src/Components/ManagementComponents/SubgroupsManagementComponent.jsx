@@ -70,8 +70,6 @@ const SubgroupsManagementComponent = () => {
                     });
 
                     if (response.ok) {
-                        const data = await response.json();
-                        console.log(data);
                         fetchSubgroups();
                     } else {
                         console.error('Failed to delete');
