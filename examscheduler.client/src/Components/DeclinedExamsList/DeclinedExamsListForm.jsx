@@ -4,7 +4,7 @@ import { getAuthHeader } from '../../Utils/AuthUtils';
 
 const DeclinedExamsListForm = () => {
     const [scheduledExams, setScheduledExams] = useState([]);
-    const [error, setError] = useState(null); 
+    const [error, setError] = useState(null);
     const authHeader = getAuthHeader();
 
     // Fetch scheduled exams on load
@@ -22,8 +22,13 @@ const DeclinedExamsListForm = () => {
             if (response.ok) {
                 const data = await response.json();
 
+                // Filtrăm examenele cu RequestStateID = 3 (pentru examenele respinse)
                 const filteredExams = data.filter((exam) => exam.requestStateID === 3);
-                setScheduledExams(filteredExams);
+
+                // Verificăm dacă lista de examene este deja actualizată
+                if (filteredExams.length > 0 && filteredExams.length !== scheduledExams.length) {
+                    setScheduledExams(filteredExams); // Setăm lista cu examenele noi
+                }
                 console.log(filteredExams);
             } else {
                 setError('Failed to fetch scheduled exams.');
@@ -32,6 +37,7 @@ const DeclinedExamsListForm = () => {
             setError('An error occurred while fetching scheduled exams.');
         }
     };
+
 
     return (
         <div>
@@ -45,6 +51,7 @@ const DeclinedExamsListForm = () => {
                                 <th>Subject</th>
                                 <th>Start Date</th>
                                 <th>Classroom</th>
+                                <th>Rejection Reason</th> {/* Add column for rejection reason */}
                             </tr>
                         </thead>
                         <tbody>
@@ -53,6 +60,7 @@ const DeclinedExamsListForm = () => {
                                     <td>{exam.subjectName || 'Unknown'}</td>
                                     <td>{new Date(exam.startDate).toLocaleString()}</td>
                                     <td>{exam.classroomName || 'Unknown'}</td>
+                                    <td>{exam.rejectionReason || 'No reason provided'}</td> {/* Display rejection reason */}
                                 </tr>
                             ))}
                         </tbody>

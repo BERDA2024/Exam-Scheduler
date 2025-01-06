@@ -4,6 +4,7 @@ using ExamScheduler.Server.Source.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamScheduler.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250105083104_AddExamDetailsToScheduleRequest")]
+    partial class AddExamDetailsToScheduleRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,17 +276,12 @@ namespace ExamScheduler.Server.Migrations
                     b.Property<int>("StudentID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SubgroupID")
-                        .HasColumnType("int");
-
                     b.Property<int>("SubjectID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClassroomID");
-
-                    b.HasIndex("StudentID");
 
                     b.HasIndex("SubjectID");
 
@@ -607,12 +605,6 @@ namespace ExamScheduler.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExamScheduler.Server.Source.Domain.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ExamScheduler.Server.Source.Domain.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectID")
@@ -620,8 +612,6 @@ namespace ExamScheduler.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Classroom");
-
-                    b.Navigation("Student");
 
                     b.Navigation("Subject");
                 });
