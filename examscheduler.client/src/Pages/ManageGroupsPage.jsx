@@ -3,6 +3,7 @@ import ScrollableContainer from '../Components/ScrollableContainer/ScrollableCon
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
 import GroupsManagementComponent from '../Components/ManagementComponents/GroupsManagementComponent';
 import SubgroupsManagementComponent from '../Components/ManagementComponents/SubgroupsManagementComponent';
+import StudentsManagementComponent from '../Components/ManagementComponents/StudentsManagementComponent';
 import '../Styles/DashboardPage.css';
 
 const GroupsManagementPage = () => {
@@ -23,6 +24,12 @@ const GroupsManagementPage = () => {
                             {/* Availability block */}
                             <div className="block-item">
                                 <SubgroupsManagementComponent />
+                            </div>
+                        </StylizedBlock>
+                        <StylizedBlock title="Manage Students Group">
+                            {/* Availability block */}
+                            <div className="block-item">
+                                <StudentsManagementComponent />
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>

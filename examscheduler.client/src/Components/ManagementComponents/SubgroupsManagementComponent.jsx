@@ -50,17 +50,17 @@ const SubgroupsManagementComponent = () => {
         setFilteredSubgroups(filtered);
     };
 
-    const handleAddFaculty = () => {
+    const handleAddSubgroup = () => {
         setSelectedSubgroup(null); // Clear selection for new faculty
         setShowForm(true);
     };
 
-    const handleEditFaculty = (faculty) => {
-        setSelectedSubgroup(faculty); // Set the selected faculty for editing
+    const handleEditSubgroup = (subgroup) => {
+        setSelectedSubgroup(subgroup); // Set the selected faculty for editing
         setShowForm(true);
     };
 
-    const handleDeleteFaculty = async (id) => {
+    const handleDeleteSubgroup = async (id) => {
         if (window.confirm("Are you sure you want to delete this subgroup?")) {
             if (authHeader != null) {
                 try {
@@ -68,14 +68,14 @@ const SubgroupsManagementComponent = () => {
                         method: "DELETE",
                         headers: { ...authHeader }
                     });
-                    const data = await response.json();
 
                     if (response.ok) {
-                        fetchSubgroups();
+                        const data = await response.json();
                         console.log(data);
+                        fetchSubgroups();
                     } else {
                         console.error('Failed to delete');
-                        console.error(data);
+                        console.error(response);
                     }
                 } catch (error) {
                     setError('An error occurred. Please try again.');
@@ -110,14 +110,14 @@ const SubgroupsManagementComponent = () => {
                         onChange={handleSearchChange}
                     />
                     <button className="data-management-button" onClick={handleSearch}>Search</button>
-                    <button className="data-management-button" onClick={handleAddFaculty}>Add Subgroup</button>
+                    <button className="data-management-button" onClick={handleAddSubgroup}>Add Subgroup</button>
                 </div>
 
                 <GenericTable
                     columns={columns}
                     data={filteredSubgroup}
-                    onEdit={handleEditFaculty}
-                    onDelete={handleDeleteFaculty}
+                    onEdit={handleEditSubgroup}
+                    onDelete={handleDeleteSubgroup}
                 />
             </div>
         </div>

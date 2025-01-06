@@ -20,7 +20,6 @@ namespace ExamScheduler.Server.Controllers
 
         // GET: api/Group
         [HttpGet]
-        [Authorize(Roles = "FacultyAdmin,Secretary")]
         public async Task<ActionResult<IEnumerable<GroupModel>>> GetGroups()
         {
             try
@@ -66,7 +65,6 @@ namespace ExamScheduler.Server.Controllers
 
         // GET: api/Group/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = "FacultyAdmin,Secretary")]
         public async Task<ActionResult<GroupModel>> GetGroup(int id)
         {
             var group = await _context.Group.FindAsync(id);

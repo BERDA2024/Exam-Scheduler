@@ -35,6 +35,8 @@ namespace ExamScheduler.Server.Controllers
 
                 if (facultyId == null) return BadRequest(new { message = "User not in a faculty" });
 
+                var departmentsIds = await _context.Department.Where(d => d.FacultyId == facultyId).Select(d => d.Id).ToListAsync();
+
                 var subgroups = await _context.Subgroup.ToListAsync();
 
                 var subgroupsModels = new List<SubgroupModel>();
@@ -43,11 +45,11 @@ namespace ExamScheduler.Server.Controllers
                 {
                     var group = await _context.Group.FirstOrDefaultAsync(g => g.Id == subgroup.GroupId);
 
-                    if (group == null) continue;
+                    if (group == null || !departmentsIds.Contains(group.DepartmentId)) continue;
 
                     subgroupsModels.Add(new SubgroupModel
                     {
-                        Id = group.Id,
+                        Id = subgroup.Id,
                         GroupName = group.GroupName,
                         SubgroupIndex = subgroup.SubgroupIndex,
                         FullName = group.GroupName + subgroup.SubgroupIndex
