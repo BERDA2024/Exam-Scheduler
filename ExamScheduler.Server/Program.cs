@@ -97,6 +97,8 @@ namespace ExamScheduler.Server
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<EmailService>();
             builder.Services.AddScoped<RolesService>();
+            builder.Services.AddScoped<NotificationService>();
+
 
             var app = builder.Build();
 

@@ -25,6 +25,8 @@ namespace ExamScheduler.Server.Source.DataBase
         public DbSet<Student> Student { get; set; } = default!;
         public DbSet<Subject> Subject { get; set; } = default!;
 
+        public DbSet<Notification> Notifications { get; set; } =default!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
