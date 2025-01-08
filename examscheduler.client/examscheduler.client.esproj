@@ -13,6 +13,14 @@
     <TypeScriptConfiguration Remove="src\Forms\NewFolder\**" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
+=======
+    <None Remove="src\Forms\NotificationSettingsForm.css" />
+    <None Remove="src\Forms\NotificationSettingsForm.jsx" />
+  
+  </ItemGroup>
+  <ItemGroup>
+>>>>>>> Stashed changes
     <Folder Include="src\Components\Calendar\" />
     <Folder Include="src\Components\AcceptedExamsList\" />
     <Folder Include="src\Components\DeclinedExamsList\" />
