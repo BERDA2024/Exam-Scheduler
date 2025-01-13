@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Folosește Link pentru a naviga între pagini
 import { getUserRole } from '../Utils/RoleUtils';
 import DashboardPage from '../Pages/DashboardPage';
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
@@ -7,7 +8,7 @@ import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
 import ManageDepartmentsPage from '../Pages/ManageDepartmentsPage';
 import ManageGroupsPage from '../Pages/ManageGroupsPage';
 import CalendarPage from '../Pages/CalendarPage';
-import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
+import NotificationsPage from '../Pages/NotificationsPage'; // Importă NotificationsPage
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
 import ProfessorManagementPage from '../Pages/ProfessorManagementPage';
 import './Sidebar.css';
@@ -16,7 +17,6 @@ import ManageClassroomsPage from '../Pages/ManageClassroomsPage';
 const Sidebar = ({ setActiveContent }) => {
     const [userRole, setUserRole] = useState(null);
     const [activeButton, setActiveButton] = useState(() => {
-        // Retrieve the last selected button from localStorage or default to null
         return localStorage.getItem('activeButton') || null;
     });
 
@@ -25,7 +25,6 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Admin Dashboard", action: <DashboardPage /> },
             { label: "Manage Users", action: <ManageUsersPage /> },
             { label: "Manage Faculties", action: <ManageFacultiesPage /> }
-            
         ],
         FacultyAdmin: [
             { label: "Manage Users", action: <ManageUsersPage /> },
@@ -51,11 +50,10 @@ const Sidebar = ({ setActiveContent }) => {
     const commonButtons = [
         { label: "Calendar", action: <CalendarPage /> },
         { label: "Settings", action: <ProfileSettingsPage /> },
-        { label: "Notificări", action: <NotificationSettingsPage /> }, // Buton adăugat aici
+        { label: "Notificări", action: <NotificationsPage /> }, // Butonul de notificări
     ];
 
     const getActionFromLabel = (label) => {
-        // Find the corresponding action based on the label
         const allButtons = [...Object.values(roleButtons).flat(), ...commonButtons];
         const button = allButtons.find((btn) => btn.label === label);
         return button ? button.action : null;
@@ -65,7 +63,6 @@ const Sidebar = ({ setActiveContent }) => {
         const role = getUserRole();
         setUserRole(role);
 
-        // Load the last active content from localStorage on initial load
         const lastActiveLabel = localStorage.getItem('activeButton');
         if (lastActiveLabel) {
             const lastActiveContent = getActionFromLabel(lastActiveLabel);
@@ -76,8 +73,6 @@ const Sidebar = ({ setActiveContent }) => {
     const handleButtonClick = (button) => {
         setActiveContent(button.action);
         setActiveButton(button.label);
-
-        // Persist the active button label in localStorage
         localStorage.setItem('activeButton', button.label);
     };
 

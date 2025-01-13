@@ -11,6 +11,7 @@ public class NotificationsController : ControllerBase
         _notificationService = notificationService;
     }
 
+    // Adaugă notificare
     [HttpPost]
     public async Task<IActionResult> AddNotification([FromBody] AddNotificationRequest request)
     {
@@ -18,11 +19,30 @@ public class NotificationsController : ControllerBase
         return Ok();
     }
 
+    // Obține notificările pentru un utilizator
     [HttpGet("{recipientId}")]
     public async Task<IActionResult> GetNotifications(string recipientId)
     {
         var notifications = await _notificationService.GetNotificationsForUserAsync(recipientId);
         return Ok(notifications);
+    }
+
+    // Șterge notificare
+    [HttpDelete("{notificationId}")]
+    public async Task<IActionResult> DeleteNotification(int notificationId, [FromQuery] string recipientId)
+    {
+        var result = await _notificationService.DeleteNotificationAsync(notificationId, recipientId);
+
+        if (result is OkResult)
+        {
+            return Ok(); // Notificarea a fost ștearsă cu succes
+        }
+        else if (result is NotFoundResult)
+        {
+            return NotFound(); // Notificarea nu a fost găsită
+        }
+
+        return BadRequest(); // Dacă există o altă eroare
     }
 }
 

@@ -15,6 +15,7 @@
   <ItemGroup>
     <None Remove="src\Forms\NotificationSettingsForm.css" />
     <None Remove="src\Forms\NotificationSettingsForm.jsx" />
+    <None Remove="src\Pages\NotificationSettingsPage.jsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\Components\Calendar\" />
