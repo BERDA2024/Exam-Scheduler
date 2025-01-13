@@ -6,6 +6,7 @@ import ManageUsersPage from '../Pages/ManageUsersPage';
 import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
 import ManageDepartmentsPage from '../Pages/ManageDepartmentsPage';
 import ManageGroupsPage from '../Pages/ManageGroupsPage';
+import ManageSubjectsPage from '../Pages/ManageSubjectsPage';
 import CalendarPage from '../Pages/CalendarPage';
 import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
@@ -31,6 +32,7 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Manage Users", action: <ManageUsersPage /> },
             { label: "Manage Departments", action: <ManageDepartmentsPage /> },
             { label: "Manage Classrooms", action: <ManageClassroomsPage /> },
+            { label: "Manage Subjects", action: <ManageSubjectsPage /> },
             { label: "Manage Groups", action: <ManageGroupsPage /> }
         ],
         Secretary: [
