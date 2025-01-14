@@ -78,6 +78,7 @@ namespace ExamScheduler.Server
            });
 
             builder.Services.AddScoped<JwtTokenService>(); // Register the JwtTokenService
+            builder.Services.AddScoped<NotificationService>(); // Register the JwtTokenService
             builder.Services.AddControllers();
 
             // Add CORS services and configure the policy

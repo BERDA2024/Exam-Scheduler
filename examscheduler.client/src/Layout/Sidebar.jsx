@@ -1,40 +1,40 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Folosește Link pentru a naviga între pagini
-import { getUserRole } from '../Utils/RoleUtils';
-import DashboardPage from '../Pages/DashboardPage';
-import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
-import ManageUsersPage from '../Pages/ManageUsersPage';
-import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
-import ManageDepartmentsPage from '../Pages/ManageDepartmentsPage';
-import ManageGroupsPage from '../Pages/ManageGroupsPage';
-import CalendarPage from '../Pages/CalendarPage';
-import NotificationsPage from '../Pages/NotificationsPage'; // Importă NotificationsPage
-import ScheduleExamPage from '../Pages/ScheduleExamPage';
-import ProfessorManagementPage from '../Pages/ProfessorManagementPage';
-import './Sidebar.css';
-import ManageClassroomsPage from '../Pages/ManageClassroomsPage';
+﻿import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // Folosește Link pentru a naviga între pagini
+import { getUserRole } from "../Utils/RoleUtils";
+import DashboardPage from "../Pages/DashboardPage";
+import ProfileSettingsPage from "../Pages/ProfileSettingsPage";
+import ManageUsersPage from "../Pages/ManageUsersPage";
+import ManageFacultiesPage from "../Pages/ManageFacultiesPage";
+import ManageDepartmentsPage from "../Pages/ManageDepartmentsPage";
+import ManageGroupsPage from "../Pages/ManageGroupsPage";
+import CalendarPage from "../Pages/CalendarPage";
+import NotificationsPage from "../Pages/NotificationsPage"; // Importă NotificationsPage
+import ScheduleExamPage from "../Pages/ScheduleExamPage";
+import ProfessorManagementPage from "../Pages/ProfessorManagementPage";
+import "./Sidebar.css";
+import ManageClassroomsPage from "../Pages/ManageClassroomsPage";
 
 const Sidebar = ({ setActiveContent }) => {
     const [userRole, setUserRole] = useState(null);
     const [activeButton, setActiveButton] = useState(() => {
-        return localStorage.getItem('activeButton') || null;
+        return localStorage.getItem("activeButton") || null;
     });
 
     const roleButtons = {
         Admin: [
             { label: "Admin Dashboard", action: <DashboardPage /> },
             { label: "Manage Users", action: <ManageUsersPage /> },
-            { label: "Manage Faculties", action: <ManageFacultiesPage /> }
+            { label: "Manage Faculties", action: <ManageFacultiesPage /> },
         ],
         FacultyAdmin: [
             { label: "Manage Users", action: <ManageUsersPage /> },
             { label: "Manage Departments", action: <ManageDepartmentsPage /> },
             { label: "Manage Classrooms", action: <ManageClassroomsPage /> },
-            { label: "Manage Groups", action: <ManageGroupsPage /> }
+            { label: "Manage Groups", action: <ManageGroupsPage /> },
         ],
         Secretary: [
             { label: "Manage Users", action: <ManageUsersPage /> },
-            { label: "Manage Groups", action: <ManageGroupsPage /> }
+            { label: "Manage Groups", action: <ManageGroupsPage /> },
         ],
         Professor: [
             { label: "Exams Management", action: <ProfessorManagementPage /> },
@@ -63,7 +63,7 @@ const Sidebar = ({ setActiveContent }) => {
         const role = getUserRole();
         setUserRole(role);
 
-        const lastActiveLabel = localStorage.getItem('activeButton');
+        const lastActiveLabel = localStorage.getItem("activeButton");
         if (lastActiveLabel) {
             const lastActiveContent = getActionFromLabel(lastActiveLabel);
             setActiveContent(lastActiveContent);
@@ -73,7 +73,7 @@ const Sidebar = ({ setActiveContent }) => {
     const handleButtonClick = (button) => {
         setActiveContent(button.action);
         setActiveButton(button.label);
-        localStorage.setItem('activeButton', button.label);
+        localStorage.setItem("activeButton", button.label);
     };
 
     if (!userRole) {
@@ -86,7 +86,7 @@ const Sidebar = ({ setActiveContent }) => {
         <nav className="sidebar">
             {buttons.map((button, index) => (
                 <button
-                    className={`sidebar-button ${activeButton === button.label ? 'active' : ''}`}
+                    className={`sidebar-button ${activeButton === button.label ? "active" : ""}`}
                     key={index}
                     onClick={() => handleButtonClick(button)}
                 >
@@ -96,7 +96,7 @@ const Sidebar = ({ setActiveContent }) => {
 
             {commonButtons.map((button, index) => (
                 <button
-                    className={`sidebar-button ${activeButton === button.label ? 'active' : ''}`}
+                    className={`sidebar-button ${activeButton === button.label ? "active" : ""}`}
                     key={index}
                     onClick={() => handleButtonClick(button)}
                 >

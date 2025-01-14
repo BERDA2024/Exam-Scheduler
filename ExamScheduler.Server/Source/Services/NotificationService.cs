@@ -1,4 +1,5 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
+using ExamScheduler.Server.Source.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,30 +29,50 @@ public class NotificationService
         await _context.SaveChangesAsync();
     }
 
-    // Obține notificările pentru un anumit utilizator
-    public async Task<List<Notification>> GetNotificationsForUserAsync(string recipientId)
+    // Obține notificările pentru utilizatorul curent
+    public async Task<List<NotificationModel>> GetNotificationsForUserAsync(string recipientId)
     {
-        return await _context.Notifications
+        var notifications = await _context.Notifications
             .Where(n => n.RecipientId == recipientId)
             .OrderByDescending(n => n.CreatedAt)
             .ToListAsync();
+
+        var notificationsModels = new List<NotificationModel>();
+
+        foreach (var notification in notifications)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == notification.SenderId);
+
+            if (user == null) continue;
+
+            notificationsModels.Add(new NotificationModel
+            {
+                Id = notification.Id,
+                Title = notification.Title,
+                Description = notification.Description,
+                CreatedAt = notification.CreatedAt,
+                IsRead = notification.IsRead,
+                RecipientName = user.FirstName+" " + user.LastName,
+            });
+        }
+
+        return notificationsModels;
     }
 
-    // Șterge o notificare pentru un utilizator specific
-    public async Task<IActionResult> DeleteNotificationAsync(int notificationId, string recipientId)
+    // Șterge o notificare
+    public async Task<IActionResult> DeleteNotificationAsync(int notificationId)
     {
-        // Găsește notificarea
         var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == notificationId && n.RecipientId == recipientId);
+            .FirstOrDefaultAsync(n => n.Id == notificationId);
 
         if (notification == null)
         {
-            return new NotFoundResult(); // Notificarea nu a fost găsită pentru utilizatorul respectiv
+            return new NotFoundResult();
         }
 
         _context.Notifications.Remove(notification);
         await _context.SaveChangesAsync();
 
-        return new OkResult(); // Notificarea a fost ștearsă cu succes
+        return new OkResult();
     }
 }

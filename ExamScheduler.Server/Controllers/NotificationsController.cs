@@ -1,55 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-[ApiController]
-[Route("api/[controller]")]
-public class NotificationsController : ControllerBase
+namespace ExamScheduler.Server.Controllers
 {
-    private readonly NotificationService _notificationService;
-
-    public NotificationsController(NotificationService notificationService)
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize] // Asigură-te că doar utilizatorii autentificați pot accesa acest controller
+    public class NotificationsController(NotificationService notificationService) : ControllerBase
     {
-        _notificationService = notificationService;
-    }
+        private readonly NotificationService _notificationService = notificationService;
 
-    // Adaugă notificare
-    [HttpPost]
-    public async Task<IActionResult> AddNotification([FromBody] AddNotificationRequest request)
-    {
-        await _notificationService.AddNotificationAsync(request.Title, request.Description, request.SenderId, request.RecipientId);
-        return Ok();
-    }
-
-    // Obține notificările pentru un utilizator
-    [HttpGet("{recipientId}")]
-    public async Task<IActionResult> GetNotifications(string recipientId)
-    {
-        var notifications = await _notificationService.GetNotificationsForUserAsync(recipientId);
-        return Ok(notifications);
-    }
-
-    // Șterge notificare
-    [HttpDelete("{notificationId}")]
-    public async Task<IActionResult> DeleteNotification(int notificationId, [FromQuery] string recipientId)
-    {
-        var result = await _notificationService.DeleteNotificationAsync(notificationId, recipientId);
-
-        if (result is OkResult)
+        /// <summary>
+        /// Obține notificările pentru utilizatorul curent.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetNotifications()
         {
-            return Ok(); // Notificarea a fost ștearsă cu succes
-        }
-        else if (result is NotFoundResult)
-        {
-            return NotFound(); // Notificarea nu a fost găsită
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obține ID-ul utilizatorului curent
+            if (userId == null)
+                return NotFound(new { message = "User not found." });
+
+            var notifications = await _notificationService.GetNotificationsForUserAsync(userId);
+            return Ok(notifications);
         }
 
-        return BadRequest(); // Dacă există o altă eroare
-    }
-}
+        /// <summary>
+        /// Șterge o notificare specifică pentru utilizatorul curent.
+        /// </summary>
+        /// <param name="notificationId">ID-ul notificării care trebuie ștearsă.</param>
+        [HttpDelete("{notificationId}")]
+        public async Task<IActionResult> DeleteNotification(int notificationId)
+        {
+            var result = await _notificationService.DeleteNotificationAsync(notificationId);
 
-public class AddNotificationRequest
-{
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public string SenderId { get; set; }
-    public string RecipientId { get; set; }
+            if (result is NotFoundResult)
+                return NotFound(new { message = "Notification not found." });
+
+            return Ok(new { message = "Notification deleted successfully." });
+        }
+    }
 }

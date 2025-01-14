@@ -1,12 +1,20 @@
 import axios from 'axios';
 
-// Fetch notifications for a specific user
-export const fetchNotifications = async (recipientId) => {
-    const response = await axios.get(`/api/notifications/${recipientId}`);
+// Fetch notifications for the current user
+export const fetchNotifications = async () => {
+    const response = await axios.get('/api/notifications', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
     return response.data;
 };
 
-// Add a new notification
-export const addNotification = async (notification) => {
-    await axios.post('/api/notifications', notification);
+// Delete a notification
+export const deleteNotification = async (notificationId) => {
+    await axios.delete(`/api/notifications/${notificationId}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
 };
