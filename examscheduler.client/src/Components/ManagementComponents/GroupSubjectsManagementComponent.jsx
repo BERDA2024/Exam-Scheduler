@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import GroupSubjectForm from '../../Forms/GroupSubjectForm';
 import { getAuthHeader } from '../../Utils/AuthUtils';
-import SubjectSelector from "../../Utils/SubjectSelector";
 import GroupSelector from "../../Utils/GroupSelector";
+import SubjectSelector from "../../Utils/SubjectSelector";
 import GenericTable from "../GenericTable/GenericTable";
 import "./ManagementComponent.css";
 

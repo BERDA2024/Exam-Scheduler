@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
+import DepartmentSelector from "../Utils/DepartmentSelector";
 import { getURL } from '../Utils/URLUtils';
 import "./FormStyles.css";
-import DepartmentSelector from "../Utils/DepartmentSelector";
 
 const GroupForm = ({ group, onClose, onRefresh }) => {
     const [groupDetails, setGroupDetails] = useState(group ? group : { id: 0, departmentName: '', groupName: '', studyYear: 0 });

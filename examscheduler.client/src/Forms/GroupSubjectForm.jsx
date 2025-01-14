@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
-import { getURL } from '../Utils/URLUtils';
-import "./FormStyles.css";
 import GroupSelector from "../Utils/GroupSelector";
 import SubjectSelector from "../Utils/SubjectSelector";
+import { getURL } from '../Utils/URLUtils';
+import "./FormStyles.css";
 
 const GroupSubjectForm = ({ groupSubject, onClose, onRefresh }) => {
     const [groupSubjectDetails, setGroupSubjectDetails] = useState(groupSubject ? groupSubject : { id: 0, subjectName: '', groupName: '' });
