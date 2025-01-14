@@ -13,7 +13,7 @@ const AvailabilityManagementPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Manage Departments">
+                        <StylizedBlock title="Manage Availability">
                             {/* Availability block */}
                             <div className="block-item">
                                 <AvailabilityManagementComponent />

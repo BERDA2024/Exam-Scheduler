@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { getAuthHeader } from '../../Utils/AuthUtils';
 import GenericTable from "../GenericTable/GenericTable";
 import "./ManagementComponent.css";
@@ -46,8 +46,8 @@ const AvailabilityManagementComponent = () => {
         const filtered = availabilities.filter(
             (availabilities) =>
                 availabilities &&
-                (availabilities.StartDate.toLowerCase().includes(!search ? '' : search.toLowerCase()) ||
-                    availabilities.EndDate.toLowerCase().includes(!search ? '' : search.toLowerCase()))
+                (availabilities.startDate.toLowerCase().includes(!search ? '' : search.toLowerCase()) ||
+                    availabilities.endDate.toLowerCase().includes(!search ? '' : search.toLowerCase()))
         );
         setFilteredAvailabilities(filtered);
     };
@@ -60,6 +60,40 @@ const AvailabilityManagementComponent = () => {
     const handleEditAvailability = (availability) => {
         setSelectedAvailability(availability); // Set the selected faculty for editing
         setShowForm(true);
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setAvailability({ ...availability, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(false);
+
+        try {
+            const authHeader = getAuthHeader();
+            const response = await fetch('https://localhost:7118/api/Availability', {
+                method: 'POST',
+                headers: {
+                    ...authHeader,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(availability),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to add availability');
+            }
+
+            setSuccess(true);
+            setAvailability({ startDate: '', endDate: '' }); // Resetează formularul
+            fetchAvailabilities(); // Actualizează lista de disponibilități
+        } catch (error) {
+            setError(error.message);
+        }
     };
 
     const handleDeleteAvailability = async (id) => {
@@ -87,8 +121,8 @@ const AvailabilityManagementComponent = () => {
     };
 
     const columns = [
-        { key: "StartDate", header: "Start Date" },
-        { key: "EndDate", header: "End Date" },
+        { key: "startDate", header: "Start Date" },
+        { key: "endDate", header: "End Date" },
     ];
 
     return (
@@ -110,7 +144,7 @@ const AvailabilityManagementComponent = () => {
                         onChange={handleSearchChange}
                     />
                     <button className="data-management-button" onClick={handleSearch}>Search</button>
-                    <button className="data-management-button" onClick={handleAddAvailability}>Add Department</button>
+                    <button className="data-management-button" onClick={handleAddAvailability}>Add Availability</button>
                 </div>
 
                 <GenericTable
