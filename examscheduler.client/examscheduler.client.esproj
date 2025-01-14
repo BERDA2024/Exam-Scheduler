@@ -20,6 +20,10 @@
   
   </ItemGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+    <Folder Include="src\api\" />
 >>>>>>> Stashed changes
     <Folder Include="src\Components\Calendar\" />
     <Folder Include="src\Components\AcceptedExamsList\" />
