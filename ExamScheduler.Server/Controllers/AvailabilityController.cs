@@ -16,9 +16,50 @@ namespace ExamScheduler.Server.Controllers
         private readonly UserManager<User> _userManager = userManager;
         private readonly ApplicationDbContext _context = context;
 
+
+
+        [HttpGet("availability-by-professor")]
+        [Authorize]
+        public async Task<IActionResult> GetAvailabilityByProfessor()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return BadRequest(new { message = "User not found." });
+
+            try
+            {
+                // Găsește profesorul asociat utilizatorului curent
+                var professor = await _context.Professor
+                    .FirstOrDefaultAsync(p => p.UserId == userId);
+
+                if (professor == null)
+                {
+                    return NotFound(new { message = "Professor not found." });
+                }
+
+                // Găsește disponibilitățile asociate profesorului
+                var availability = await _context.Availability
+                    .Where(a => a.ProfessorID == professor.Id)
+                    .ToListAsync();
+
+                if (availability.Count == 0)
+                {
+                    return NotFound(new { message = "No availability found for the professor." });
+                }
+
+                return Ok(availability);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Error: " + ex.Message });
+            }
+        }
+
         [HttpGet("availability-by-subject")]
+        [Authorize]
         public async Task<IActionResult> GetAvailabilityBySubject(string subjectName)
         {
+
             try
             {
                 // Găsește subiectul și profesorul asociat

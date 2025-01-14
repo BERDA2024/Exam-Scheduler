@@ -11,6 +11,7 @@ import CalendarPage from '../Pages/CalendarPage';
 import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
 import ProfessorManagementPage from '../Pages/ProfessorManagementPage';
+import ManageAvailability from '../Pages/AvailabilityManagementPage'
 import './Sidebar.css';
 import ManageClassroomsPage from '../Pages/ManageClassroomsPage';
 
@@ -41,6 +42,7 @@ const Sidebar = ({ setActiveContent }) => {
         ],
         Professor: [
             { label: "Exams Management", action: <ProfessorManagementPage /> },
+            { label: "Availability Management", action: <ManageAvailability /> },
         ],
         Student: [
             { label: "View Exams", action: "loadExams" },
