@@ -38,9 +38,14 @@ const EditSubjectsForm = () => {
     const handleEdit = (request) => {
         setEditRequest({
             id: request.id,
-            examType: request.examType || "Colocviu", // Default pentru tipul de examen
-            examDuration: request.examDuration || 60, // Default pentru durata examenului (minute)
-            startDate: request.startDate ? new Date(request.startDate).toISOString().split("T")[0] : "", // Formatăm corect data
+            examType: request.examType || "Colocviu",
+            examDuration: request.examDuration || 60,
+            startDate: request.startDate
+                ? new Date(request.startDate).toISOString().split("T")[0]
+                : "", // Data în format YYYY-MM-DD
+            startTime: request.startDate
+                ? new Date(request.startDate).toISOString().split("T")[1].substring(0, 5)
+                : "00:00", // Ora în format HH:mm
         });
     };
 
@@ -48,13 +53,13 @@ const EditSubjectsForm = () => {
     const handleSave = async () => {
         if (!editRequest) return;
 
-        // Validăm data înainte de a o trimite
         const isValidDate = new Date(editRequest.startDate).toString() !== "Invalid Date";
         if (!isValidDate) {
             setError("Invalid date format");
             return;
         }
 
+        const combinedDateTime = `${editRequest.startDate}T${editRequest.startTime}:00`;
         const originalRequest = scheduleRequests.find((req) => req.id === editRequest.id);
         if (!originalRequest) {
             setError("Original request not found.");
@@ -76,7 +81,7 @@ const EditSubjectsForm = () => {
                         examDuration: editRequest.examDuration,
                         studentID: originalRequest.studentID,
                         requestStateID: originalRequest.requestStateID,
-                        startDate: editRequest.startDate, // Trimitem data corectă
+                        startDate: combinedDateTime, // Combinația dată și oră
                     }),
                 }
             );
@@ -113,66 +118,75 @@ const EditSubjectsForm = () => {
             {scheduleRequests.length === 0 ? (
                 <p>No accepted exams available.</p>
             ) : (
-                    <ul>
-                        {scheduleRequests
-                            .slice() // Crează o copie a array-ului pentru a nu modifica array-ul original
-                            .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)) // Sortează cererile după data startDate
-                            .reverse()
-                            .map((request) => (
-                                <li key={request.id}>
-                                    {editRequest?.id === request.id ? (
-                                        <div className="edit-form">
-                                            <label>
-                                                Exam Type:
-                                                <select
-                                                    name="examType"
-                                                    value={editRequest.examType}
-                                                    onChange={handleChange}
-                                                >
-                                                    {examTypes.map((type) => (
-                                                        <option key={type} value={type}>
-                                                            {type}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </label>
-                                            <label>
-                                                Exam Duration (minutes):
-                                                <input
-                                                    type="number"
-                                                    name="examDuration"
-                                                    value={editRequest.examDuration}
-                                                    onChange={handleChange}
-                                                    min="10"
-                                                    max="300"
-                                                />
-                                            </label>
-                                            <label>
-                                                Start Date:
-                                                <input
-                                                    type="date"
-                                                    name="startDate"
-                                                    value={editRequest.startDate}
-                                                    onChange={handleChange}
-                                                />
-                                            </label>
-                                            <button onClick={handleSave}>Save</button>
-                                            <button onClick={() => setEditRequest(null)}>Cancel</button>
-                                        </div>
-                                    ) : (
-                                        <div className="schedule-details">
-                                            <span>
-                                                {request.subjectName} -{" "}
-                                                Type: {request.examType || "N/A"}, Duration:{" "}
-                                                {request.examDuration || "N/A"} minutes, Date:{" "}
-                                                {new Date(request.startDate).toLocaleString()}
-                                            </span>
-                                            <button onClick={() => handleEdit(request)}>Edit</button>
-                                        </div>
-                                    )}
-                                </li>
-                            ))}
-                    </ul>
+                <ul>
+                    {scheduleRequests
+                        .slice()
+                        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
+                        .reverse()
+                        .map((request) => (
+                            <li key={request.id}>
+                                {editRequest?.id === request.id ? (
+                                    <div className="edit-form">
+                                        <label>
+                                            Exam Type:
+                                            <select
+                                                name="examType"
+                                                value={editRequest.examType}
+                                                onChange={handleChange}
+                                            >
+                                                {examTypes.map((type) => (
+                                                    <option key={type} value={type}>
+                                                        {type}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <label>
+                                            Exam Duration (minutes):
+                                            <input
+                                                type="number"
+                                                name="examDuration"
+                                                value={editRequest.examDuration}
+                                                onChange={handleChange}
+                                                min="10"
+                                                max="300"
+                                            />
+                                        </label>
+                                        <label>
+                                            Start Date:
+                                            <input
+                                                type="date"
+                                                name="startDate"
+                                                value={editRequest.startDate}
+                                                onChange={handleChange}
+                                            />
+                                        </label>
+                                        <label>
+                                            Start Time:
+                                            <input
+                                                type="time"
+                                                name="startTime"
+                                                value={editRequest.startTime}
+                                                onChange={handleChange}
+                                            />
+                                        </label>
+                                        <button onClick={handleSave}>Save</button>
+                                        <button onClick={() => setEditRequest(null)}>Cancel</button>
+                                    </div>
+                                ) : (
+                                    <div className="schedule-details">
+                                        <span>
+                                            {request.subjectName} -{" "}
+                                            Type: {request.examType || "N/A"}, Duration:{" "}
+                                            {request.examDuration || "N/A"} minutes, Date:{" "}
+                                            {new Date(request.startDate).toLocaleString()}
+                                        </span>
+                                        <button onClick={() => handleEdit(request)}>Edit</button>
+                                    </div>
+                                )}
+                            </li>
+                        ))}
+                </ul>
             )}
         </div>
     );

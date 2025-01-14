@@ -85,7 +85,7 @@ const ManageScheduleRequestsForm = () => {
                         <li key={request.id}>
                             <p>
                                 <strong>Subject:</strong> {request.subjectName} <br />
-                                <strong>Student:</strong> {request.studentID} <br />
+                                <strong>Group:</strong> 3143 <br />
                                 <strong>Date:</strong> {new Date(request.startDate).toLocaleString()} <br />
                                 <strong>Classroom:</strong> {request.classroomName} <br />
                                 <strong>Status:</strong>{' '}

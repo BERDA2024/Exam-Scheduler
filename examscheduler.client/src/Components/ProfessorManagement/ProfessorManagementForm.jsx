@@ -36,6 +36,7 @@ const ProfessorManagementForm = () => {
             const data = await response.json();
             setSubjects(data);
         } catch (error) {
+            setError('Failed to fetch subjects. Please try again.');
             console.error('Error fetching subjects:', error);
         }
     };
@@ -50,20 +51,25 @@ const ProfessorManagementForm = () => {
             const data = await response.json();
             setAvailabilities(data);
         } catch (error) {
+            setError('Failed to fetch availabilities. Please try again.');
             console.error('Error fetching availabilities:', error);
         }
     };
 
     const fetchScheduleRequests = async () => {
         try {
-            const response = await fetch('https://localhost:7118/api/ScheduleRequest', {
+            const response = await fetch('https://localhost:7118/api/ScheduleRequest/Professor', {
                 method: 'GET',
                 headers: authHeader,
             });
-            if (!response.ok) throw new Error('Failed to fetch schedule requests');
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                throw new Error(errorResponse.message || 'Failed to fetch schedule requests');
+            }
             const data = await response.json();
             setScheduleRequests(data);
         } catch (error) {
+            setError('Failed to fetch schedule requests. Please try again.');
             console.error('Error fetching schedule requests:', error);
         }
     };
@@ -232,7 +238,7 @@ const ProfessorManagementForm = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No schedule requests available.</p>
+                    <p>No schedule requests available for your subjects.</p>
                 )}
             </div>
         </div>

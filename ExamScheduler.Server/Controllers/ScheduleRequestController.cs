@@ -34,7 +34,7 @@ namespace ExamScheduler.Server.Source.Controllers
                     Id = sr.Id,
                     SubjectName = sr.Subject != null ? sr.Subject.LongName : "Unknown",
                     StudentID = sr.StudentID,
-                    SubgroupID = sr.SubgroupID, // Preluăm SubgroupID din ScheduleRequest
+                    SubgroupID = sr.SubgroupID,
                     RequestStateID = sr.RequestStateID,
                     ClassroomName = sr.Classroom != null ? sr.Classroom.Name : "Unknown",
                     StartDate = sr.StartDate,
@@ -45,6 +45,54 @@ namespace ExamScheduler.Server.Source.Controllers
                 .ToListAsync();
 
             return Ok(scheduleRequests);
+        }
+
+        // GET: api/ScheduleRequest/Professor
+        [HttpGet("Professor")]
+        [Authorize(Roles = "Professor")]
+        public async Task<ActionResult<IEnumerable<ScheduleRequestModel>>> GetScheduleRequestsForProfessor()
+        {
+            try
+            {
+                // Extract ProfessorID from the token
+                var professorIdClaim = User.FindFirst("ProfessorID")?.Value;
+                if (string.IsNullOrEmpty(professorIdClaim) || !int.TryParse(professorIdClaim, out int professorId))
+                {
+                    return Unauthorized(new { message = "Invalid or missing ProfessorID in token." });
+                }
+
+                _logger.LogInformation("ProfessorID from token: {ProfessorID}", professorId);
+
+                // Filter requests based on the professor's subjects
+                var scheduleRequests = await _context.ScheduleRequest
+                    .Include(sr => sr.Subject)
+                    .Include(sr => sr.Student)
+                    .Include(sr => sr.Classroom)
+                    .Where(sr => sr.Subject != null && sr.Subject.ProfessorID == professorId)
+                    .Select(sr => new ScheduleRequestModel
+                    {
+                        Id = sr.Id,
+                        SubjectName = sr.Subject != null ? sr.Subject.LongName : "Unknown",
+                        StudentID = sr.StudentID,
+                        SubgroupID = sr.SubgroupID,
+                        RequestStateID = sr.RequestStateID,
+                        ClassroomName = sr.Classroom != null ? sr.Classroom.Name : "Unknown",
+                        StartDate = sr.StartDate,
+                        ExamDuration = sr.ExamDuration,
+                        ExamType = sr.ExamType,
+                        RejectionReason = sr.RejectionReason ?? "Not specified"
+                    })
+                    .ToListAsync();
+
+                _logger.LogInformation("Schedule requests fetched for ProfessorID {ProfessorID}: {Count}", professorId, scheduleRequests.Count);
+
+                return Ok(scheduleRequests);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching schedule requests for the professor.");
+                return StatusCode(500, new { message = "Internal server error. Please try again later." });
+            }
         }
 
         // GET: api/ScheduleRequest/{id}
@@ -66,7 +114,7 @@ namespace ExamScheduler.Server.Source.Controllers
                 Id = scheduleRequest.Id,
                 SubjectName = scheduleRequest.Subject?.LongName ?? "Unknown",
                 StudentID = scheduleRequest.StudentID,
-                SubgroupID = scheduleRequest.SubgroupID, // Preluăm SubgroupID
+                SubgroupID = scheduleRequest.SubgroupID,
                 RequestStateID = scheduleRequest.RequestStateID,
                 ClassroomName = scheduleRequest.Classroom?.Name ?? "Unknown",
                 StartDate = scheduleRequest.StartDate,
@@ -91,7 +139,7 @@ namespace ExamScheduler.Server.Source.Controllers
 
             _logger.LogInformation("Received schedule request: {@Model}", model);
 
-            // Obținem SubjectID din baza de date
+            // Get SubjectID from the database
             var subjectId = await _context.Subject
                 .Where(s => s.LongName == model.SubjectName)
                 .Select(s => s.Id)
@@ -104,7 +152,7 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound(new { message = errorMessage });
             }
 
-            // Obținem ClassroomID din baza de date
+            // Get ClassroomID from the database
             var classroomId = await _context.Classroom
                 .Where(c => c.Name == model.ClassroomName)
                 .Select(c => c.Id)
@@ -117,7 +165,7 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound(new { message = errorMessage });
             }
 
-            // Obținem SubgroupID din Student
+            // Get SubgroupID from Student
             var subgroupId = await _context.Student
                 .Where(s => s.Id == model.StudentID)
                 .Select(s => s.SubgroupID)
@@ -130,7 +178,7 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound(new { message = errorMessage });
             }
 
-            // Verificăm dacă StartDate este în trecut
+            // Validate StartDate
             if (model.StartDate < DateTime.Now)
             {
                 var errorMessage = "StartDate cannot be in the past.";
@@ -140,13 +188,12 @@ namespace ExamScheduler.Server.Source.Controllers
 
             try
             {
-                // Creăm obiectul ScheduleRequest
                 var scheduleRequest = new ScheduleRequest
                 {
                     SubjectID = subjectId,
                     StudentID = model.StudentID,
-                    SubgroupID = subgroupId.Value, // Setăm SubgroupID
-                    RequestStateID = 1, // Statusul inițial (poate fi configurat diferit)
+                    SubgroupID = subgroupId.Value,
+                    RequestStateID = 1,
                     ClassroomID = classroomId,
                     StartDate = model.StartDate,
                     ExamDuration = model.ExamDuration,
@@ -154,7 +201,6 @@ namespace ExamScheduler.Server.Source.Controllers
                     RejectionReason = model.RejectionReason
                 };
 
-                // Adăugăm cererea în baza de date
                 _context.ScheduleRequest.Add(scheduleRequest);
                 await _context.SaveChangesAsync();
 
@@ -193,7 +239,6 @@ namespace ExamScheduler.Server.Source.Controllers
                 return NotFound(new { message = $"Schedule request with ID {id} not found." });
             }
 
-            // Actualizăm ScheduleRequest
             scheduleRequest.StudentID = model.StudentID;
             scheduleRequest.RequestStateID = model.RequestStateID;
             scheduleRequest.StartDate = model.StartDate != DateTime.MinValue ? model.StartDate : scheduleRequest.StartDate;

@@ -129,9 +129,11 @@ const Calendar = () => {
                     return (
                         <div
                             key={index}
-                            className={`calendar-day ${day.isCurrentMonth ? 'current-month' : 'other-month'
-                                } ${hasExam ? 'has-exam' : ''} ${selectedDay === day.date.getDate() && day.isCurrentMonth ? 'selected' : ''
-                                }`}
+                            className={`calendar-day 
+                                ${day.isCurrentMonth ? 'current-month' : 'other-month'} 
+                                ${hasExam ? 'has-exam' : ''} 
+                                ${selectedDay === day.date.getDate() && day.isCurrentMonth ? 'selected' : ''} 
+                                ${day.date.toDateString() === new Date().toDateString() ? 'today' : ''}`}
                             onClick={() => handleDayClick(day)}
                         >
                             {day.date.getDate()}

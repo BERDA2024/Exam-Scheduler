@@ -57,6 +57,13 @@
     gap: 2px;
 }
 
+.calendar-day.today {
+    border: 2px solid #4caf50;
+    background-color: #e8f5e9;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
 .calendar-day {
     height: 60px;
     display: flex;

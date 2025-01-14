@@ -77,38 +77,6 @@ namespace ExamScheduler.Server.Source.Services
             return null;
         }
 
-        public async Task<Faculty?> GetUserFaculty(User user)
-        {
-            var student = await GetStudentById(user);
-            if (student != null)
-            {
-                if (student.FacultyId != null)
-                    return await _context.Faculty.FirstOrDefaultAsync(f => f.Id == student.FacultyId);
-            }
-
-            var professor = await GetProfessorById(user);
-            if (professor != null)
-            {
-                if (professor.FacultyId != null)
-                    return await _context.Faculty.FirstOrDefaultAsync(f => f.Id == professor.FacultyId);
-            }
-
-            var secretary = await GetSecretaryById(user);
-            if (secretary != null)
-            {
-                if (secretary.FacultyId != null)
-                    return await _context.Faculty.FirstOrDefaultAsync(f => f.Id == secretary.FacultyId);
-            }
-
-            var facultyAdmin = await GetFacultyAdminById(user);
-            if (facultyAdmin != null)
-            {
-                if (facultyAdmin.FacultyId != null)
-                    return await _context.Faculty.FirstOrDefaultAsync(f => f.Id == facultyAdmin.FacultyId);
-            }
-
-            return null;
-        }
         public async Task<Student?> GetStudentById(User user)
         {
             var userId = user.Id;
@@ -234,7 +202,7 @@ namespace ExamScheduler.Server.Source.Services
             {
                 var student = await GetStudentById(user);
 
-                if (student != null) _context.Remove(student);
+                if (student != null ) _context.Remove(student);
 
                 var professor = await GetProfessorById(user);
 

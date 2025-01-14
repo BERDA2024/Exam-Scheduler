@@ -1,67 +1,36 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
-using ExamScheduler.Server.Source.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
-namespace ExamScheduler.Server.Controllers
+namespace ExamScheduler.Server.Source.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SubgroupController(ApplicationDbContext context, UserManager<User> userManager, RolesService userRoleService) : ControllerBase
+    public class SubgroupController : ControllerBase
     {
-        private readonly UserManager<User> _userManager = userManager;
-        private readonly ApplicationDbContext _context = context;
-        private readonly RolesService _userRoleService = userRoleService;
+        private readonly ApplicationDbContext _context;
+
+        public SubgroupController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/Subgroup
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubgroupModel>>> GetSubgroups()
         {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
-
-                if (userId == null) return BadRequest(new { message = "User not found" });
-
-                var user = await _userManager.FindByIdAsync(userId);
-
-                if (user == null) return BadRequest(new { message = "User not found" });
-
-                var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
-
-                if (facultyId == null) return BadRequest(new { message = "User not in a faculty" });
-
-                var departmentsIds = await _context.Department.Where(d => d.FacultyId == facultyId).Select(d => d.Id).ToListAsync();
-
-                var subgroups = await _context.Subgroup.ToListAsync();
-
-                var subgroupsModels = new List<SubgroupModel>();
-
-                foreach (var subgroup in subgroups)
+            var subgroups = await _context.Subgroup
+                .Select(s => new SubgroupModel
                 {
-                    var group = await _context.Group.FirstOrDefaultAsync(g => g.Id == subgroup.GroupId);
+                    Id = s.Id,
+                    GroupId = s.GroupId,
+                    SubgroupIndex = s.SubgroupIndex
+                })
+                .ToListAsync();
 
-                    if (group == null || !departmentsIds.Contains(group.DepartmentId)) continue;
-
-                    subgroupsModels.Add(new SubgroupModel
-                    {
-                        Id = subgroup.Id,
-                        GroupName = group.GroupName,
-                        SubgroupIndex = subgroup.SubgroupIndex,
-                        FullName = group.GroupName + subgroup.SubgroupIndex
-                    });
-                }
-
-                return Ok(subgroupsModels);
-            }
-            catch (Exception error)
-            {
-                return BadRequest(new { message = error.ToString() });
-            }
+            return Ok(subgroups);
         }
 
         // GET: api/Subgroup/{id}
@@ -70,18 +39,16 @@ namespace ExamScheduler.Server.Controllers
         {
             var subgroup = await _context.Subgroup.FindAsync(id);
 
-            if (subgroup == null) return NotFound(new { message = "Subgroup not found." });
-
-            var group = await _context.Group.FirstOrDefaultAsync(g => g.Id == subgroup.GroupId);
-
-            if (group == null) return NotFound(new { message = "Group not found." });
+            if (subgroup == null)
+            {
+                return NotFound();
+            }
 
             var subgroupModel = new SubgroupModel
             {
                 Id = subgroup.Id,
-                GroupName = group.GroupName,
-                SubgroupIndex = subgroup.SubgroupIndex,
-                FullName = group.GroupName + subgroup.SubgroupIndex
+                GroupId = subgroup.GroupId,
+                SubgroupIndex = subgroup.SubgroupIndex
             };
 
             return Ok(subgroupModel);
@@ -91,15 +58,14 @@ namespace ExamScheduler.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<SubgroupModel>> CreateSubgroup(SubgroupModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var group = await _context.Group.FirstOrDefaultAsync(g => g.GroupName == model.GroupName);
-
-            if (group == null) return NotFound(new { message = "Group not found" });
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var subgroup = new Subgroup
             {
-                GroupId = group.Id,
+                GroupId = model.GroupId,
                 SubgroupIndex = model.SubgroupIndex
             };
 
@@ -115,18 +81,23 @@ namespace ExamScheduler.Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSubgroup(int id, SubgroupModel model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
 
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var group = await _context.Group.FirstOrDefaultAsync(g => g.GroupName == model.GroupName);
-
-            if (group == null) return NotFound(new { message = "Group not found" });
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var subgroup = await _context.Subgroup.FindAsync(id);
+            if (subgroup == null)
+            {
+                return NotFound();
+            }
 
-            if (subgroup == null) return NotFound(new { message = "Subgroup not found" });
-
-            subgroup.GroupId = group.Id;
+            subgroup.GroupId = model.GroupId;
             subgroup.SubgroupIndex = model.SubgroupIndex;
 
             _context.Subgroup.Update(subgroup);
@@ -140,8 +111,10 @@ namespace ExamScheduler.Server.Controllers
         public async Task<IActionResult> DeleteSubgroup(int id)
         {
             var subgroup = await _context.Subgroup.FindAsync(id);
-
-            if (subgroup == null) return NotFound(new { message = "Subroup not found." });
+            if (subgroup == null)
+            {
+                return NotFound();
+            }
 
             _context.Subgroup.Remove(subgroup);
             await _context.SaveChangesAsync();

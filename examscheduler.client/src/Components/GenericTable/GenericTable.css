@@ -19,13 +19,9 @@
     /* Action button styles */
     .generic-table td button {
         gap: 10px;
-        /*width: 50%;*/
+        width: 50%;
         padding: 5px 10px;
         cursor: pointer;
-    }
-    /* Target the last column header (Actions) to make it smaller */
-    .generic-table th:last-child {
-        width: 100px; /* Adjust the width of the Actions column */
     }
 
 /* Utility styles */

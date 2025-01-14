@@ -1,66 +1,37 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
-using ExamScheduler.Server.Source.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
-namespace ExamScheduler.Server.Controllers
+namespace ExamScheduler.Server.Source.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GroupController(ApplicationDbContext context, UserManager<User> userManager, RolesService userRoleService) : ControllerBase
+    public class GroupController : ControllerBase
     {
-        private readonly UserManager<User> _userManager = userManager;
-        private readonly ApplicationDbContext _context = context;
-        private readonly RolesService _userRoleService = userRoleService;
+        private readonly ApplicationDbContext _context;
+
+        public GroupController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/Group
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GroupModel>>> GetGroups()
         {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
-
-                if (userId == null) return BadRequest(new { message = "User not found" });
-
-                var user = await _userManager.FindByIdAsync(userId);
-
-                if (user == null) return BadRequest(new { message = "User not found" });
-
-                var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
-
-                if (facultyId == null) return BadRequest(new { message = "User not in a faculty" });
-
-                var groups = await _context.Group.ToListAsync();
-
-                var groupsModels = new List<GroupModel>();
-
-                foreach (var group in groups)
+            var groups = await _context.Group
+                .Select(g => new GroupModel
                 {
-                    var department = await _context.Department.FirstOrDefaultAsync(d => d.Id == group.DepartmentId);
+                    Id = g.Id,
+                    DepartmentId = g.DepartmentId,
+                    GroupName = g.GroupName,
+                    StudyYear = g.StudyYear
+                })
+                .ToListAsync();
 
-                    if (department == null || department.FacultyId != facultyId) continue;
-
-                    groupsModels.Add(new GroupModel
-                    {
-                        Id = group.Id,
-                        DepartmentName = department.ShortName,
-                        GroupName = group.GroupName,
-                        StudyYear = group.StudyYear
-                    });
-                }
-
-                return Ok(groupsModels);
-            }
-            catch (Exception error)
-            {
-                return BadRequest(new { message = error.ToString() });
-            }
+            return Ok(groups);
         }
 
         // GET: api/Group/{id}
@@ -69,16 +40,15 @@ namespace ExamScheduler.Server.Controllers
         {
             var group = await _context.Group.FindAsync(id);
 
-            if (group == null) return NotFound(new { message = "Group not found." });
-
-            var department = await _context.Department.FirstOrDefaultAsync(d => d.Id == id);
-
-            if (department == null) return BadRequest(new { message = "Department not found" });
+            if (group == null)
+            {
+                return NotFound();
+            }
 
             var groupModel = new GroupModel
             {
                 Id = group.Id,
-                DepartmentName = department.ShortName,
+                DepartmentId = group.DepartmentId,
                 GroupName = group.GroupName,
                 StudyYear = group.StudyYear
             };
@@ -88,18 +58,16 @@ namespace ExamScheduler.Server.Controllers
 
         // POST: api/Group
         [HttpPost]
-        [Authorize(Roles = "FacultyAdmin,Secretary")]
         public async Task<ActionResult<GroupModel>> CreateGroup(GroupModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName == model.DepartmentName);
-
-            if (department == null) return BadRequest(new { message = "Department not found" });
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var group = new Group
             {
-                DepartmentId = department.Id,
+                DepartmentId = model.DepartmentId,
                 GroupName = model.GroupName,
                 StudyYear = model.StudyYear
             };
@@ -114,20 +82,25 @@ namespace ExamScheduler.Server.Controllers
 
         // PUT: api/Group/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "FacultyAdmin,Secretary")]
         public async Task<IActionResult> UpdateGroup(int id, GroupModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (id != model.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var group = await _context.Group.FindAsync(id);
-            if (group == null) return NotFound(new { message = "Group not found." });
+            if (group == null)
+            {
+                return NotFound();
+            }
 
-
-            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName == model.DepartmentName);
-
-            if (department == null) return BadRequest(new { message = "Department not found" });
-
-            group.DepartmentId = department.Id;
+            group.DepartmentId = model.DepartmentId;
             group.GroupName = model.GroupName;
             group.StudyYear = model.StudyYear;
 
@@ -139,12 +112,13 @@ namespace ExamScheduler.Server.Controllers
 
         // DELETE: api/Group/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "FacultyAdmin,Secretary")]
         public async Task<IActionResult> DeleteGroup(int id)
         {
             var group = await _context.Group.FindAsync(id);
-
-            if (group == null) return NotFound(new { message = "Group not found." });
+            if (group == null)
+            {
+                return NotFound();
+            }
 
             _context.Group.Remove(group);
             await _context.SaveChangesAsync();

@@ -16,7 +16,6 @@
     <Folder Include="src\Components\Calendar\" />
     <Folder Include="src\Components\AcceptedExamsList\" />
     <Folder Include="src\Components\DeclinedExamsList\" />
-    <Folder Include="src\Components\SpecificTable\" />
     <Folder Include="src\Components\EditSubjects\" />
     <Folder Include="src\Components\AddAvailability\" />
     <Folder Include="src\Components\ManageScheduleRequests\" />

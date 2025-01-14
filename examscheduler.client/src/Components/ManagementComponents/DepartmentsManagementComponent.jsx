@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DepartmentForm from '../../Forms/DepartmentForm';
 import { getAuthHeader } from '../../Utils/AuthUtils';
 import GenericTable from "../GenericTable/GenericTable";
-import "./ManagementComponent.css";
+import "./UserManagementComponent.css";
 
 const DepartmentsManagementComponent = () => {
     const [departments, setDepartments] = useState([]);

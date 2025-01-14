@@ -5,7 +5,7 @@ import EditSubjectsForm from '../Components/EditSubjects/EditSubjectsForm';
 import AddAvailabilityForm from '../Components/AddAvailability/AddAvailabilityForm';
 import ManageScheduleRequestsForm from '../Components/ManageScheduleRequests/ManageScheduleRequestsForm';
 import '../Styles/DashboardPage.css';
-//import '../Styles/ProfessorManagementPage.css';
+import '../Styles/ProfessorManagementPage.css';
 
 const ProfessorManagementPage = () => {
     return (

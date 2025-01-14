@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getAuthHeader } from '../../Utils/AuthUtils';
 import ClassroomForm from '../../Forms/ClassroomForm';
+
 import GenericTable from "../GenericTable/GenericTable";
-import "./ManagementComponent.css";
+import "./UserManagementComponent.css";
 
 const ClassroomsManagementComponent = () => {
     const [classrooms, setClassrooms] = useState([]);

@@ -22,7 +22,7 @@ namespace ExamScheduler.Server.Controllers
         private readonly RolesService _rolesService = roleService;
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin,FacultyAdmin")]
         public async Task<IActionResult> GetAllDepartments()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -40,7 +40,7 @@ namespace ExamScheduler.Server.Controllers
             var departments = await _context.Department
                 .ToListAsync();
 
-            if (!userRole.Contains(RoleType.Admin.ToString()))
+            if (userRole.Contains(RoleType.FacultyAdmin.ToString()))
             {
                 var facultyId = await _rolesService.GetFacultyIdByRole(user);
                 departments = departments
@@ -49,13 +49,13 @@ namespace ExamScheduler.Server.Controllers
 
             var departmentsModel = departments.Select(department =>
             {
-                var faculty = _context.Faculty.FirstOrDefaultAsync(f => f.Id == department.FacultyId).Result;
+                //var faculty = await _context.Faculty.FirstOrDefaultAsync(f => f.Id == department.FacultyId);
                 return new DepartmentModel()
                 {
                     Id = department.Id,
                     LongName = department.LongName,
                     ShortName = department.ShortName,
-                    FacultyName = faculty?.ShortName
+                    FacultyName = "faculty?.ShortName"
                 };
             }).ToList();
 
