@@ -1,12 +1,13 @@
-﻿import React from 'react';
-import NotificationInbox from '../components/NotificationInbox';
-import '../styles/NotificationsPage.css';
+import React from "react";
+
+import NotificationTable from "../components/NotificationTable";
+
 
 const NotificationsPage = () => {
     return (
-        <div className="notifications-container">
-            <h1 className="notifications-title">Notifications</h1>
-            <NotificationInbox />
+        <div>
+            <h1>Notifications</h1>
+            <NotificationTable />
         </div>
     );
 };
