@@ -1,10 +1,10 @@
 import React from 'react';
-import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
-import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
-import GroupsManagementComponent from '../Components/ManagementComponents/GroupsManagementComponent';
-import SubgroupsManagementComponent from '../Components/ManagementComponents/SubgroupsManagementComponent';
-import StudentsManagementComponent from '../Components/ManagementComponents/StudentsManagementComponent';
 import GroupSubjectssManagementComponent from '../Components/ManagementComponents/GroupSubjectsManagementComponent';
+import GroupsManagementComponent from '../Components/ManagementComponents/GroupsManagementComponent';
+import StudentsManagementComponent from '../Components/ManagementComponents/StudentsManagementComponent';
+import SubgroupsManagementComponent from '../Components/ManagementComponents/SubgroupsManagementComponent';
+import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
+import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
 import '../Styles/DashboardPage.css';
 
 const GroupsManagementPage = () => {

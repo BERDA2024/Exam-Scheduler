@@ -32,8 +32,8 @@ const FormTemplate = ({ model, onClose, onRefresh }) => {
         // verifica daca userul este autentificat. daca nu e nevoide pt api, puteti scoate if-ul asta. lafel scoateti si din headers "...authHeader".
         if (authHeader) {
             // fetch in functie de ce e, edit sau adaugare.
-            const response = await fetch((user ? PutURL : PostURL), {
-                method: (user ? "PUT" : "POST"),
+            const response = await fetch((model ? PutURL : PostURL), {
+                method: (model ? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
                 body: JSON.stringify({
                     ModelParameter1: modelDetails.modelParameter1, // aici ModelParameter trebuie sa fie exact ca in clasa .cs model
@@ -68,7 +68,7 @@ const FormTemplate = ({ model, onClose, onRefresh }) => {
             <div className="form">
                 <form onSubmit={handleSubmit}>
                     {/* aici afiseaza parametrul asta doar daca userul este null. asa puteti ascunde/afisa parametrii cand vreti voi de ex asta e parametru pt form de adaugare*/}
-                    {!user && (
+                    {!model && (
                         <div className="form-input-div">
                             <label>Parameter1:</label>
                             <input

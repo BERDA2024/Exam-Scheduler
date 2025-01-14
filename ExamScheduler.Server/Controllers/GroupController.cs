@@ -93,7 +93,19 @@ namespace ExamScheduler.Server.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName == model.DepartmentName);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+            if (userId == null) return BadRequest(new { message = "User not found" });
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found" });
+
+            var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
+
+            if (facultyId == null) return BadRequest(new { message = "User not in a faculty" });
+
+            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName == model.DepartmentName && d.FacultyId == facultyId);
 
             if (department == null) return BadRequest(new { message = "Department not found" });
 
@@ -123,7 +135,20 @@ namespace ExamScheduler.Server.Controllers
             if (group == null) return NotFound(new { message = "Group not found." });
 
 
-            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName == model.DepartmentName);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+            if (userId == null) return BadRequest(new { message = "User not found" });
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found" });
+
+            var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
+
+            if (facultyId == null) return BadRequest(new { message = "User not in a faculty" });
+
+            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName == model.DepartmentName && d.FacultyId == facultyId);
 
             if (department == null) return BadRequest(new { message = "Department not found" });
 
