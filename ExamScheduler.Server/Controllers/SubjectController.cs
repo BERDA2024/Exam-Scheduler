@@ -1,21 +1,22 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ExamScheduler.Server.Source.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SubjectController : ControllerBase
+    public class SubjectController(ApplicationDbContext context, UserManager<User> userManager, RolesService userRoleService) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public SubjectController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly ApplicationDbContext _context = context;
+        private readonly RolesService _userRoleService = userRoleService;
 
         // GET: api/Subject
         [HttpGet]
@@ -137,5 +138,158 @@ namespace ExamScheduler.Server.Source.Controllers
 
             return NoContent();
         }
+
+        // GET: api/Subject/add
+        [HttpGet("add")]
+        public async Task<ActionResult<IEnumerable<AddSubjectModel>>> GetFilteredSubjects()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+                if (userId == null) return BadRequest(new { message = "User not found" });
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null) return BadRequest(new { message = "User not found" });
+
+                var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
+
+                if (facultyId == null) return BadRequest(new { message = "User not in a faculty" });
+
+                var subjects = await _context.Subject.ToListAsync();
+
+                var subjectsModels = new List<AddSubjectModel>();
+
+                foreach (var subject in subjects)
+                {
+                    var department = await _context.Department.FirstOrDefaultAsync(d => d.Id == subject.DepartmentId);
+
+                    if (department == null || department.FacultyId != facultyId) continue;
+
+                    var professor = await _context.Professor.FirstOrDefaultAsync(d => d.Id == subject.ProfessorID);
+
+                    if (professor == null) continue;
+
+                    var userProfessor = await _context.Users.FirstOrDefaultAsync(d => d.Id == professor.UserId);
+
+                    if (userProfessor == null) continue;
+
+                    subjectsModels.Add(new AddSubjectModel
+                    {
+                        Id = subject.Id,
+                        ShortName = subject.ShortName,
+                        LongName = subject.LongName,
+                        DepartmentShortName = department.ShortName,
+                        ProfessorName = userProfessor.FirstName + " " + userProfessor.LastName,
+                        ExamType = subject.ExamType,
+                        ExamDuration = subject.ExamDuration,
+                    });
+                }
+
+                return Ok(subjectsModels);
+            }
+            catch (Exception error)
+            {
+                return BadRequest(new { message = error.ToString() });
+            }
+        }
+
+        // POST: api/Subject/add
+        [HttpPost("add")]
+        [Authorize(Roles = "FacultyAdmin")]
+        public async Task<ActionResult<SubjectModel>> CreateAddSubject(AddSubjectModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(new { message = "Bad model" });
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+            if (userId == null) return BadRequest(new { message = "User not found" });
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found" });
+
+            var facultyId = await _userRoleService.GetFacultyIdByRole(user);
+
+            if (facultyId == null) return BadRequest(new { message = "Faculty not found" });
+
+            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName.Equals(model.DepartmentShortName) && d.FacultyId == facultyId);
+
+            if (department == null) return BadRequest(new { message = "Department not found" });
+
+            var professorUser = await _context.Users.FirstOrDefaultAsync(u => (u.FirstName + " " + u.LastName).Contains(model.ProfessorName) || (u.LastName + " " + u.FirstName).Contains(model.ProfessorName));
+
+            if (professorUser == null) return BadRequest(new { message = "User not found" });
+
+            var professor = await _context.Professor.FirstOrDefaultAsync(d => d.UserId == professorUser.Id);
+
+            if (professor == null) return BadRequest(new { message = "Professor not found" });
+
+            var subject = new Subject
+            {
+                LongName = model.LongName,
+                ShortName = model.ShortName,
+                ProfessorID = professor.Id,
+                DepartmentId = department.Id,
+                ExamType = model.ExamType,
+                ExamDuration = model.ExamDuration,
+            };
+
+            _context.Subject.Add(subject);
+            await _context.SaveChangesAsync();
+
+            model.Id = subject.Id;
+
+            return CreatedAtAction(nameof(GetSubject), new { id = subject.Id }, model);
+        }
+
+        // PUT: api/Subject/add/{id}
+        [HttpPut("add/{id}")]
+        [Authorize(Roles = "FacultyAdmin")]
+        public async Task<IActionResult> UpdateAddSubject(int id, AddSubjectModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(new { message = ModelState });
+
+            var subject = await _context.Subject.FindAsync(id);
+
+            if (subject == null) return NotFound(new { message = "Subject not found" });
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+            if (userId == null) return BadRequest(new { message = "User not found" });
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest(new { message = "User not found" });
+
+            var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
+
+            if (facultyId == null) return BadRequest(new { message = "Faculty not found" });
+
+            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName.Equals(model.DepartmentShortName) && d.FacultyId == facultyId);
+
+            if (department == null) return BadRequest(new { message = "Department not found" });
+
+            var professorUser = await _context.Users.FirstOrDefaultAsync(u => (u.FirstName + " " + u.LastName).Contains(model.ProfessorName) || (u.LastName + " " + u.FirstName).Contains(model.ProfessorName));
+
+            if (professorUser == null) return BadRequest(new { message = "User not found" });
+
+            var professor = await _context.Professor.FirstOrDefaultAsync(d => d.UserId == professorUser.Id);
+
+            if (professor == null) return BadRequest(new { message = "Professor not found" });
+            subject.LongName = model.LongName;
+            subject.ShortName = model.ShortName;
+            subject.ProfessorID = professor.Id;
+            subject.DepartmentId = department.Id;
+            subject.ExamDuration = model.ExamDuration;
+            subject.ExamType = model.ExamType;
+
+            _context.Subject.Update(subject);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
 }

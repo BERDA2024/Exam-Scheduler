@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
-import DepartmentSelector from "../Utils/DepartmentSelector";
+import GroupSelector from "../Utils/GroupSelector";
+import SubjectSelector from "../Utils/SubjectSelector";
 import { getURL } from '../Utils/URLUtils';
 import "./FormStyles.css";
 
-const GroupForm = ({ group, onClose, onRefresh }) => {
-    const [groupDetails, setGroupDetails] = useState(group ? group : { id: 0, departmentName: '', groupName: '', studyYear: 0 });
+const GroupSubjectForm = ({ groupSubject, onClose, onRefresh }) => {
+    const [groupSubjectDetails, setGroupSubjectDetails] = useState(groupSubject ? groupSubject : { id: 0, subjectName: '', groupName: '' });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const authHeader = getAuthHeader();
@@ -15,8 +16,8 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
         const { name, value } = e.target;
         setSuccessMessage('');
         setErrorMessage('');
-        setGroupDetails((groupDetails) => ({
-            ...groupDetails,
+        setGroupSubjectDetails((groupSubjectDetails) => ({
+            ...groupSubjectDetails,
             [name]: value, // Dynamically update the corresponding property
         }));
     };
@@ -29,14 +30,13 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
         setSuccessMessage('');
 
         if (authHeader) {
-            const response = await fetch(address + `api/Group/` + (group ? `${ groupDetails.id }` : ``), {
-                method: (group? "PUT" : "POST"),
+            const response = await fetch(address + `api/GroupSubject/` + (groupSubject ? `${groupSubjectDetails.id}` : ``), {
+                method: (groupSubject ? "PUT" : "POST"),
                 headers: { ...authHeader, "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    Id: groupDetails.id,
-                    DepartmentName: groupDetails.departmentName,
-                    GroupName: groupDetails.groupName,
-                    StudyYear: groupDetails.studyYear
+                    Id: groupSubjectDetails.id,
+                    SubjectName: groupSubjectDetails.subjectName,
+                    GroupName: groupSubjectDetails.groupName,
                 }),
             });
             if (response.ok) {
@@ -56,35 +56,23 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
             <div className="form">
                 <form onSubmit={handleSubmit}>
 
-                     <div className="form-input-div">
-                        <label>Department:</label>
-                        <DepartmentSelector
-                            selectName="departmentName" // Ensure this matches the key in groupDetails
-                            departmentValue={groupDetails.departmentName}
-                            onDepartmentChange={handleChange}
+                    <div className="form-input-div">
+                        <label>Group:</label>
+                        <GroupSelector
+                            selectName="groupName" // Ensure this matches the key in groupDetails
+                            groupValue={groupSubjectDetails.groupName}
+                            onGroupChange={handleChange}
                             includeNone={true}
                         />
                     </div>
 
                     <div className="form-input-div">
-                        <label>Group Name:</label>
-                        <input
-                            type="text"
-                            name="groupName"
-                            value={groupDetails.groupName}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="form-input-div">
-                        <label>Study Year:</label>
-                        <input
-                            type="number"
-                            name="studyYear"
-                            value={groupDetails.studyYear}
-                            min="1" // Minimum value allowed
-                            max="6" // Maximum value allowed
-                            onChange={handleChange}
+                        <label>Group:</label>
+                        <SubjectSelector
+                            selectName="subjectName" // Ensure this matches the key in groupDetails
+                            subjectValue={groupSubjectDetails.subjectName}
+                            onSubjectChange={handleChange}
+                            includeNone={true}
                         />
                     </div>
 
@@ -95,7 +83,7 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
                     {errorMessage && <div className="message message-error">{errorMessage}</div>}
 
                     <div className="form-buttons">
-                        <button type="submit">{group ? "Update" : "Add"} Group</button>
+                        <button type="submit">{groupSubject ? "Update" : "Add"} Group Subject</button>
                         <button type="button" onClick={onClose}>
                             Cancel
                         </button>
@@ -106,4 +94,4 @@ const GroupForm = ({ group, onClose, onRefresh }) => {
     );
 };
 
-export default GroupForm;
+export default GroupSubjectForm;

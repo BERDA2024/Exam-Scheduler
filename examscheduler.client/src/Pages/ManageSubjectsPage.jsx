@@ -1,10 +1,10 @@
 import React from 'react';
-import ClassroomsManagementComponent from '../Components/ManagementComponents/ClassroomsManagementComponent';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
-import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
+import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
+import SubjectsManagementComponent from '../Components/ManagementComponents/SubjectsManagementComponent';
 import '../Styles/DashboardPage.css';
 
-const ManageClassroomsPage = () => {
+const SubjectsManagementPage = () => {
     return (
         <div className="dashboard-container">
             {/* Body */}
@@ -12,10 +12,10 @@ const ManageClassroomsPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Manage Classrooms">
+                        <StylizedBlock title="Manage Subjects">
                             {/* Availability block */}
                             <div className="block-item">
-                                <ClassroomsManagementComponent />
+                                <SubjectsManagementComponent />
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>
@@ -25,4 +25,4 @@ const ManageClassroomsPage = () => {
     );
 };
 
-export default ManageClassroomsPage
+export default SubjectsManagementPage;

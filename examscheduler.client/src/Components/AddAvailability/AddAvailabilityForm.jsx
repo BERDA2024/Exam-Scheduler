@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect } from 'react';
-import './AddAvailabilityForm.css';
+﻿import React, { useEffect, useState } from 'react';
 import { getAuthHeader } from '../../Utils/AuthUtils'; // Asigură-te că ai funcția pentru token
+import './AddAvailabilityForm.css';
 
 const AddAvailabilityForm = () => {
     const [availability, setAvailability] = useState({ startDate: '', endDate: '' });
