@@ -197,7 +197,7 @@ namespace ExamScheduler.Server.Source.Controllers
 
         // POST: api/Subject/add
         [HttpPost("add")]
-        [Authorize(Roles ="FacultyAdmin")]
+        [Authorize(Roles = "FacultyAdmin")]
         public async Task<ActionResult<SubjectModel>> CreateAddSubject(AddSubjectModel model)
         {
             if (!ModelState.IsValid) return BadRequest(new { message = "Bad model" });
@@ -212,9 +212,11 @@ namespace ExamScheduler.Server.Source.Controllers
 
             var facultyId = await _userRoleService.GetFacultyIdByRole(user);
 
-            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName.Equals(model.DepartmentShortName));
+            if (facultyId == null) return BadRequest(new { message = "Faculty not found" });
 
-            if (department == null || department.FacultyId != facultyId) return BadRequest(new { message = "Department not found" });
+            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName.Equals(model.DepartmentShortName) && d.FacultyId == facultyId);
+
+            if (department == null) return BadRequest(new { message = "Department not found" });
 
             var professorUser = await _context.Users.FirstOrDefaultAsync(u => (u.FirstName + " " + u.LastName).Contains(model.ProfessorName) || (u.LastName + " " + u.FirstName).Contains(model.ProfessorName));
 
@@ -251,7 +253,7 @@ namespace ExamScheduler.Server.Source.Controllers
 
             var subject = await _context.Subject.FindAsync(id);
 
-            if (subject == null) return NotFound(new {message = "Subject not found"});
+            if (subject == null) return NotFound(new { message = "Subject not found" });
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
 
@@ -263,9 +265,11 @@ namespace ExamScheduler.Server.Source.Controllers
 
             var facultyId = _userRoleService.GetFacultyIdByRole(user).Result;
 
-            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName.Equals(model.DepartmentShortName));
+            if (facultyId == null) return BadRequest(new { message = "Faculty not found" });
 
-            if (department == null || department.FacultyId != facultyId) return BadRequest(new { message = "Department not found" });
+            var department = await _context.Department.FirstOrDefaultAsync(d => d.ShortName.Equals(model.DepartmentShortName) && d.FacultyId == facultyId);
+
+            if (department == null) return BadRequest(new { message = "Department not found" });
 
             var professorUser = await _context.Users.FirstOrDefaultAsync(u => (u.FirstName + " " + u.LastName).Contains(model.ProfessorName) || (u.LastName + " " + u.FirstName).Contains(model.ProfessorName));
 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
-import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
+import React from 'react';
 import ClassroomsManagementComponent from '../Components/ManagementComponents/ClassroomsManagementComponent';
+import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
+import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
 import '../Styles/DashboardPage.css';
 
 const ManageClassroomsPage = () => {
@@ -12,7 +12,7 @@ const ManageClassroomsPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Manage Users">
+                        <StylizedBlock title="Manage Classrooms">
                             {/* Availability block */}
                             <div className="block-item">
                                 <ClassroomsManagementComponent />

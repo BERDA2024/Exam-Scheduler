@@ -1,9 +1,10 @@
 import React from 'react';
-import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
-import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
+import GroupSubjectssManagementComponent from '../Components/ManagementComponents/GroupSubjectsManagementComponent';
 import GroupsManagementComponent from '../Components/ManagementComponents/GroupsManagementComponent';
-import SubgroupsManagementComponent from '../Components/ManagementComponents/SubgroupsManagementComponent';
 import StudentsManagementComponent from '../Components/ManagementComponents/StudentsManagementComponent';
+import SubgroupsManagementComponent from '../Components/ManagementComponents/SubgroupsManagementComponent';
+import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
+import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
 import '../Styles/DashboardPage.css';
 
 const GroupsManagementPage = () => {
@@ -14,20 +15,25 @@ const GroupsManagementPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Manage Groups">
-                            {/* Availability block */}
+                        <StylizedBlock title="Manage Groups" initiallyOpen={false}>
                             <div className="block-item">
                                 <GroupsManagementComponent />
                             </div>
                         </StylizedBlock>
-                        <StylizedBlock title="Manage Subgroups">
-                            {/* Availability block */}
+
+                        <StylizedBlock title="Manage Subgroups" initiallyOpen={false}>
                             <div className="block-item">
                                 <SubgroupsManagementComponent />
                             </div>
                         </StylizedBlock>
-                        <StylizedBlock title="Manage Students Group">
-                            {/* Availability block */}
+
+                        <StylizedBlock title="Manage Group Subjects" initiallyOpen={false}>
+                            <div className="block-item">
+                                <GroupSubjectssManagementComponent />
+                            </div>
+                        </StylizedBlock>
+
+                        <StylizedBlock title="Manage Students Group" initiallyOpen={false}>
                             <div className="block-item">
                                 <StudentsManagementComponent />
                             </div>
