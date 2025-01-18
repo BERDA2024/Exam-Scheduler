@@ -1,10 +1,12 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using System.Security.Claims;
 
 namespace ExamScheduler.Server.Controllers
@@ -16,9 +18,54 @@ namespace ExamScheduler.Server.Controllers
         private readonly UserManager<User> _userManager = userManager;
         private readonly ApplicationDbContext _context = context;
 
+
+
+        [HttpGet("availability-by-professor")]
+        [Authorize]
+        public async Task<IActionResult> GetAvailabilityByProfessor()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return BadRequest(new { message = "User not found." });
+
+            try
+            {
+                // Găsește profesorul asociat utilizatorului curent
+                var professor = await _context.Professor
+                    .FirstOrDefaultAsync(p => p.UserId == userId);
+
+                if (professor == null) return NotFound(new { message = "Professor not found." });
+
+                // Găsește disponibilitățile asociate profesorului
+                var availabilities = await _context.Availability
+                    .Where(a => a.ProfessorID == professor.Id)
+                    .ToListAsync();
+
+                var availabilitiesModels = new List<AvailabilityModel>();
+
+                foreach (var availability in availabilities)
+                {
+                    availabilitiesModels.Add(new AvailabilityModel
+                    {
+                        Id = availability.Id,
+                        StartDate = availability.StartDate,
+                        EndDate = availability.EndDate
+                    });
+                }
+
+                return Ok(availabilitiesModels);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Error: " + ex.Message });
+            }
+        }
+
         [HttpGet("availability-by-subject")]
+        [Authorize]
         public async Task<IActionResult> GetAvailabilityBySubject(string subjectName)
         {
+
             try
             {
                 // Găsește subiectul și profesorul asociat
@@ -72,27 +119,20 @@ namespace ExamScheduler.Server.Controllers
             return Ok(availability);
         }
 
-        [Authorize(Roles = "Admin,Professor")]
         [HttpPost]
+        [Authorize(Roles = "Admin,Professor")]
         public async Task<IActionResult> CreateAvailability([FromBody] AvailabilityModel request)
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // ID-ul utilizatorului conectat
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (string.IsNullOrEmpty(userId) || request == null)
-                {
-                    return BadRequest(new { message = "Invalid request or user not authenticated." });
-                }
+                if (userId == null) return BadRequest(new { message = "User not found" });
 
-                // Găsește profesorul corespunzător utilizatorului conectat
                 var professor = await _context.Professor.FirstOrDefaultAsync(p => p.UserId == userId);
-                if (professor == null)
-                {
-                    return Unauthorized(new { message = "Professor not found." });
-                }
 
-                // Creează și salvează disponibilitatea
+                if (professor == null) return Unauthorized(new { message = "Professor not found." });
+
                 var availability = new Availability
                 {
                     ProfessorID = professor.Id,
@@ -111,24 +151,21 @@ namespace ExamScheduler.Server.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Professor")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAvailability(int id, [FromBody] AvailabilityModel availability)
+        [Authorize(Roles = "Admin,Professor")]
+        public async Task<IActionResult> UpdateAvailability(int id, [FromBody] AvailabilityModel model)
         {
-            _context.Entry(availability).State = EntityState.Modified;
+            if (!ModelState.IsValid) return BadRequest(new { message = ModelState });
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AvailabilityExists(id))
-                {
-                    return NotFound(new { message = "Availability not found" });
-                }
-                throw;
-            }
+            var availability = await _context.Availability.FindAsync(id);
+
+            if (availability == null) return NotFound(new { message = "Availability not found" });
+
+            availability.StartDate = model.StartDate;
+            availability.EndDate = model.EndDate;
+
+            _context.Availability.Update(availability);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

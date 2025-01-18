@@ -9,9 +9,11 @@ import ManageSubjectsPage from '../Pages/ManageSubjectsPage';
 import ManageUsersPage from '../Pages/ManageUsersPage';
 import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
 import ProfessorManagementPage from '../Pages/ProfessorManagementPage';
+import ManageAvailability from '../Pages/AvailabilityManagementPage'
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
 import { getUserRole } from '../Utils/RoleUtils';
+
 import './Sidebar.css';
 
 const Sidebar = ({ setActiveContent }) => {
@@ -41,6 +43,7 @@ const Sidebar = ({ setActiveContent }) => {
         ],
         Professor: [
             { label: "Exams Management", action: <ProfessorManagementPage /> },
+            { label: "Availability Management", action: <ManageAvailability /> },
         ],
         Student: [
             { label: "View Exams", action: "loadExams" },
