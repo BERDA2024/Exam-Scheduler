@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import UserForm from '../../Forms/UserForm';
 import { getAuthHeader } from '../../Utils/AuthUtils';
+import FacultySelector from '../../Utils/FacultySelector';
+import RoleSelector from '../../Utils/RoleSelector';
 import { getUserRole } from '../../Utils/RoleUtils';
 import GenericTable from "../GenericTable/GenericTable";
-import RoleSelector from '../../Utils/RoleSelector';
-import FacultySelector from '../../Utils/FacultySelector';
-import UserForm from '../../Forms/UserForm';
 import "./ManagementComponent.css";
 
 const UserManagementComponent = () => {

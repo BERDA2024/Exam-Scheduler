@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
+import DepartmentSelector from "../Utils/DepartmentSelector";
 import { getURL } from '../Utils/URLUtils';
 import "./FormStyles.css";
-import DepartmentSelector from "../Utils/DepartmentSelector";
 
 const SubjectForm = ({ subject, onClose, onRefresh }) => {
     const [subjectDetails, setSubjectDetails] = useState(subject ? subject : { id: 0, longName: '', shortName: '', professorName: '', departmentShortName: '', examDuration: 0, examType: '' });

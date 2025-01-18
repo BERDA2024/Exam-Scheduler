@@ -1,7 +1,7 @@
 import React from 'react';
-import ChangePasswordForm from '../Forms/ChangePasswordForm';
 import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
 import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
+import ChangePasswordForm from '../Forms/ChangePasswordForm';
 import '../Styles/DashboardPage.css';
 
 const ProfileSettingsPage = () => {
