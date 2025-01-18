@@ -1,9 +1,9 @@
 ﻿import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
 import { getURL } from '../Utils/URLUtils';
-import "./FormStyles.css"; // importati stilizarile de form generice
+import "./FormStyles.css"; 
 
-// formul primeste un parametru model, practic puteti face ca sa transmiteti un obiect model ca sa editati cu form-ul sau daca nu timiteti un obiect, formul devine unul de adaugare
+
 const AvailabilityForm = ({ availability, onClose, onRefresh }) => {
     const [availabilityDetails, setAvailabilityDetails] = useState(availability ? availability : { id: 0, startDate: '', endDate: '' }); // modificati parametrii modelului dupa cum vreti voi.
     const [errorMessage, setErrorMessage] = useState('');
@@ -22,43 +22,29 @@ const AvailabilityForm = ({ availability, onClose, onRefresh }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage(null);
+        setSuccessMessage(false);
 
-        // Reset any previous messages
-        setErrorMessage('');
-        setSuccessMessage('');
-
-        // verifica daca userul este autentificat. daca nu e nevoide pt api, puteti scoate if-ul asta. lafel scoateti si din headers "...authHeader".
-        if (authHeader) {
-            // fetch in functie de ce e, edit sau adaugare.
-            const response = await fetch((!availability ? 'api/Availability/' : `api/Availability/${availabilityDetails.id}` ), {
-                method: (availability ? "PUT" : "POST"),
-                headers: { ...authHeader, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    Id: availabilityDetails.id,
-                    StartDate: availabilityDetails.startDate, // aici ModelParameter trebuie sa fie exact ca in clasa .cs model
-                    EndDate: availabilityDetails.endDate // aici ModelParameter trebuie sa fie exact ca in clasa .cs model
-                    // alti parametrii daca mai sunt
-                }),
+        try {
+            const response = await fetch('https://localhost:7118/api/Availability', {
+                method: 'POST',
+                headers: {
+                    ...authHeader,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(availability),
             });
 
-            const text = await response.text();  // Get raw response text
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to add availability');
+            }
 
-            let result;
-            try {
-                result = JSON.parse(text);  // Attempt to parse it as JSON
-            } catch (e) {
-                setErrorMessage("Invalid server response.");
-                console.error(e);
-                return;
-            }
-            if (response.ok) {
-                setSuccessMessage(result.message); // This will be the success message returned from the API
-                onRefresh(); // Refresh the user list
-                onClose(); // Close the form
-            }
-            else {
-                setErrorMessage(result.message);
-            }
+            setSuccessMessage(true);
+            setAvailabilityDetails({ id: 0, startDate: '', endDate: '' }); // Resetează formularul
+            onRefresh(); // Actualizează lista de disponibilități
+        } catch (error) {
+            setErrorMessage(error.message);
         }
     };
 

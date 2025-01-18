@@ -157,19 +157,12 @@ namespace ExamScheduler.Server.Controllers
         public async Task<IActionResult> UpdateAvailability(int id, [FromBody] AvailabilityModel availability)
         {
             _context.Entry(availability).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AvailabilityExists(id))
-                {
-                    return NotFound(new { message = "Availability not found" });
-                }
-                throw;
-            }
+            var avail = await _context.Availability.FindAsync(id);
+            if (avail == null) return NotFound();
+            avail.StartDate = availability.StartDate;
+            avail.EndDate = availability.EndDate;
+            _context.Availability.Update(avail);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
