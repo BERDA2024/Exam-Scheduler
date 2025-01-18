@@ -1,11 +1,24 @@
-﻿import axios from "axios";
+﻿import { getAuthHeader } from '../Utils/AuthUtils';
 
-const API_BASE_URL = "http://localhost:5000/api/notifications"; // Înlocuiește cu URL-ul tău
+const API_BASE_URL = "https://localhost:7188/api/Notifications";
 
 export const fetchNotifications = async () => {
     try {
-        const response = await axios.get(API_BASE_URL);
-        return response.data; // Ar trebui să returneze o listă de notificări
+        const authHeader = getAuthHeader();
+        const response = await fetch(API_BASE_URL, {
+            method: 'GET',
+            headers: {
+                ...authHeader,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch notifications');
+        }
+
+        const data = await response.json();
+        return data;
     } catch (error) {
         console.error("Error fetching notifications:", error);
         return [];
@@ -14,6 +27,18 @@ export const fetchNotifications = async () => {
 
 export const deleteNotification = async (id) => {
     try {
+        if (window.confirm("Are you sure you want to delete this user?")) {
+
+            const response = await fetch(API_BASE_URL + `/${id}`, {
+                method: "DELETE",
+                headers: { ...authHeader }
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error('Failed to remove notification');
+            }
+        }
         await axios.delete(`${API_BASE_URL}/${id}`);
         return true;
     } catch (error) {
