@@ -1,7 +1,6 @@
 ﻿import React, { useState } from "react";
 import { getAuthHeader } from '../Utils/AuthUtils';
-import { getURL } from '../Utils/URLUtils';
-import "./FormStyles.css"; 
+import "./FormStyles.css";
 
 
 const AvailabilityForm = ({ availability, onClose, onRefresh }) => {
@@ -9,6 +8,7 @@ const AvailabilityForm = ({ availability, onClose, onRefresh }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const authHeader = getAuthHeader();
+    const api_url = `https://localhost:7118/api/Availability/` + (!availability ? `` : `${availability.id}`);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,31 +22,36 @@ const AvailabilityForm = ({ availability, onClose, onRefresh }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrorMessage(null);
-        setSuccessMessage(false);
+        // Reset any previous messages
+        setErrorMessage('');
+        setSuccessMessage('');
 
-        try {
-            const response = await fetch('https://localhost:7118/api/Availability', {
-                method: 'POST',
+        // verifica daca userul este autentificat. daca nu e nevoide pt api, puteti scoate if-ul asta. lafel scoateti si din headers "...authHeader".
+        if (authHeader) {
+            console.log(availabilityDetails);
+            const response = await fetch(api_url, {
+                method: (availability ? "PUT" : "POST"),
                 headers: {
                     ...authHeader,
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify(availability),
+                body: JSON.stringify({
+                    Id: availabilityDetails.id,
+                    StartDate: availabilityDetails.startDate,
+                    EndDate: availabilityDetails.endDate
+                }),
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to add availability');
+            if (response.ok) {
+                setSuccessMessage("Availability successfully added."); // This will be the success message returned from the API
+                onRefresh(); // Refresh the user list
+                onClose(); // Close the form
             }
-
-            setSuccessMessage(true);
-            setAvailabilityDetails({ id: 0, startDate: '', endDate: '' }); // Resetează formularul
-            onRefresh(); // Actualizează lista de disponibilități
-        } catch (error) {
-            setErrorMessage(error.message);
+            else {
+                setErrorMessage("Unable to add availability");
+            }
         }
-    };
+    }
 
     return (
         <div className="form-container">

@@ -1,10 +1,12 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using System.Security.Claims;
 
 namespace ExamScheduler.Server.Controllers
@@ -32,22 +34,26 @@ namespace ExamScheduler.Server.Controllers
                 var professor = await _context.Professor
                     .FirstOrDefaultAsync(p => p.UserId == userId);
 
-                if (professor == null)
-                {
-                    return NotFound(new { message = "Professor not found." });
-                }
+                if (professor == null) return NotFound(new { message = "Professor not found." });
 
                 // Găsește disponibilitățile asociate profesorului
-                var availability = await _context.Availability
+                var availabilities = await _context.Availability
                     .Where(a => a.ProfessorID == professor.Id)
                     .ToListAsync();
 
-                if (availability.Count == 0)
+                var availabilitiesModels = new List<AvailabilityModel>();
+
+                foreach (var availability in availabilities)
                 {
-                    return NotFound(new { message = "No availability found for the professor." });
+                    availabilitiesModels.Add(new AvailabilityModel
+                    {
+                        Id = availability.Id,
+                        StartDate = availability.StartDate,
+                        EndDate = availability.EndDate
+                    });
                 }
 
-                return Ok(availability);
+                return Ok(availabilitiesModels);
             }
             catch (Exception ex)
             {
@@ -113,27 +119,20 @@ namespace ExamScheduler.Server.Controllers
             return Ok(availability);
         }
 
-        [Authorize(Roles = "Admin,Professor")]
         [HttpPost]
+        [Authorize(Roles = "Admin,Professor")]
         public async Task<IActionResult> CreateAvailability([FromBody] AvailabilityModel request)
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // ID-ul utilizatorului conectat
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (string.IsNullOrEmpty(userId) || request == null)
-                {
-                    return BadRequest(new { message = "Invalid request or user not authenticated." });
-                }
+                if (userId == null) return BadRequest(new { message = "User not found" });
 
-                // Găsește profesorul corespunzător utilizatorului conectat
                 var professor = await _context.Professor.FirstOrDefaultAsync(p => p.UserId == userId);
-                if (professor == null)
-                {
-                    return Unauthorized(new { message = "Professor not found." });
-                }
 
-                // Creează și salvează disponibilitatea
+                if (professor == null) return Unauthorized(new { message = "Professor not found." });
+
                 var availability = new Availability
                 {
                     ProfessorID = professor.Id,
@@ -152,16 +151,20 @@ namespace ExamScheduler.Server.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Professor")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAvailability(int id, [FromBody] AvailabilityModel availability)
+        [Authorize(Roles = "Admin,Professor")]
+        public async Task<IActionResult> UpdateAvailability(int id, [FromBody] AvailabilityModel model)
         {
-            _context.Entry(availability).State = EntityState.Modified;
-            var avail = await _context.Availability.FindAsync(id);
-            if (avail == null) return NotFound();
-            avail.StartDate = availability.StartDate;
-            avail.EndDate = availability.EndDate;
-            _context.Availability.Update(avail);
+            if (!ModelState.IsValid) return BadRequest(new { message = ModelState });
+
+            var availability = await _context.Availability.FindAsync(id);
+
+            if (availability == null) return NotFound(new { message = "Availability not found" });
+
+            availability.StartDate = model.StartDate;
+            availability.EndDate = model.EndDate;
+
+            _context.Availability.Update(availability);
             await _context.SaveChangesAsync();
 
             return NoContent();

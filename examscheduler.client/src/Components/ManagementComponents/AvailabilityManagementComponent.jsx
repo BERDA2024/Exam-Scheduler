@@ -16,7 +16,7 @@ const AvailabilityManagementComponent = () => {
     const fetchAvailabilities = async () => {
         try {
             if (authHeader) {
-                const response = await fetch("https://localhost:7118/api/Availability", {
+                const response = await fetch("https://localhost:7118/api/Availability/availability-by-professor", {
                     headers: {
                         ...authHeader
                     }
