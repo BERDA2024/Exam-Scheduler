@@ -39,19 +39,20 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Manage Groups", action: <ManageGroupsPage /> },
         ],
         Professor: [
+            { label: "Calendar", action: <CalendarPage /> },
             { label: "Exams Management", action: <ProfessorManagementPage /> },
             { label: "Availability Management", action: <ManageAvailability /> },
         ],
         Student: [
-            { label: "View Exams", action: "loadExams" },
+            { label: "Calendar", action: <CalendarPage /> },
         ],
         StudentGroupLeader: [
+            { label: "Calendar", action: <CalendarPage /> },
             { label: "Request Exam", action: <ScheduleExamPage /> },
         ],
     };
 
     const commonButtons = [
-        { label: "Calendar", action: <CalendarPage /> },
         { label: "Settings", action: <ProfileSettingsPage /> },
         { label: "Notifications", action: <NotificationsPage /> }, // Butonul de notificări
     ];

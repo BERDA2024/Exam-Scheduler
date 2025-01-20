@@ -12,10 +12,10 @@ const DashboardPage = () => {
                 {/* Main content */}
                 <div className="main-content">
                     <ScrollableContainer>
-                        <StylizedBlock title="Availability" canToggle={false}>
+                        <StylizedBlock title="Info" canToggle={false}>
                             {/* Availability block */}
                             <div className="block-item">
-                                <AvailabilityForm />
+                                <span>Empty</span>
                             </div>
                         </StylizedBlock>
 
@@ -36,16 +36,7 @@ const DashboardPage = () => {
                         <StylizedBlock title="Inbox">
                             {/* Inbox block */}
                             <div className="block-item">
-                                <span>You have an exam today at 16:00 in C202</span>
-                            </div>
-                            <div className="block-item">
-                                <span>You have an exam tomorrow, 22/10/24, at 16:00</span>
-                            </div>
-                            <div className="block-item">
-                                <span>New Doc was added by Turcu Cristina Elena at 15:00 12/10/24</span>
-                            </div>
-                            <div className="block-item">
-                                <span>New Exam was added at 14:46 12/10/24</span>
+                                <span>Empty</span>
                             </div>
                         </StylizedBlock>
                     </ScrollableContainer>

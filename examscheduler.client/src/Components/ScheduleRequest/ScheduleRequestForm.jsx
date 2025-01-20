@@ -47,7 +47,7 @@ const ScheduleRequestForm = () => {
 
     const fetchSubjects = async () => {
         try {
-            const response = await fetch('https://localhost:7118/api/Subject', {
+            const response = await fetch('https://localhost:7118/api/Subject/group', {
                 method: 'GET',
                 headers: authHeader,
             });

@@ -43,7 +43,6 @@ const SubjectForm = ({ subject, onClose, onRefresh }) => {
                     ExamType: subjectDetails.examType
                 }),
             });
-            const data = response.json();
             if (response.ok) {
                 setSuccessMessage(response.message);
                 onRefresh(); // Refresh the list
@@ -51,7 +50,7 @@ const SubjectForm = ({ subject, onClose, onRefresh }) => {
             }
             else {
                 setErrorMessage('Operation Failed');
-                console.error(data.message);
+                console.error(response);
             }
         }
     };
