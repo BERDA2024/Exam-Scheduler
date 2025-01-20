@@ -7,28 +7,25 @@ import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
 import ManageGroupsPage from '../Pages/ManageGroupsPage';
 import ManageSubjectsPage from '../Pages/ManageSubjectsPage';
 import ManageUsersPage from '../Pages/ManageUsersPage';
-import NotificationSettingsPage from '../Pages/NotificationSettingsPage'; // Import nou
+import NotificationsPage from '../Pages/NotificationsPage';
+import ManageAvailability from '../Pages/AvailabilityManagementPage';
 import ProfessorManagementPage from '../Pages/ProfessorManagementPage';
-import ManageAvailability from '../Pages/AvailabilityManagementPage'
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
 import { getUserRole } from '../Utils/RoleUtils';
-
 import './Sidebar.css';
 
 const Sidebar = ({ setActiveContent }) => {
     const [userRole, setUserRole] = useState(null);
     const [activeButton, setActiveButton] = useState(() => {
-        // Retrieve the last selected button from localStorage or default to null
-        return localStorage.getItem('activeButton') || null;
+        return localStorage.getItem("activeButton") || null;
     });
 
     const roleButtons = {
         Admin: [
             { label: "Admin Dashboard", action: <DashboardPage /> },
             { label: "Manage Users", action: <ManageUsersPage /> },
-            { label: "Manage Faculties", action: <ManageFacultiesPage /> }
-            
+            { label: "Manage Faculties", action: <ManageFacultiesPage /> },
         ],
         FacultyAdmin: [
             { label: "Manage Users", action: <ManageUsersPage /> },
@@ -39,7 +36,7 @@ const Sidebar = ({ setActiveContent }) => {
         ],
         Secretary: [
             { label: "Manage Users", action: <ManageUsersPage /> },
-            { label: "Manage Groups", action: <ManageGroupsPage /> }
+            { label: "Manage Groups", action: <ManageGroupsPage /> },
         ],
         Professor: [
             { label: "Exams Management", action: <ProfessorManagementPage /> },
@@ -56,11 +53,10 @@ const Sidebar = ({ setActiveContent }) => {
     const commonButtons = [
         { label: "Calendar", action: <CalendarPage /> },
         { label: "Settings", action: <ProfileSettingsPage /> },
-        { label: "Notificări", action: <NotificationSettingsPage /> }, // Buton adăugat aici
+        { label: "Notifications", action: <NotificationsPage /> }, // Butonul de notificări
     ];
 
     const getActionFromLabel = (label) => {
-        // Find the corresponding action based on the label
         const allButtons = [...Object.values(roleButtons).flat(), ...commonButtons];
         const button = allButtons.find((btn) => btn.label === label);
         return button ? button.action : null;
@@ -70,8 +66,7 @@ const Sidebar = ({ setActiveContent }) => {
         const role = getUserRole();
         setUserRole(role);
 
-        // Load the last active content from localStorage on initial load
-        const lastActiveLabel = localStorage.getItem('activeButton');
+        const lastActiveLabel = localStorage.getItem("activeButton");
         if (lastActiveLabel) {
             const lastActiveContent = getActionFromLabel(lastActiveLabel);
             setActiveContent(lastActiveContent);
@@ -81,9 +76,7 @@ const Sidebar = ({ setActiveContent }) => {
     const handleButtonClick = (button) => {
         setActiveContent(button.action);
         setActiveButton(button.label);
-
-        // Persist the active button label in localStorage
-        localStorage.setItem('activeButton', button.label);
+        localStorage.setItem("activeButton", button.label);
     };
 
     if (!userRole) {
@@ -96,7 +89,7 @@ const Sidebar = ({ setActiveContent }) => {
         <nav className="sidebar">
             {buttons.map((button, index) => (
                 <button
-                    className={`sidebar-button ${activeButton === button.label ? 'active' : ''}`}
+                    className={`sidebar-button ${activeButton === button.label ? "active" : ""}`}
                     key={index}
                     onClick={() => handleButtonClick(button)}
                 >
@@ -106,7 +99,7 @@ const Sidebar = ({ setActiveContent }) => {
 
             {commonButtons.map((button, index) => (
                 <button
-                    className={`sidebar-button ${activeButton === button.label ? 'active' : ''}`}
+                    className={`sidebar-button ${activeButton === button.label ? "active" : ""}`}
                     key={index}
                     onClick={() => handleButtonClick(button)}
                 >

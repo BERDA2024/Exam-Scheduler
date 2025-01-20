@@ -13,6 +13,11 @@
     <TypeScriptConfiguration Remove="src\Forms\NewFolder\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="src\Forms\NotificationSettingsForm.css" />
+    <None Remove="src\Forms\NotificationSettingsForm.jsx" />
+    <None Remove="src\Pages\NotificationSettingsPage.jsx" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="src\Components\Calendar\" />
     <Folder Include="src\Components\AcceptedExamsList\" />
     <Folder Include="src\Components\DeclinedExamsList\" />
