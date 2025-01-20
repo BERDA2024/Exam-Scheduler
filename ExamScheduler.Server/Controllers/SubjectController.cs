@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace ExamScheduler.Server.Source.Controllers
+namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SubjectController(ApplicationDbContext context, UserManager<User> userManager, RolesService userRoleService) : ControllerBase
+    public class SubjectController(ApplicationDbContext context, UserManager<User> userManager, RolesService userRoleService, NotificationService notificationService) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly ApplicationDbContext _context = context;
         private readonly RolesService _userRoleService = userRoleService;
-
+        private readonly NotificationService _notificationService = notificationService;
         // GET: api/Subject
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubjectModel>>> GetSubjects()
@@ -38,6 +38,51 @@ namespace ExamScheduler.Server.Source.Controllers
             return Ok(subjects);
         }
 
+        // GET: api/Subject
+        [HttpGet("group")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<SubjectModel>>> GetSubjectsByGroup()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+                if (userId == null) return BadRequest(new { message = "User not found" });
+
+                var student = await _context.Student.FirstOrDefaultAsync(s => s.UserId == userId);
+
+                if (student == null) return NotFound(new { message = "Student not found" });
+
+                var subgroup = await _context.Subgroup.FirstOrDefaultAsync(sg => sg.Id == student.SubgroupID);
+
+                if (subgroup == null) return BadRequest(new { message = "Student not in a group" });
+
+                var groupSubjects = await _context.GroupSubject
+                    .Where(gs => gs.GroupID == subgroup.GroupId)
+                    .Select(s => s.SubjectID)
+                    .ToListAsync();
+
+                var subjects = await _context.Subject
+                    .Where(s => groupSubjects.Contains(s.Id))
+                    .Select(s => new SubjectModel
+                    {
+                        Id = s.Id,
+                        LongName = s.LongName,
+                        ShortName = s.ShortName,
+                        ProfessorID = s.ProfessorID,
+                        DepartmentId = s.DepartmentId,
+                        ExamDuration = s.ExamDuration,
+                        ExamType = s.ExamType
+                    })
+                    .ToListAsync();
+
+                return Ok(subjects);
+            }
+            catch (Exception error)
+            {
+                return BadRequest(new { message = error.ToString() });
+            }
+        }
         // GET: api/Subject/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<SubjectModel>> GetSubject(int id)
@@ -84,7 +129,6 @@ namespace ExamScheduler.Server.Source.Controllers
 
             _context.Subject.Add(subject);
             await _context.SaveChangesAsync();
-
             model.Id = subject.Id;
 
             return CreatedAtAction(nameof(GetSubject), new { id = subject.Id }, model);
@@ -125,6 +169,7 @@ namespace ExamScheduler.Server.Source.Controllers
 
         // DELETE: api/Subject/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteSubject(int id)
         {
             var subject = await _context.Subject.FindAsync(id);
@@ -135,6 +180,21 @@ namespace ExamScheduler.Server.Source.Controllers
 
             _context.Subject.Remove(subject);
             await _context.SaveChangesAsync();
+
+            var professor = await _context.Professor.FindAsync(subject.ProfessorID);
+
+            if (professor != null)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from the JWT
+
+                if (userId == null) return NoContent();
+
+                await _notificationService.AddNotificationAsync(
+                    "One of your subject was edited by the admin.",
+                    $"The subject \"{subject.LongName}\" was edited",
+                    userId,
+                    professor.UserId);
+            }
 
             return NoContent();
         }
@@ -239,6 +299,8 @@ namespace ExamScheduler.Server.Source.Controllers
             _context.Subject.Add(subject);
             await _context.SaveChangesAsync();
 
+            await _notificationService.AddNotificationAsync("A subject was assigned to you.", $"The subject \"{model.LongName}\" was assigned to you", userId, professor.UserId);
+
             model.Id = subject.Id;
 
             return CreatedAtAction(nameof(GetSubject), new { id = subject.Id }, model);
@@ -287,6 +349,8 @@ namespace ExamScheduler.Server.Source.Controllers
 
             _context.Subject.Update(subject);
             await _context.SaveChangesAsync();
+
+            await _notificationService.AddNotificationAsync("One of your subject was edited by the admin.", $"The subject \"{model.LongName}\" was edited", userId, professor.UserId);
 
             return NoContent();
         }

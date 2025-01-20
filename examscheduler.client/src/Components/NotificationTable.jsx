@@ -41,7 +41,7 @@ const NotificationTable = () => {
                     <tr>
                         <th>Title</th>
                         <th>Description</th>
-                        <th>Recipient</th>
+                        <th>Sender</th>
                         <th>Created At</th>
                         <th>Actions</th>
                     </tr>
