@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
-import StylizedBlock from '../Components/StylizedBlock/StylizedBlock'
-
-import '../Styles/DashboardPage.css';
+import React from 'react';
 import AvailabilityManagementComponent from '../Components/ManagementComponents/AvailabilityManagementComponent';
+import ScrollableContainer from '../Components/ScrollableContainer/ScrollableContainer';
+import StylizedBlock from '../Components/StylizedBlock/StylizedBlock';
+import '../Styles/DashboardPage.css';
 
 const AvailabilityManagementPage = () => {
     return (

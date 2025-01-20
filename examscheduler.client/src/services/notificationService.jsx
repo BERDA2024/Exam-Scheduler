@@ -1,10 +1,9 @@
 ﻿import { getAuthHeader } from '../Utils/AuthUtils';
 
-const API_BASE_URL = "https://localhost:7188/api/Notifications";
-
+const API_BASE_URL = "https://localhost:7118/api/Notifications";
+const authHeader = getAuthHeader();
 export const fetchNotifications = async () => {
     try {
-        const authHeader = getAuthHeader();
         const response = await fetch(API_BASE_URL, {
             method: 'GET',
             headers: {
@@ -33,14 +32,12 @@ export const deleteNotification = async (id) => {
                 method: "DELETE",
                 headers: { ...authHeader }
             });
-            const data = await response.json();
 
             if (!response.ok) {
                 throw new Error('Failed to remove notification');
             }
+            return true;
         }
-        await axios.delete(`${API_BASE_URL}/${id}`);
-        return true;
     } catch (error) {
         console.error("Error deleting notification:", error);
         return false;

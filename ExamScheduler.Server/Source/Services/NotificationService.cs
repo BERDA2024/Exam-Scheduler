@@ -1,16 +1,12 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
+using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-public class NotificationService
+public class NotificationService(ApplicationDbContext context)
 {
-    private readonly ApplicationDbContext _context;
-
-    public NotificationService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     // Adaugă notificare
     public async Task AddNotificationAsync(string title, string description, string senderId, string recipientId)
@@ -52,7 +48,7 @@ public class NotificationService
                 Description = notification.Description,
                 CreatedAt = notification.CreatedAt,
                 IsRead = notification.IsRead,
-                RecipientName = user.FirstName+" " + user.LastName,
+                RecipientName = user.FirstName + " " + user.LastName,
             });
         }
 
