@@ -5,6 +5,7 @@ import LoginPage from './Pages/LoginPage';
 import DashboardPage from './Pages/DashboardPage';
 import Layout from './Layout/Layout';
 import NotificationsPage from './Pages/NotificationsPage'; // Import corectat pentru NotificationsPage
+import ExamsPage from './Pages/ExamsPage';
 
 const App = () => {
     return (
@@ -15,6 +16,8 @@ const App = () => {
                 <Route path="/dashboard" element={<Layout />} />
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} /> {/* Pagina notificărilor */}
+                <Route path="/exams" element={<ExamsPage />} />
+
             </Routes>
         </Router>
     );
