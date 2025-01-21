@@ -103,6 +103,15 @@ const Calendar = () => {
         }
     };
 
+    const isToday = (date) => {
+        const today = new Date();
+        return (
+            date.getFullYear() === today.getFullYear() &&
+            date.getMonth() === today.getMonth() &&
+            date.getDate() === today.getDate()
+        );
+    };
+
     return (
         <div className="calendar-container">
             <div className="calendar-header">
@@ -131,7 +140,7 @@ const Calendar = () => {
                             key={index}
                             className={`calendar-day ${day.isCurrentMonth ? 'current-month' : 'other-month'
                                 } ${hasExam ? 'has-exam' : ''} ${selectedDay === day.date.getDate() && day.isCurrentMonth ? 'selected' : ''
-                                }`}
+                                } ${isToday(day.date) ? 'today' : ''}`}
                             onClick={() => handleDayClick(day)}
                         >
                             {day.date.getDate()}
