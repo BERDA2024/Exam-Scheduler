@@ -1,0 +1,79 @@
+﻿/* Container pentru întreaga tabelă */
+.exams-table-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Titlu tabel */
+.table-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Stiluri pentru tabel */
+.exams-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .exams-table th,
+    .exams-table td {
+        text-align: left;
+        padding: 12px 15px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .exams-table th {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .exams-table tr:nth-child(even) {
+        background-color: #f1f1f1;
+    }
+
+    .exams-table tr:hover {
+        background-color: #e9f5ff;
+        transition: background-color 0.3s ease;
+    }
+
+    .exams-table td {
+        border-bottom: 1px solid #ddd;
+    }
+
+/* Mesaj pentru când nu există date */
+.no-data {
+    text-align: center;
+    font-size: 16px;
+    color: #999;
+    padding: 20px 0;
+}
+
+/* Responsivitate */
+@media (max-width: 768px) {
+    .exams-table-container {
+        padding: 10px;
+    }
+
+    .table-title {
+        font-size: 20px;
+    }
+
+    .exams-table th,
+    .exams-table td {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
