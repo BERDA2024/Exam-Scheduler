@@ -1,6 +1,8 @@
 ﻿import React, { useEffect, useState } from 'react';
+import ManageAvailability from '../Pages/AvailabilityManagementPage';
 import CalendarPage from '../Pages/CalendarPage';
 import DashboardPage from '../Pages/DashboardPage';
+import ExamsPage from '../Pages/ExamsPage';
 import ManageClassroomsPage from '../Pages/ManageClassroomsPage';
 import ManageDepartmentsPage from '../Pages/ManageDepartmentsPage';
 import ManageFacultiesPage from '../Pages/ManageFacultiesPage';
@@ -8,7 +10,6 @@ import ManageGroupsPage from '../Pages/ManageGroupsPage';
 import ManageSubjectsPage from '../Pages/ManageSubjectsPage';
 import ManageUsersPage from '../Pages/ManageUsersPage';
 import NotificationsPage from '../Pages/NotificationsPage';
-import ManageAvailability from '../Pages/AvailabilityManagementPage';
 import ProfessorManagementPage from '../Pages/ProfessorManagementPage';
 import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 import ScheduleExamPage from '../Pages/ScheduleExamPage';
@@ -32,16 +33,19 @@ const Sidebar = ({ setActiveContent }) => {
             { label: "Manage Departments", action: <ManageDepartmentsPage /> },
             { label: "Manage Classrooms", action: <ManageClassroomsPage /> },
             { label: "Manage Subjects", action: <ManageSubjectsPage /> },
-            { label: "Manage Groups", action: <ManageGroupsPage /> }
+            { label: "Manage Groups", action: <ManageGroupsPage /> },
+            { label: "Exams List", action: <ExamsPage /> }
         ],
         Secretary: [
             { label: "Manage Users", action: <ManageUsersPage /> },
             { label: "Manage Groups", action: <ManageGroupsPage /> },
+            { label: "Exams List", action: <ExamsPage /> },
         ],
         Professor: [
             { label: "Calendar", action: <CalendarPage /> },
             { label: "Exams Management", action: <ProfessorManagementPage /> },
             { label: "Availability Management", action: <ManageAvailability /> },
+            { label: "Exams List", action: <ExamsPage /> }
         ],
         Student: [
             { label: "Calendar", action: <CalendarPage /> },
