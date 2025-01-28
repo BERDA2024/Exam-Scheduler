@@ -1,6 +1,7 @@
 ﻿using ExamScheduler.Server.Source.DataBase;
 using ExamScheduler.Server.Source.Domain;
 using ExamScheduler.Server.Source.Models;
+using ExamScheduler.Server.Source.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,10 +14,11 @@ namespace ExamScheduler.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AvailabilityController(ApplicationDbContext context, UserManager<User> userManager) : ControllerBase
+    public class AvailabilityController(ApplicationDbContext context, UserManager<User> userManager, NotificationService notificationService) : ControllerBase
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly ApplicationDbContext _context = context;
+        private readonly NotificationService _notificationService = notificationService;
 
 
 
@@ -123,6 +125,8 @@ namespace ExamScheduler.Server.Controllers
         [Authorize(Roles = "Admin,Professor")]
         public async Task<IActionResult> CreateAvailability([FromBody] AvailabilityModel request)
         {
+
+
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -142,6 +146,10 @@ namespace ExamScheduler.Server.Controllers
 
                 _context.Availability.Add(availability);
                 await _context.SaveChangesAsync();
+
+                var notificationMessage = $"Disponibilitatea ta pentru perioada {availability.StartDate:dd/MM/yyyy} - {availability.EndDate:dd/MM/yyyy} a fost adăugată cu succes.";
+                await _notificationService.AddNotificationAsync("New availability has been added", $"You have a availability for teacher ", userId, professor.UserId);
+
 
                 return CreatedAtAction(nameof(GetAvailabilityById), new { id = availability.Id }, availability);
             }

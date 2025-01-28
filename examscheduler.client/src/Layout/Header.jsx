@@ -1,11 +1,17 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
+import CalendarPage from '../Pages/CalendarPage';
+import NotificationsPage from '../Pages/NotificationsPage';
+import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 
-function Header() {
+function Header({ setActiveContent }) {
     const [showProfileTooltip, setShowProfileTooltip] = useState(false);
     const [user, setUser] = useState();
     const navigate = useNavigate();
+    const [activeButton, setActiveButton] = useState(() => {
+        return localStorage.getItem("activeButton") || null;
+    });
 
     // Fetch user profile when the component mounts
     useEffect(() => {
@@ -48,7 +54,7 @@ function Header() {
             navigate('/login'); // Redirect to login on error
         }
     }
-
+    
     // Logout function
     const logout = async () => {
         const token = localStorage.getItem('authToken');
@@ -79,6 +85,27 @@ function Header() {
         }
     };
 
+
+
+    const handleButtonClick = (label, action) => {
+        if (action) {
+            setActiveContent(action); // Update the active component
+        }
+        setActiveButton(label);
+        localStorage.setItem("activeButton", label);
+    };
+
+
+    
+    const headerButtons = [
+        { label: "Calendar", action: <CalendarPage />, icon: "📅" },
+        { label: "Notifications", action: <NotificationsPage />, icon: "🔔" },
+        { label: "Settings", action: <ProfileSettingsPage />, icon: "⚙️" },
+    ];
+
+
+   
+
     return (
         <header className="header">
             <div className="header-left">
@@ -92,12 +119,20 @@ function Header() {
                 />
             </div>
             <div className="header-right">
-                <button className="icon-button">📅</button>
-                <button className="icon-button">📝</button>
+                {headerButtons.map((button, index) => (
+                    <button
+                        className={`header-button ${activeButton === button.label ? "active" : ""}`}
+                        key={index}
+                        onClick={() => handleButtonClick(button.label, button.action)}
+                    >
+                        {button.icon}
+                    </button>
+                ))}
                 <div
                     className="profile-icon-container"
                     onMouseEnter={() => setShowProfileTooltip(true)}
-                    onMouseLeave={() => setShowProfileTooltip(false)}>
+                    onMouseLeave={() => setShowProfileTooltip(false)}
+                >
                     <button className="icon-button">👤</button>
                     {showProfileTooltip && (
                         <div className="profile-tooltip">
@@ -111,6 +146,6 @@ function Header() {
             </div>
         </header>
     );
-}
+};
 
 export default Header;
