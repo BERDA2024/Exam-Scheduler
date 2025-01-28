@@ -1,17 +1,12 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
-import CalendarPage from '../Pages/CalendarPage';
-import NotificationsPage from '../Pages/NotificationsPage';
-import ProfileSettingsPage from '../Pages/ProfileSettingsPage';
 
-function Header({ setActiveContent }) {
+function Header() {
     const [showProfileTooltip, setShowProfileTooltip] = useState(false);
     const [user, setUser] = useState();
     const navigate = useNavigate();
-    const [activeButton, setActiveButton] = useState(() => {
-        return localStorage.getItem("activeButton") || null;
-    });
+   
 
     // Fetch user profile when the component mounts
     useEffect(() => {
@@ -54,7 +49,7 @@ function Header({ setActiveContent }) {
             navigate('/login'); // Redirect to login on error
         }
     }
-    
+
     // Logout function
     const logout = async () => {
         const token = localStorage.getItem('authToken');
@@ -85,26 +80,15 @@ function Header({ setActiveContent }) {
         }
     };
 
-
-
-    const handleButtonClick = (label, action) => {
-        if (action) {
-            setActiveContent(action); // Update the active component
-        }
-        setActiveButton(label);
-        localStorage.setItem("activeButton", label);
+    const onCalendarHandle = async () => {
+        localStorage.setItem("activeButton", "Calendar");
+        window.location.reload(); // Refreshes the page
     };
 
-
-    
-    const headerButtons = [
-        { label: "Calendar", action: <CalendarPage />, icon: "📅" },
-        { label: "Notifications", action: <NotificationsPage />, icon: "🔔" },
-        { label: "Settings", action: <ProfileSettingsPage />, icon: "⚙️" },
-    ];
-
-
-   
+    const onNotificationHAndle = async () => {
+        localStorage.setItem("activeButton", "Notifications");
+        window.location.reload(); // Refreshes the page
+};
 
     return (
         <header className="header">
@@ -119,20 +103,12 @@ function Header({ setActiveContent }) {
                 />
             </div>
             <div className="header-right">
-                {headerButtons.map((button, index) => (
-                    <button
-                        className={`header-button ${activeButton === button.label ? "active" : ""}`}
-                        key={index}
-                        onClick={() => handleButtonClick(button.label, button.action)}
-                    >
-                        {button.icon}
-                    </button>
-                ))}
+                <button className="icon-button" onClick={onCalendarHandle}>📅</button>
+                <button className="icon-button" onClick={onNotificationHAndle}>📝</button>
                 <div
                     className="profile-icon-container"
                     onMouseEnter={() => setShowProfileTooltip(true)}
-                    onMouseLeave={() => setShowProfileTooltip(false)}
-                >
+                    onMouseLeave={() => setShowProfileTooltip(false)}>
                     <button className="icon-button">👤</button>
                     {showProfileTooltip && (
                         <div className="profile-tooltip">
@@ -146,6 +122,6 @@ function Header({ setActiveContent }) {
             </div>
         </header>
     );
-};
+}
 
 export default Header;
